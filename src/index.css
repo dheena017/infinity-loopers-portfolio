@@ -1,15 +1,10 @@
+/* Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Outfit:wght@300;400;700&family=Space+Grotesk:wght@500;700&display=swap');
+
 :root {
     font-family: 'Outfit', sans-serif;
-    line-height: 1.5;
-    font-weight: 400;
-    color-scheme: light dark;
-    color: rgba(255, 255, 255, 0.87);
-    background-color: #010305;
-
-    font-synthesis: none;
-    text-rendering: optimizeLegibility;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+    color: #fff;
+    background-color: transparent;
 }
 
 body,
@@ -18,7 +13,9 @@ html {
     padding: 0;
     width: 100%;
     height: 100%;
-    overflow-x: hidden;
+    overflow: hidden;
+    /* Canvas handles scroll via JS or overlay */
+    background: transparent;
 }
 
 #root {
@@ -27,88 +24,244 @@ html {
     position: fixed;
     top: 0;
     left: 0;
-    z-index: 1;
 }
 
-/* This element allows scrolling so that GSAP can detect scroll position. 
-   It sits 'behind' or transparently on top to capture scroll events 
-   but we are using position:fixed for canvas, so we need a dummy scroll container.
-*/
 #scroll-content {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
-    height: 5000vh;
-    /* Very tall for long scroll journey */
-    z-index: 0;
+    height: 3000vh;
+    /* Extremely tall for long journey */
     pointer-events: none;
-    /* Let clicks pass through if needed, but we scroll the body */
+    /* Let clicks pass through to canvas if needed, mostly for scroll capture */
+    z-index: -1;
 }
 
-/* Ensure body is scrollable */
 body {
     overflow-y: scroll;
+    /* Enable vertical scroll */
 }
 
-/* Glass Panel for Planet UI */
-.glass-panel {
-    background: rgba(20, 30, 40, 0.6);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 16px;
-    padding: 2rem;
-    width: 300px;
-    color: white;
-    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-    transform-origin: left center;
-    animation: fadeIn 0.5s ease-out;
+/* UI Overlays */
+.overlay-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 10;
 }
 
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: scale(0.9) translateX(-20px);
-    }
-
-    to {
-        opacity: 1;
-        transform: scale(1) translateX(0);
-    }
+/* Entry Section */
+.entry-title {
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    pointer-events: auto;
+    opacity: 0;
+    /* Animated in by GSAP */
 }
 
-.glass-panel h3 {
-    margin: 0 0 0.5rem 0;
-    font-size: 1.5rem;
-    color: #00f2ff;
-    font-family: 'Space Grotesk', sans-serif;
+.entry-title h1 {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 4rem;
+    margin-bottom: 0.5rem;
     text-transform: uppercase;
+    letter-spacing: 4px;
+    background: linear-gradient(to right, #fff, #aaa);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
-.glass-panel .role {
-    color: #ccc;
-    font-size: 0.9rem;
-    margin-bottom: 1.5rem;
-    font-family: 'JetBrains Mono', monospace;
+.entry-title p {
+    font-size: 1.2rem;
+    letter-spacing: 2px;
+    color: #888;
 }
 
-.view-btn {
+.enter-btn {
+    margin-top: 2rem;
+    padding: 1rem 3rem;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1.2rem;
     background: transparent;
-    border: 1px solid #00f2ff;
-    color: #00f2ff;
-    padding: 0.5rem 1.5rem;
-    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: white;
     cursor: pointer;
-    font-family: 'Space Grotesk', sans-serif;
-    transition: all 0.3s;
+    transition: all 0.4s ease;
     text-transform: uppercase;
-    font-size: 0.8rem;
+    letter-spacing: 2px;
+}
+
+.enter-btn:hover {
+    background: white;
+    color: black;
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+}
+
+/* Mentor Info Box */
+.mentor-panel {
+    background: rgba(0, 0, 0, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    /* Optional subtle blur */
+    padding: 2rem;
+    width: 350px;
+    color: white;
+    border-radius: 4px;
+    font-family: 'Outfit', sans-serif;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.8);
+    position: relative;
+}
+
+.mentor-panel::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, currentColor, transparent);
+    left: 0;
+}
+
+.mentor-panel h2 {
+    font-family: 'Orbitron', sans-serif;
+    margin: 0 0 0.5rem 0;
+    font-size: 2rem;
+    text-transform: uppercase;
+}
+
+.mentor-panel .role {
+    color: #aaa;
+    font-family: 'Space Grotesk', monospace;
+    margin-bottom: 1.5rem;
+    display: block;
+    font-size: 0.9rem;
     letter-spacing: 1px;
 }
 
-.view-btn:hover {
-    background: #00f2ff;
-    color: #000;
-    box-shadow: 0 0 15px rgba(0, 242, 255, 0.5);
+.mentor-links a {
+    color: #fff;
+    margin-right: 1rem;
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: border 0.3s;
+}
+
+.mentor-links a:hover {
+    border-bottom: 1px solid #fff;
+}
+
+/* Student Section */
+.folks-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 5rem;
+    color: #ffaa00;
+    text-transform: uppercase;
+    letter-spacing: 10px;
+    opacity: 0.8;
+}
+
+.student-circle-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.7);
+    padding: 0.5rem;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.student-photo {
+    width: 60px;
+    /* Bigger than tiny */
+    height: 60px;
+    border-radius: 50%;
+    background: #333;
+    object-fit: cover;
+    border: 2px solid white;
+}
+
+.student-name {
+    margin-top: 0.5rem;
+    font-size: 0.8rem;
+    text-align: center;
+    width: 100px;
+}
+
+/* Core Galaxy Section */
+.core-panel {
+    /* width: 400px; Remove fixed width to allow content to fit naturally, or keep max-width */
+    min-width: 500px;
+    padding: 3rem;
+    background: linear-gradient(135deg, rgba(20, 20, 20, 0.95) 0%, rgba(10, 10, 10, 0.98) 100%);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.9);
+    display: flex;
+    flex-direction: column;
+}
+
+.core-profile-layout {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
+    /* Bottom alignment */
+    gap: 2rem;
+}
+
+.core-info {
+    text-align: left;
+}
+
+.core-panel h2 {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.core-photo {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    border: 4px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 0 50px rgba(255, 255, 255, 0.1);
+    margin-bottom: 2rem;
+    /* Glare effect logic can be handled here or in composition */
+}
+
+.social-links {
+    margin-top: 1rem;
+    display: flex;
+    gap: 1rem;
+}
+
+.social-icon {
+    font-size: 0.9rem;
+    padding: 0.5rem 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 20px;
+    text-decoration: none;
+    color: white;
+    font-family: 'Space Grotesk', monospace;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+}
+
+.social-icon:hover {
+    background: white;
+    color: black;
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(255, 255, 255, 0.3);
+}
+
+/* Footer / End */
+.end-text {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1.5rem;
+    letter-spacing: 5px;
+    opacity: 0.5;
 }
