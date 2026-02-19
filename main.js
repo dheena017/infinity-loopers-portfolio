@@ -157,19 +157,20 @@ class CosmicJourney {
     }
 
     init() {
-        // Renderer Setup
-        this.renderer.setSize(window.innerWidth, window.innerHeight);
-        this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-        this.container.appendChild(this.renderer.domElement);
+        try {
+            // Renderer Setup
+            this.renderer.setSize(window.innerWidth, window.innerHeight);
+            this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            this.container.appendChild(this.renderer.domElement);
 
-        // Lighting
-        const ambient = new THREE.AmbientLight(0xffffff, 0.1); // Dim space light
-        this.scene.add(ambient);
+            // Lighting
+            const ambient = new THREE.AmbientLight(0xffffff, 0.1); // Dim space light
+            this.scene.add(ambient);
 
-        // Sun Light (Dynamic position)
-        this.sunLight = new THREE.PointLight(0xffaa00, 2, 8000);
-        this.sunLight.position.set(0, 0, 0);
-        this.scene.add(this.sunLight);
+            // Sun Light (Dynamic position)
+            this.sunLight = new THREE.PointLight(0xffaa00, 2, 8000);
+            this.sunLight.position.set(0, 0, 0);
+            this.scene.add(this.sunLight);
 
         // Build World
         this.createStarfield();
@@ -191,12 +192,25 @@ class CosmicJourney {
         this.setupUI(); // Add UI listeners
 
         // Resize Handler
-        window.addEventListener('resize', () => {
+        this.resizeHandler = () => {
             this.camera.aspect = window.innerWidth / window.innerHeight;
             this.camera.updateProjectionMatrix();
             this.renderer.setSize(window.innerWidth, window.innerHeight);
             ScrollTrigger.refresh();
-        });
+        };
+        window.addEventListener('resize', this.resizeHandler);
+        } catch (error) {
+            console.error('Error initializing CosmicJourney:', error);
+        }
+    }
+
+    destroy() {
+        // Clean up event listeners
+        if (this.resizeHandler) {
+            window.removeEventListener('resize', this.resizeHandler);
+        }
+        // Clean up renderer
+        this.renderer.dispose();
     }
 
     setupUI() {
@@ -230,7 +244,8 @@ class CosmicJourney {
     // CREATION: STARS
     // ------------------------------------------------------------------
     createStarfield() {
-        const count = 15000;
+        // Reduce star count for better performance on mobile
+        const count = window.innerWidth < 768 ? 8000 : 15000;
         const geo = new THREE.BufferGeometry();
         const pos = new Float32Array(count * 3);
         const col = new Float32Array(count * 3);
@@ -375,7 +390,7 @@ class CosmicJourney {
         sunGroup.add(corona);
 
         // "FOLKS" Text Floating Above
-        // (Handled by simple HTML Overlay or just omitted for pure visual flow? Request says "Text above: 'FOLKS'". I'll stick to CSS overlay for crisp text)
+        // (Handled by simple HTML Overlay or just omitted for pure visual flow? Request says "Text above: FOLKS". I'll stick to CSS overlay for crisp text)
 
         // Branch Sets
         // Set 1: 10 students
@@ -467,8 +482,8 @@ class CosmicJourney {
         this.scene.add(group);
         this.objects.galaxies.push(group);
 
-        // Particle System
-        const pCount = 2000;
+        // Particle System - Optimized for mobile
+        const pCount = window.innerWidth < 768 ? 1000 : 2000;
         const geo = new THREE.BufferGeometry();
         const pos = [];
         const col = [];
@@ -562,6 +577,7 @@ class CosmicJourney {
     // SCROLL LOGIC (GSAP)
     // ------------------------------------------------------------------
     setupScroll() {
+        try {
         // Timeline linked to total scroll height
         const tl = gsap.timeline({
             scrollTrigger: {
@@ -724,6 +740,9 @@ class CosmicJourney {
 
         // Show Final Text
         tl.to("#final-signature", { opacity: 1, duration: 2 });
+        } catch (error) {
+            console.error('Error setting up scroll timeline:', error);
+        }
     }
 
     // UI HELPER
@@ -735,4 +754,17 @@ class CosmicJourney {
 }
 
 // Start
-new CosmicJourney();
+let journey = null;
+try {
+    journey = new CosmicJourney();
+} catch (error) {
+    console.error('Failed to initialize application:', error);
+    document.body.innerHTML = '<div style="color: #ff5f56; text-align: center; padding: 2rem; font-family: monospace;">Error initializing 3D scene. Please refresh the page.</div>';
+}
+
+// Cleanup on page unload
+window.addEventListener('beforeunload', () => {
+    if (journey) {
+        journey.destroy();
+    }
+});

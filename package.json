@@ -1,4 +1,15 @@
 {
+  "name": "infinity-loopers-portfolio",
+  "version": "1.0.0",
+  "description": "A scroll-based journey through the Squad 139 universe using Three.js and GSAP",
+  "main": "main.js",
+  "type": "module",
+  "scripts": {
+    "dev": "python -m http.server 3000",
+    "start": "python -m http.server 3000"
+  },
+  "author": "Squad 139",
+  "license": "MIT",
   "dependencies": {
     "gsap": "^3.14.2",
     "three": "^0.182.0"

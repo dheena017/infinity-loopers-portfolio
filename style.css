@@ -95,7 +95,7 @@ h1 {
     color: var(--primary-neon);
     margin-bottom: 2rem;
     letter-spacing: 0.2rem;
-    font-family: var(--terminal-font);
+    font-family: var(--technical-font);
 }
 
 .cta-button {
@@ -144,6 +144,7 @@ h1 {
     overflow: hidden;
     transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
     z-index: 100;
+    will-change: opacity;
 }
 
 /* Holographic Scanline */
@@ -234,7 +235,7 @@ h1 {
     font-family: var(--technical-font);
     font-size: 0.9rem;
     line-height: 1.6;
-    color: #a0aec0;
+    color: #c9d1d9;
 }
 
 #mentor-role {
@@ -246,6 +247,73 @@ h1 {
 
 #mentor-desc {
     color: #c9d1d9;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 1024px) {
+    #welcome-screen {
+        padding: 2rem;
+    }
+
+    h1 {
+        font-size: clamp(2rem, 6vw, 4rem);
+    }
+
+    .hud-panel {
+        width: 90vw;
+        max-width: 380px;
+        left: 50%;
+        transform: translateY(-50%) translateX(-50%);
+    }
+
+    .core-passage-panel {
+        width: 85vw;
+        max-width: 320px;
+        left: 50% !important;
+        right: auto !important;
+        transform: translateY(-50%) translateX(-50%);
+        padding: 2rem 1.5rem;
+    }
+}
+
+@media (max-width: 640px) {
+    h1 {
+        font-size: clamp(1.5rem, 5vw, 2.5rem);
+    }
+
+    .subtitle {
+        font-size: 1rem;
+    }
+
+    .cta-button {
+        font-size: 1rem;
+        padding: 0.8rem 2rem;
+    }
+
+    .hud-panel,
+    .core-passage-panel {
+        width: 90vw;
+        max-width: 280px;
+        padding: 1.5rem 1rem;
+    }
+
+    .hud-content h2,
+    .passage-name {
+        font-size: 1.5rem;
+    }
+
+    .passage-bio {
+        font-size: 0.9rem;
+    }
+
+    .social-links {
+        gap: 0.8rem;
+    }
+
+    .social-link {
+        font-size: 0.7rem;
+        padding: 0.4rem 0.8rem;
+    }
 }
 
 /* ============================================================
