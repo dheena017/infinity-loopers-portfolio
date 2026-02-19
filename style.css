@@ -1,0 +1,530 @@
+:root {
+    --bg-color: #010305;
+    --primary-neon: #00f2ff;
+    --secondary-neon: #7000ff;
+    --accent-gold: #ffaa00;
+    --text-main: #e0e6ed;
+    --technical-font: 'JetBrains Mono', monospace;
+    --heading-font: 'Space Grotesk', sans-serif;
+    --body-font: 'Outfit', sans-serif;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-main);
+    font-family: var(--body-font);
+    overflow: hidden;
+    /* Initial state */
+    width: 100vw;
+    margin: 0;
+}
+
+/* Scroll Content */
+#scroll-content {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 1200vh;
+    /* Extra tall for paged feel */
+    z-index: -1;
+    pointer-events: none;
+    display: none;
+    /* Initially hidden */
+}
+
+/* Three.js Container */
+#canvas-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+}
+
+/* UI Layer */
+#ui-layer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+    pointer-events: none;
+}
+
+/* Interactive elements need pointer events */
+#ui-layer button,
+.hud-panel {
+    pointer-events: auto;
+}
+
+/* Welcome Screen */
+#welcome-screen {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    transition: opacity 1s ease;
+}
+
+#welcome-screen.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+h1 {
+    font-family: var(--heading-font);
+    font-size: clamp(3rem, 8vw, 6rem);
+    text-transform: uppercase;
+    color: white;
+    text-shadow: 0 0 20px rgba(0, 242, 255, 0.5);
+    margin-bottom: 0.5rem;
+}
+
+.subtitle {
+    font-size: 1.5rem;
+    color: var(--primary-neon);
+    margin-bottom: 2rem;
+    letter-spacing: 0.2rem;
+    font-family: var(--terminal-font);
+}
+
+.cta-button {
+    background: transparent;
+    border: 2px solid var(--primary-neon);
+    padding: 1rem 3rem;
+    color: white;
+    font-family: var(--heading-font);
+    font-size: 1.2rem;
+    cursor: pointer;
+    border-radius: 50px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 15px rgba(0, 242, 255, 0.2);
+}
+
+.cta-button:hover {
+    background: var(--primary-neon);
+    color: var(--bg-color);
+    box-shadow: 0 0 40px var(--primary-neon);
+    transform: scale(1.05);
+}
+
+/* HUD Panels (Holographic / Glassmorphism) */
+.hud-panel {
+    position: absolute;
+    top: 50%;
+    left: 8%;
+    transform: translateY(-50%);
+    width: 440px;
+    background: rgba(4, 8, 12, 0.4);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+
+    /* HUD Octagonal Clipping */
+    clip-path: polygon(15% 0%, 85% 0%, 100% 15%,
+            100% 85%, 85% 100%, 15% 100%,
+            0% 85%, 0% 15%);
+
+    border: 1.5px solid var(--primary-neon);
+    padding: 3.5rem 2.5rem;
+    opacity: 0;
+    box-shadow: 0 0 25px rgba(0, 242, 255, 0.1), inset 0 0 40px rgba(0, 242, 255, 0.05);
+    font-family: var(--technical-font);
+    overflow: hidden;
+    transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 100;
+}
+
+/* Holographic Scanline */
+.hud-panel::before,
+#core-panel::before {
+    content: "";
+    position: absolute;
+    top: -100%;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom,
+            transparent,
+            rgba(0, 242, 255, 0.05) 50%,
+            rgba(0, 242, 255, 0.1) 50.5%,
+            transparent 51%);
+    animation: scanline 4s linear infinite;
+    pointer-events: none;
+    z-index: 10;
+}
+
+@keyframes scanline {
+    from {
+        top: -100%;
+    }
+
+    to {
+        top: 100%;
+    }
+}
+
+.hud-panel.visible {
+    opacity: 1;
+    transform: translateY(-50%) translateX(0);
+}
+
+.hud-panel.hidden {
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-50%) translateX(-20px);
+}
+
+.hud-line {
+    display: none;
+    /* Removed for cleaner IDE look */
+}
+
+.hud-content h2 {
+    font-family: var(--heading-font);
+    font-weight: 700;
+    color: white;
+    margin-bottom: 0.8rem;
+    font-size: 2.8rem;
+    letter-spacing: -0.05em;
+    text-transform: uppercase;
+    text-shadow: 0 0 20px var(--primary-neon);
+    text-shadow: 0 0 20px var(--primary-neon);
+    opacity: 1;
+}
+
+@keyframes tech-glitch {
+
+    0%,
+    90%,
+    100% {
+        transform: skew(0);
+    }
+
+    92% {
+        transform: skew(3deg);
+        opacity: 0.8;
+    }
+
+    94% {
+        transform: skew(-2deg);
+        opacity: 1;
+    }
+
+    96% {
+        transform: skew(1deg);
+    }
+}
+
+.code-block {
+    background: transparent;
+    padding: 0;
+    border: none;
+    font-family: var(--technical-font);
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: #a0aec0;
+}
+
+#mentor-role {
+    color: #79c0ff;
+    /* Blue for variables/roles */
+    margin-bottom: 1rem;
+    display: block;
+}
+
+#mentor-desc {
+    color: #c9d1d9;
+}
+
+/* ============================================================
+   FINAL GALAXY SECTION — CINEMATIC PASSAGE PANELS
+   ============================================================ */
+
+/* Base: All three panels share this style */
+.core-passage-panel {
+    position: fixed;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 380px;
+    padding: 3rem 2.5rem;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 100;
+
+    /* Minimal glass — just a soft tint, no heavy box */
+    background: rgba(2, 4, 8, 0.25);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+
+    /* Single left accent border — cinematic, not boxy */
+    border-left: 1.5px solid currentColor;
+
+    /* Smooth fade only — no sliding, no bouncing */
+    transition: opacity 1.5s ease;
+}
+
+/* Panel 1: Right side, Cyan */
+#core-panel-1 {
+    right: 6%;
+    color: #00f2ff;
+    border-left-color: #00f2ff;
+}
+
+/* Panel 2: Left side, Purple */
+#core-panel-2 {
+    left: 6%;
+    color: #9b59b6;
+    border-left-color: #9b59b6;
+}
+
+/* Panel 3: Right side, Gold */
+#core-panel-3 {
+    right: 6%;
+    color: #ffaa00;
+    border-left-color: #ffaa00;
+}
+
+/* Passage label — small monospaced chapter marker */
+.passage-label {
+    font-family: var(--technical-font);
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    opacity: 0.6;
+    margin-bottom: 1.2rem;
+    text-transform: uppercase;
+}
+
+/* Name — bold, large, white */
+.passage-name {
+    font-family: var(--heading-font);
+    font-weight: 700;
+    font-size: 2rem;
+    color: white;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    line-height: 1.2;
+    margin-bottom: 1.5rem;
+    /* Subtle glow matching the panel color */
+    text-shadow: 0 0 30px currentColor;
+}
+
+/* Bio — soft, readable, secondary */
+.passage-bio {
+    font-family: var(--body-font);
+    font-size: 1rem;
+    color: rgba(220, 230, 240, 0.75);
+    line-height: 1.7;
+    font-weight: 300;
+}
+
+/* Final Signature */
+#final-signature {
+    position: fixed;
+    bottom: 10%;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    opacity: 0;
+    pointer-events: none;
+    white-space: nowrap;
+    font-family: var(--technical-font);
+    font-size: 1rem;
+    font-weight: 500;
+    letter-spacing: 0.5rem;
+    text-transform: uppercase;
+    z-index: 100;
+    background: linear-gradient(90deg, #00f2ff 0%, #ffaa00 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0 12px rgba(0, 242, 255, 0.4));
+}
+
+/* Terminal Loader */
+#loader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #000;
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Fira Code', monospace;
+}
+
+.terminal-loader {
+    width: 320px;
+    height: 250px;
+    background: #0d1117;
+    border: 1px solid #30363d;
+    border-radius: 6px;
+    box-shadow: 0 10px 40px rgba(0, 255, 0, 0.1);
+    color: #4affb0;
+    display: flex;
+    flex-direction: column;
+}
+
+.terminal-header {
+    background: #161b22;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #30363d;
+}
+
+.status-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    margin-right: 6px;
+}
+
+.status-dot.red {
+    background: #ff5f56;
+}
+
+.status-dot.yellow {
+    background: #ffbd2e;
+}
+
+.status-dot.green {
+    background: #27c93f;
+}
+
+.terminal-title {
+    margin-left: 10px;
+    color: #8b949e;
+    font-size: 12px;
+}
+
+.terminal-body {
+    padding: 20px;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.blinking-cursor {
+    animation: terminal-blink 1s step-end infinite;
+    display: inline-block;
+    color: #4affb0;
+}
+
+@keyframes terminal-blink {
+    50% {
+        opacity: 0;
+    }
+}
+
+#terminal-lines p {
+    opacity: 0;
+    /* Hidden initially for JS reveal */
+    margin: 5px 0;
+}
+
+/* Scroll Content */
+
+/* Loader */
+.loader {
+    position: fixed;
+    inset: 0;
+    background: var(--bg-color);
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 1s ease;
+}
+
+.loader.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 3px solid rgba(255, 255, 255, 0.1);
+    border-top-color: var(--primary-neon);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 1rem;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes glitch-anim {
+    /* Reuse glitch animation if needed */
+}
+
+/* ============================================================
+   SOCIAL LINKS
+   ============================================================ */
+.social-links {
+    margin-top: 2rem;
+    display: flex;
+    gap: 1.5rem;
+}
+
+.social-link {
+    font-family: var(--technical-font);
+    font-size: 0.8rem;
+    color: var(--primary-neon);
+    text-decoration: none;
+    border: 1px solid currentColor;
+    padding: 0.5rem 1rem;
+    text-transform: uppercase;
+    transition: all 0.3s ease;
+    letter-spacing: 0.1em;
+    background: rgba(0, 0, 0, 0.3);
+}
+
+.social-link:hover {
+    background: currentColor;
+    color: var(--bg-color);
+    box-shadow: 0 0 15px currentColor;
+}
+
+/* Specific colors for core panels */
+#core-panel-1 .social-link {
+    color: #00f2ff;
+}
+
+#core-panel-1 .social-link:hover {
+    color: #000;
+}
+
+#core-panel-2 .social-link {
+    color: #9b59b6;
+}
+
+#core-panel-2 .social-link:hover {
+    color: #000;
+}
+
+#core-panel-3 .social-link {
+    color: #ffaa00;
+}
+
+#core-panel-3 .social-link:hover {
+    color: #000;
+}
