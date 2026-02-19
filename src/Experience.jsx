@@ -411,9 +411,14 @@ function Scene() {
 
 export default function Experience() {
     return (
-        <Canvas gl={{ antialias: true }} camera={{ fov: 45, near: 0.1, far: 800 }}>
-            {/* Increased Far plane to see far objects */}
-            <Scene />
-        </Canvas>
+        <div id="canvas-container">
+            <Canvas gl={{ antialias: true }} camera={{ fov: 45, near: 0.1, far: 800 }}>
+                {/* Increased Far plane to see far objects */}
+                <Scene />
+            </Canvas>
+
+            {/* UI layer sits above the canvas; populate as needed by Html elements in the scene */}
+            <div id="ui-layer" aria-hidden="true"></div>
+        </div>
     )
 }
