@@ -1,3 +1,0 @@
-Implementation complete.
-The project is running at http://localhost:5174/ (or 5173).
-Please check the README.md for details.
