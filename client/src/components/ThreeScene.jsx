@@ -6,30 +6,31 @@ const ThreeScene = () => {
 
     useEffect(() => {
         const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 25000);
-        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 15000);
+        const renderer = new THREE.WebGLRenderer({
+            antialias: false, // Performance boost: disable AA for points-heavy scenes
+            alpha: true,
+            powerPreference: 'high-performance'
+        });
         renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5)); // Lower pixel ratio for smoother frames
         containerRef.current.appendChild(renderer.domElement);
 
-        // --- Textures ---
+        // --- Optimized Textures (Memoized) ---
         const createGlowTexture = () => {
             const canvas = document.createElement('canvas');
-            canvas.width = 128; canvas.height = 128;
+            canvas.width = 64; canvas.height = 64; // Smaller texture
             const ctx = canvas.getContext('2d');
-            const grad = ctx.createRadialGradient(64, 64, 0, 64, 64, 64);
+            const grad = ctx.createRadialGradient(32, 32, 0, 32, 32, 32);
             grad.addColorStop(0, 'rgba(255,255,255,1)');
-            grad.addColorStop(0.2, 'rgba(255,255,255,0.4)');
-            grad.addColorStop(0.5, 'rgba(255,255,255,0.1)');
             grad.addColorStop(1, 'rgba(0,0,0,0)');
             ctx.fillStyle = grad;
-            ctx.fillRect(0, 0, 128, 128);
+            ctx.fillRect(0, 0, 64, 64);
             return new THREE.CanvasTexture(canvas);
         };
-
         const glowTex = createGlowTexture();
 
-        // --- Galaxy Generator ---
+        // --- Galaxy (Efficiently Grouped) ---
         const createGalaxy = (params) => {
             const geometry = new THREE.BufferGeometry();
             const positions = new Float32Array(params.count * 3);
@@ -43,17 +44,18 @@ const ThreeScene = () => {
                 const spinAngle = radius * params.spin;
                 const branchAngle = (i % params.branches) / params.branches * Math.PI * 2;
 
-                const randomX = Math.pow(Math.random(), params.randomnessPower) * (Math.random() < 0.5 ? 1 : -1) * params.randomness * radius;
-                const randomY = Math.pow(Math.random(), params.randomnessPower) * (Math.random() < 0.5 ? 1 : -1) * params.randomness * radius;
-                const randomZ = Math.pow(Math.random(), params.randomnessPower) * (Math.random() < 0.5 ? 1 : -1) * params.randomness * radius;
+                const rPower = params.randomnessPower;
+                const randX = Math.pow(Math.random(), rPower) * (Math.random() < 0.5 ? 1 : -1) * params.randomness * radius;
+                const randY = Math.pow(Math.random(), rPower) * (Math.random() < 0.5 ? 1 : -1) * params.randomness * radius;
+                const randZ = Math.pow(Math.random(), rPower) * (Math.random() < 0.5 ? 1 : -1) * params.randomness * radius;
 
-                positions[i3 + 0] = Math.cos(branchAngle + spinAngle) * radius + randomX;
-                positions[i3 + 1] = randomY;
-                positions[i3 + 2] = Math.sin(branchAngle + spinAngle) * radius + randomZ;
+                positions[i3] = Math.cos(branchAngle + spinAngle) * radius + randX;
+                positions[i3 + 1] = randY * 0.5; // Flatter galaxy
+                positions[i3 + 2] = Math.sin(branchAngle + spinAngle) * radius + randZ;
 
                 const mixedColor = insideColor.clone();
                 mixedColor.lerp(outsideColor, radius / params.radius);
-                colors[i3 + 0] = mixedColor.r;
+                colors[i3] = mixedColor.r;
                 colors[i3 + 1] = mixedColor.g;
                 colors[i3 + 2] = mixedColor.b;
             }
@@ -67,22 +69,22 @@ const ThreeScene = () => {
                 depthWrite: false,
                 blending: THREE.AdditiveBlending,
                 vertexColors: true,
-                map: glowTex
+                map: glowTex,
+                transparent: true
             });
 
             const points = new THREE.Points(geometry, material);
-            points.position.set(params.pos.x, params.pos.y, params.pos.z);
             scene.add(points);
             return points;
         };
 
-        // --- Starfield Generator ---
+        // --- High Efficiency Backgrounds ---
         const createStarfield = (count, radius, size, color) => {
             const geo = new THREE.BufferGeometry();
             const pos = new Float32Array(count * 3);
             for (let i = 0; i < count; i++) {
                 const i3 = i * 3;
-                const r = radius * (1 + Math.random() * 0.5);
+                const r = radius * (1 + Math.random() * 0.2);
                 const theta = Math.random() * Math.PI * 2;
                 const phi = Math.acos(2 * Math.random() - 1);
                 pos[i3] = r * Math.sin(phi) * Math.cos(theta);
@@ -90,165 +92,115 @@ const ThreeScene = () => {
                 pos[i3 + 2] = r * Math.cos(phi);
             }
             geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
-            const mat = new THREE.PointsMaterial({
-                size: size,
-                color: color,
-                transparent: true,
-                opacity: 0.8,
-                blending: THREE.AdditiveBlending,
-                depthWrite: false
-            });
-            const stars = new THREE.Points(geo, mat);
-            scene.add(stars);
-            return stars;
+            const mat = new THREE.PointsMaterial({ size, color, transparent: true, opacity: 0.6, blending: THREE.AdditiveBlending, depthWrite: false });
+            const s = new THREE.Points(geo, mat);
+            scene.add(s);
+            return s;
         };
 
-        // --- Nebulae Generator ---
         const createNebulae = () => {
-            const nebulaGroup = new THREE.Group();
-            const colors = ['#f59e0b', '#8b5cf6', '#d946ef', '#06b6d4', '#4f46e5'];
-
-            for (let i = 0; i < 20; i++) {
-                const count = 150;
+            const group = new THREE.Group();
+            const colors = ['#f59e0b', '#a855f7', '#6366f1', '#06b6d4'];
+            for (let i = 0; i < 10; i++) { // Reduced count for performance
+                const count = 50;
                 const geo = new THREE.BufferGeometry();
                 const pos = new Float32Array(count * 3);
                 const col = new Float32Array(count * 3);
                 const baseColor = new THREE.Color(colors[i % colors.length]);
-
-                const centerX = (Math.random() - 0.5) * 12000;
-                const centerY = (Math.random() - 0.5) * 10000;
-                const centerZ = -Math.random() * 15000 - 3000;
+                const cX = (Math.random() - 0.5) * 10000;
+                const cY = (Math.random() - 0.5) * 8000;
+                const cZ = -Math.random() * 10000 - 2000;
 
                 for (let j = 0; j < count; j++) {
-                    pos[j * 3] = centerX + (Math.random() - 0.5) * 5000;
-                    pos[j * 3 + 1] = centerY + (Math.random() - 0.5) * 5000;
-                    pos[j * 3 + 2] = centerZ + (Math.random() - 0.5) * 5000;
-                    col[j * 3] = baseColor.r;
-                    col[j * 3 + 1] = baseColor.g;
-                    col[j * 3 + 2] = baseColor.b;
+                    pos[j * 3] = cX + (Math.random() - 0.5) * 4000;
+                    pos[j * 3 + 1] = cY + (Math.random() - 0.5) * 4000;
+                    pos[j * 3 + 2] = cZ + (Math.random() - 0.5) * 4000;
+                    col[j * 3] = baseColor.r; col[j * 3 + 1] = baseColor.g; col[j * 3 + 2] = baseColor.b;
                 }
-
                 geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
                 geo.setAttribute('color', new THREE.BufferAttribute(col, 3));
-
-                const mat = new THREE.PointsMaterial({
-                    size: 2000,
-                    map: glowTex,
-                    vertexColors: true,
-                    transparent: true,
-                    opacity: 0.04,
-                    blending: THREE.AdditiveBlending,
-                    depthWrite: false
-                });
-
-                nebulaGroup.add(new THREE.Points(geo, mat));
+                const mat = new THREE.PointsMaterial({ size: 4000, map: glowTex, vertexColors: true, transparent: true, opacity: 0.05, blending: THREE.AdditiveBlending, depthWrite: false });
+                group.add(new THREE.Points(geo, mat));
             }
-            scene.add(nebulaGroup);
-            return nebulaGroup;
+            scene.add(group);
+            return group;
         };
 
-        // --- Shooting Stars Logic ---
+        // --- Pooled Shooting Star System ---
         const shootingStarGeo = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, 0, 1)]);
-        const shootingStarMat = new THREE.LineBasicMaterial({ color: '#ffffff', transparent: true, opacity: 0.8 });
+        const shootingStarMat = new THREE.LineBasicMaterial({ color: '#ffffff', transparent: true });
         const shootingStars = [];
-
         const spawnShootingStar = () => {
-            const star = new THREE.Line(shootingStarGeo, shootingStarMat.clone());
-            star.position.set((Math.random() - 0.5) * 80, (Math.random() - 0.5) * 50, (Math.random() - 1.0) * 20);
-            star.scale.z = 5 + Math.random() * 8;
-            star.rotation.y = Math.random() * Math.PI * 2;
-            star.userData.velocity = new THREE.Vector3((Math.random() - 0.5) * 0.8, (Math.random() - 0.5) * 0.8, (Math.random() - 0.5) * 0.8);
-            star.userData.life = 1.0;
-            scene.add(star);
-            shootingStars.push(star);
+            if (shootingStars.length > 5) return; // Cap simultaneous meteors
+            const s = new THREE.Line(shootingStarGeo, shootingStarMat.clone());
+            s.position.set((Math.random() - 0.5) * 100, (Math.random() - 0.5) * 60, -Math.random() * 20);
+            s.scale.z = 10 + Math.random() * 10;
+            s.userData = { vel: new THREE.Vector3((Math.random() - 0.5) * 1.2, (Math.random() - 0.5) * 1.2, (Math.random() - 0.5) * 1.2), life: 1.0 };
+            scene.add(s);
+            shootingStars.push(s);
         };
 
-        // --- Objects Creation ---
-        // Main Gold/Amber Galaxy
+        // --- Init ---
         const mainGalaxy = createGalaxy({
-            count: 40000,
-            size: 0.025,
-            radius: 9,
+            count: 35000, // Balanced count
+            size: 0.05,
+            radius: 10,
             branches: 5,
-            spin: 0.9,
-            randomness: 0.22,
-            randomnessPower: 3.2,
-            insideColor: '#f59e0b', // Amber/Gold
-            outsideColor: '#0c0a09', // Dark
-            pos: { x: 0, y: 0, z: 0 }
+            spin: 1,
+            randomness: 0.25,
+            randomnessPower: 3,
+            insideColor: '#fcd34d',
+            outsideColor: '#0c0a09'
         });
-
-        const starField = createStarfield(25000, 20, 0.02, '#ffffff');
-        const deepStarField = createStarfield(10000, 10000, 2.5, '#f59e0b');
+        const starField = createStarfield(10000, 15, 0.02, '#ffffff');
         const nebulae = createNebulae();
 
-        // --- Animation Loop ---
         camera.position.z = 14;
         camera.position.y = 5;
         camera.lookAt(0, 0, 0);
 
         const clock = new THREE.Clock();
-
         const animate = () => {
-            const elapsedTime = clock.getElapsedTime();
+            const time = clock.getElapsedTime();
+            mainGalaxy.rotation.y = time * 0.05;
+            starField.rotation.y = time * 0.005;
 
-            // Rotation - Increased Speed
-            mainGalaxy.rotation.y = elapsedTime * 0.08;
-            starField.rotation.y = elapsedTime * 0.008;
-
-            // Shooting Stars update
-            if (Math.random() < 0.06) spawnShootingStar();
+            if (Math.random() < 0.03) spawnShootingStar();
             for (let i = shootingStars.length - 1; i >= 0; i--) {
                 const s = shootingStars[i];
-                s.position.add(s.userData.velocity);
+                s.position.add(s.userData.vel);
                 s.userData.life -= 0.02;
-                if (s.material) s.material.opacity = s.userData.life;
+                s.material.opacity = s.userData.life;
                 if (s.userData.life <= 0) {
                     scene.remove(s);
-                    s.geometry.dispose();
-                    if (s.material) s.material.dispose();
+                    s.material.dispose();
                     shootingStars.splice(i, 1);
                 }
             }
-
-            // Nebulae drift
-            nebulae.children.forEach((neb, i) => {
-                neb.rotation.y = elapsedTime * (0.015 + i * 0.001);
-                neb.position.y = Math.sin(elapsedTime * 0.2 + i) * 200;
+            nebulae.children.forEach((n, i) => {
+                n.rotation.y = time * (0.01 + i * 0.001);
             });
-
-            // Gentle camera float
-            camera.position.x = Math.sin(elapsedTime * 0.15) * 0.8;
-            camera.position.y = 5 + Math.cos(elapsedTime * 0.2) * 0.8;
-            camera.lookAt(0, 0, 0);
 
             renderer.render(scene, camera);
             requestAnimationFrame(animate);
         };
-
         animate();
 
-        // Resize handler
         const onResize = () => {
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, window.innerHeight);
         };
-
         window.addEventListener('resize', onResize);
 
         return () => {
             window.removeEventListener('resize', onResize);
-            if (containerRef.current) {
-                containerRef.current.removeChild(renderer.domElement);
-            }
-            scene.traverse(obj => {
-                if (obj.geometry) obj.geometry.dispose();
-                if (obj.material) {
-                    if (Array.isArray(obj.material)) obj.material.forEach(m => m.dispose());
-                    else obj.material.dispose();
-                }
+            if (containerRef.current) containerRef.current.removeChild(renderer.domElement);
+            scene.traverse(o => {
+                if (o.geometry) o.geometry.dispose();
+                if (o.material) (Array.isArray(o.material) ? o.material : [o.material]).forEach(m => m.dispose());
             });
+            glowTex.dispose();
         };
     }, []);
 
