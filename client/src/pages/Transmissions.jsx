@@ -25,7 +25,7 @@ const Transmissions = () => {
                         <Mail size={14} />
                         Communications Center
                     </div>
-                    <h2 className="text-7xl font-black heading-display">Contact <br /><span className="text-blue-500">The Team</span></h2>
+                    <h2 className="text-5xl sm:text-7xl font-black heading-display break-words">Contact <br /><span className="text-blue-500">The Team</span></h2>
                     <p className="text-lg text-slate-400 max-w-lg mx-auto leading-relaxed">
                         Have a project in mind or just want to say hello? Our team is always open to discussing new opportunities and technical challenges.
                     </p>
@@ -85,8 +85,8 @@ const Transmissions = () => {
                                 type="submit"
                                 disabled={status === 'SENDING' || status === 'SENT'}
                                 className={`group min-w-[220px] px-10 py-5 font-black uppercase tracking-widest text-[11px] rounded-xl flex items-center justify-center gap-4 transition-all active:scale-95 shadow-xl ${status === 'SENT'
-                                        ? 'bg-emerald-500 text-white'
-                                        : 'bg-blue-600 hover:bg-blue-500 text-white shadow-blue-900/40'
+                                    ? 'bg-emerald-500 text-white'
+                                    : 'bg-blue-600 hover:bg-blue-500 text-white shadow-blue-900/40'
                                     }`}
                             >
                                 {status === 'IDLE' && (

@@ -1,84 +1,116 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { ArrowRight, BarChart3, Database, Globe2, Layers, Rocket } from 'lucide-react';
+import { ArrowRight, ChevronRight, Users, Globe2, Briefcase, Zap } from 'lucide-react';
+import { NavLink } from 'react-router-dom';
 
 const Home = () => {
     return (
-        <section className="min-h-screen py-24 flex items-center">
-            <div className="container-premium gap-16 grid grid-cols-1 lg:grid-cols-2 items-center">
+        <section className="min-h-screen flex flex-col justify-center py-20 overflow-hidden">
+            <div className="container-premium space-y-24">
 
-                {/* Hero Content */}
-                <motion.div
-                    initial={{ opacity: 0, x: -30 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.8 }}
-                    className="space-y-10"
-                >
-                    <div className="space-y-6">
-                        <motion.div
-                            initial={{ opacity: 0, scale: 0.9 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            className="inline-flex items-center gap-2 px-4 py-2 bg-blue-500/10 border border-blue-500/20 rounded-full text-blue-400 text-xs font-bold uppercase tracking-widest"
-                        >
-                            <Rocket size={14} className="animate-bounce" />
-                            System Active: Frontier Protocol
-                        </motion.div>
-
-                        <h1 className="text-7xl md:text-8xl font-black heading-display leading-[0.85] tracking-tighter">
-                            Digital <br />
-                            <span className="text-blue-500 text-glow">Frontier</span> <br />
-                            Engine
+                {/* ─── Hero Section ─── */}
+                <div className="max-w-5xl space-y-10 relative z-10 pt-20">
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 1 }}
+                        className="space-y-6"
+                    >
+                        <div className="flex items-center gap-3">
+                            <div className="w-12 h-[1px] bg-blue-500/50"></div>
+                            <span className="text-[10px] font-black uppercase tracking-[0.4em] text-blue-400">Next-Gen Architecture</span>
+                        </div>
+                        <h1 className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-black heading-display leading-[0.8] tracking-tighter shrink-0">
+                            THE <span className="text-blue-500 text-glow">FUTURE</span> <br />
+                            OF PORTFOLIO.
                         </h1>
+                    </motion.div>
 
-                        <p className="text-lg md:text-xl text-slate-400 max-w-lg leading-relaxed font-medium">
-                            Explore the vast expanse of technical achievements and professional growth within our high-performance cosmic ecosystem.
-                        </p>
-                    </div>
+                    <motion.p
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 0.5, duration: 1 }}
+                        className="text-xl md:text-2xl text-slate-400 font-medium leading-relaxed max-w-2xl"
+                    >
+                        Expedition through a high-performance ecosystem where design meets engineering in the cold expanse of code.
+                    </motion.p>
 
-                    <div className="flex flex-wrap gap-6 pt-4">
-                        <button className="btn-primary group">
-                            Initialize Portal <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
-                        </button>
-                    </div>
-                </motion.div>
+                    <motion.div
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.8 }}
+                        className="flex items-center gap-8 pt-6"
+                    >
+                        <NavLink to="/operatives" className="btn-primary flex items-center gap-4 group px-10 py-5">
+                            Initialize Sequence <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+                        </NavLink>
 
-                {/* Dashboard Mockup/Visual */}
-                <motion.div
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 1, delay: 0.2 }}
-                    className="relative"
-                >
-                    <div className="premium-card p-10 grid grid-cols-2 gap-6 relative z-10 overflow-hidden shadow-2xl shadow-blue-500/5">
-                        <div className="col-span-2 space-y-4">
-                            <div className="h-4 w-32 bg-slate-700/50 rounded-full"></div>
-                            <div className="h-32 w-full bg-gradient-to-br from-blue-500/20 to-indigo-500/5 rounded-xl border border-white/5 flex items-center justify-center">
-                                <BarChart3 size={48} className="text-blue-500/40" />
+                        <div className="hidden sm:flex items-center gap-4 group cursor-pointer">
+                            <div className="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center group-hover:border-blue-500/50 transition-colors">
+                                <Zap size={18} className="text-slate-500 group-hover:text-blue-400" />
                             </div>
+                            <span className="text-[10px] font-bold uppercase tracking-widest text-slate-500 group-hover:text-white transition-colors">v3.0 Core Active</span>
                         </div>
-                        <div className="space-y-4">
-                            <div className="h-4 w-20 bg-slate-700/50 rounded-full"></div>
-                            <div className="h-24 w-full bg-slate-800/50 rounded-xl border border-white/5 flex items-center justify-center">
-                                <Database size={32} className="text-slate-600" />
-                            </div>
-                        </div>
-                        <div className="space-y-4">
-                            <div className="h-4 w-24 bg-slate-700/50 rounded-full"></div>
-                            <div className="h-24 w-full bg-slate-800/50 rounded-xl border border-white/5 flex items-center justify-center">
-                                <Layers size={32} className="text-slate-600" />
-                            </div>
-                        </div>
+                    </motion.div>
+                </div>
 
-                        {/* Animated accent circle */}
-                        <div className="absolute -bottom-20 -right-20 w-64 h-64 bg-blue-500/10 blur-[100px] rounded-full -z-10"></div>
-                    </div>
-
-                    {/* Background Decorative Rings */}
-                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] border border-slate-800 rounded-full -z-10 pointer-events-none opacity-20 animate-pulse"></div>
-                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[140%] h-[140%] border border-slate-800 rounded-full -z-10 pointer-events-none opacity-10"></div>
-                </motion.div>
+                {/* ─── Main Pillars (Horizontal Cards) ─── */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative z-10">
+                    {[
+                        {
+                            title: 'Collective',
+                            desc: 'Internal personnel directory and operative profiles.',
+                            path: '/team',
+                            icon: Users,
+                            color: 'from-blue-600/10'
+                        },
+                        {
+                            title: 'Expeditions',
+                            desc: 'Comprehensive archive of global technical breakthroughs.',
+                            path: '/expeditions',
+                            icon: Globe2,
+                            color: 'from-indigo-600/10'
+                        },
+                        {
+                            title: 'Operatives',
+                            desc: 'Strategic leadership and core project architects.',
+                            path: '/operatives',
+                            icon: Briefcase,
+                            color: 'from-slate-600/10'
+                        }
+                    ].map((card, i) => (
+                        <motion.div
+                            key={card.title}
+                            initial={{ opacity: 0, y: 30 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 1 + (i * 0.1), duration: 0.8 }}
+                        >
+                            <NavLink
+                                to={card.path}
+                                className={`group block premium-card p-10 space-y-8 bg-gradient-to-br ${card.color} to-transparent border-white/5 hover:border-blue-500/30 transition-all active:scale-[0.98] h-full`}
+                            >
+                                <div className="flex justify-between items-start">
+                                    <div className="p-4 rounded-2xl bg-slate-900 border border-white/5 group-hover:border-blue-500/50 transition-colors">
+                                        <card.icon size={28} className="text-slate-400 group-hover:text-blue-400" />
+                                    </div>
+                                    <ChevronRight size={24} className="text-slate-700 group-hover:text-blue-500 group-hover:translate-x-1 transition-all" />
+                                </div>
+                                <div className="space-y-4">
+                                    <h3 className="text-3xl font-black heading-display">{card.title}</h3>
+                                    <p className="text-sm text-slate-500 font-medium leading-relaxed group-hover:text-slate-300 transition-colors">
+                                        {card.desc}
+                                    </p>
+                                </div>
+                                <div className="h-1 w-0 bg-blue-500 group-hover:w-full transition-all duration-700"></div>
+                            </NavLink>
+                        </motion.div>
+                    ))}
+                </div>
 
             </div>
+
+            {/* Background Decorative Element */}
+            <div className="absolute top-1/2 right-0 -translate-y-1/2 translate-x-1/2 w-[800px] h-[800px] bg-blue-600/5 rounded-full blur-[160px] pointer-events-none -z-10"></div>
         </section>
     );
 };

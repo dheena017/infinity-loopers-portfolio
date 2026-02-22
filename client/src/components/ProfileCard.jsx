@@ -40,7 +40,7 @@ const ProfileCard = ({ member, alternate }) => {
                         <Briefcase size={14} />
                         <span>Executive Profile</span>
                     </div>
-                    <h2 className="text-5xl font-black heading-display text-white transition-colors group-hover:text-blue-50">
+                    <h2 className="text-4xl sm:text-5xl font-black heading-display text-white transition-colors group-hover:text-blue-50 break-words overflow-hidden">
                         {member.name}
                     </h2>
                     <div className="inline-block px-4 py-1.5 bg-slate-800 border border-white/10 rounded-lg">

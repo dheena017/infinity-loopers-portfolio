@@ -53,7 +53,7 @@ const Expeditions = () => {
                             <Compass size={14} />
                             Strategic Initiatives 2024
                         </div>
-                        <h2 className="text-7xl font-black heading-display">Global <br /><span className="text-indigo-500">Expeditions</span></h2>
+                        <h2 className="text-5xl sm:text-7xl font-black heading-display break-words">Global <br /><span className="text-indigo-500">Expeditions</span></h2>
                     </div>
 
                     <p className="text-lg text-slate-400 max-w-sm leading-relaxed border-l border-white/5 pl-8">

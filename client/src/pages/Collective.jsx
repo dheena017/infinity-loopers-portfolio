@@ -169,7 +169,7 @@ const ProfileModal = ({ student, onClose, user, onEdit }) => (
                             <Cpu size={14} />
                             Identification Code: 2024_{student.id}
                         </div>
-                        <h2 className="text-6xl font-black heading-display">{student.name}</h2>
+                        <h2 className="text-4xl sm:text-5xl md:text-6xl font-black heading-display break-words">{student.name}</h2>
                     </div>
 
                     <p className="text-lg text-slate-400 font-medium leading-relaxed max-w-lg">
@@ -249,7 +249,7 @@ const Collective = ({ students, user, setStudents }) => {
                             <LayoutGrid size={14} />
                             Directory System v3
                         </div>
-                        <h2 className="text-7xl font-black heading-display">Meet the <br /><span className="text-blue-500">Professional</span> Team</h2>
+                        <h2 className="text-5xl sm:text-6xl md:text-7xl font-black heading-display break-words">Meet the <br /><span className="text-blue-500">Professional</span> Team</h2>
                     </div>
 
                     {/* Filter Section */}
@@ -263,8 +263,8 @@ const Collective = ({ students, user, setStudents }) => {
                                     key={term}
                                     onClick={() => setSelectedTerm(term)}
                                     className={`px-5 py-2.5 text-[11px] font-bold uppercase tracking-wider rounded-lg transition-all border ${selectedTerm === term
-                                            ? 'bg-blue-600 border-blue-600 text-white shadow-lg shadow-blue-900/40'
-                                            : 'border-white/5 text-slate-500 hover:text-white hover:bg-white/5'
+                                        ? 'bg-blue-600 border-blue-600 text-white shadow-lg shadow-blue-900/40'
+                                        : 'border-white/5 text-slate-500 hover:text-white hover:bg-white/5'
                                         }`}
                                 >
                                     {term}

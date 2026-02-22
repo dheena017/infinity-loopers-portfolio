@@ -20,7 +20,7 @@ const Operatives = () => {
                             <Briefcase size={14} />
                             Strategic Leadership
                         </div>
-                        <h2 className="text-7xl font-black heading-display">Core <br /><span className="text-blue-500">Advisory</span> Team</h2>
+                        <h2 className="text-5xl sm:text-7xl font-black heading-display break-words">Core <br /><span className="text-blue-500">Advisory</span> Team</h2>
                         <p className="text-lg text-slate-400 max-w-lg leading-relaxed">
                             A highly specialized unit of architects and engineers focused on delivering high-performance digital ecosystems.
                         </p>
