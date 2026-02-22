@@ -61,15 +61,6 @@ create table if not exists portfolio_missions (
   primary key (portfolio_id, mission_id)
 );
 
-create table if not exists students (
-  id serial primary key,
-  name text not null,
-  linkedin text,
-  github text,
-  term text not null,
-  created_at timestamptz not null default now()
-);
-
 create index if not exists idx_operatives_role on operatives(role);
 create index if not exists idx_operatives_status on operatives(status);
 create index if not exists idx_missions_status on missions(status);
@@ -77,7 +68,6 @@ create index if not exists idx_missions_start_date on missions(start_date);
 create index if not exists idx_archives_mission_id on archives(mission_id);
 create index if not exists idx_mission_operatives_operative_id on mission_operatives(operative_id);
 create index if not exists idx_portfolio_missions_mission_id on portfolio_missions(mission_id);
-create index if not exists idx_students_term on students(term);
 
 insert into operatives (id, name, role, skills, status) values
   ('11111111-1111-1111-1111-111111111111', 'Astra Voss', 'Systems Architect', '{Postgres, Supabase, Security}', 'active'),
@@ -106,33 +96,6 @@ insert into portfolio_missions (portfolio_id, mission_id) values
   ('99999999-9999-9999-9999-999999999999', 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb'),
   ('99999999-9999-9999-9999-999999999999', 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa'),
   ('88888888-8888-8888-8888-888888888888', 'cccccccc-cccc-cccc-cccc-cccccccccccc');
-
-insert into students (id, name, linkedin, github, term) values
-  (1, 'hariz', '', '', 'Term 1'),
-  (2, 'sham', '', '', 'Term 1'),
-  (3, 'amarnath', 'https://www.linkedin.com/in/amarnath-p-s-942782322/', 'https://github.com/amarnath-cdr', 'Term 1'),
-  (4, 'arulananthan', '', '', 'Term 1'),
-  (5, 'kamala kiruthi', 'https://www.linkedin.com/in/kama
-alter table students enable row level security;la-kiruthi/', 'https://github.com/kamalakiruthi8', 'Term 1'),
-  (6, 'lohith', 'https://www.linkedin.com/in/chinthalapalli-lohith-126447384/', 'https://github.com/lohithchinthalalpalli', 'Term 1'),
-  (7, 'hari', 'https://www.linkedin.com/in/hari-r-bb3181370/', 'https://github.com/harirs139-ui', 'Term 1'),
-  (8, 'jayseelan', 'https://www.linkedin.com/in/jayaseelan-d-1951952a6', 'https://www.linkedin.com/in/jayaseelan-d-1951952a6', 'Term 1'),
-  (9, 'durga saranya', 'https://www.linkedin.com/feed/', 'https://github.com/durgasaranyas139-lgtm', 'Term 1'),
-  (10, 'gokul', 'http://www.linkedin.com/in/gokul-raj95', 'https://www.linkedin.com/in/gokul-raj95', 'Term 1'),
-  (11, 'joy arnold', 'https://www.linkedin.com/in/joyarnold21?utm_source=share_via&utm_content=profile&utm_medium=member_android', '', 'Term 1'),
-  (12, 'kathiravan', 'https://www.linkedin.com/in/kathiravan-e-56688a39b?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app', 'https://github.com/ekathiravanelumalai71-a11y', 'Term 1'),
-  (13, 'mosses', 'https://www.linkedin.com/in/moses-acknal-7957973a4/', 'https://github.com/mosesacknals139', 'Term 2'),
-  (14, 'priyadharsan', 'http://www.linkedin.com/in/priyadharsan-s2007', 'https://github.com/Priyadharsan2911', 'Term 2'),
-  (15, 'abinay', 'https://www.linkedin.com/feed/?trk=guest_homepage-basic_google-one-tap-submit', '', 'Term 2'),
-  (16, 'suriya', '', '', 'Term 2'),
-  (17, 'yakesh', 'https://www.linkedin.com/in/yakesh-r-92648a383?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app', 'https://github.com/yakpranu-design', 'Term 2'),
-  (18, 'nanthakumar', 'http://www.linkedin.com/in/nandhakumar-pm-8276b7381', 'https://github.com/nandhakumar1980', 'Term 2'),
-  (19, 'srinithi', 'https://www.linkedin.com/in/srinithi-vijayakumar-981785344/', 'https://github.com/srinithivijayakumars139-wq', 'Term 2'),
-  (20, 'srimathi', 'https://www.linkedin.com/in/srimathi-vijayakumar-10518a383/', 'https://github.com/srimajaya123-blip', 'Term 2'),
-  (21, 'srinidthi', 'https://www.linkedin.com/in/srinidhi-v-123193384/', 'https://github.com/srinidhivs139-ai', 'Term 2'),
-  (22, 'mohan', 'http://www.linkedin.com/in/mohan-e-b7945b2b2', 'https://github.com/mohanes139-cell', 'Term 3'),
-  (23, 'nabi rasool', 'http://www.linkedin.com/in/nabi-rasool-129494393', '', 'Term 3'),
-  (24, 'keerthana', 'https://www.linkedin.com/feed/', 'https://github.com/krishnakeerthanamitte-tech', 'Term 3');
 
 alter table operatives enable row level security;
 alter table missions enable row level security;
@@ -193,14 +156,5 @@ create policy "auth write portfolio missions" on portfolio_missions
   for insert with check (auth.role() = 'authenticated');
 create policy "auth update portfolio missions" on portfolio_missions
   for update using (auth.role() = 'authenticated');
-create policy "auth delete portfolio missions" on p
-
-create policy "public read students" on students
-  for select using (true);
-create policy "auth write students" on students
-  for insert with check (auth.role() = 'authenticated');
-create policy "auth update students" on students
-  for update using (auth.role() = 'authenticated');
-create policy "auth delete students" on students
-  for delete using (auth.role() = 'authenticated');ortfolio_missions
+create policy "auth delete portfolio missions" on portfolio_missions
   for delete using (auth.role() = 'authenticated');

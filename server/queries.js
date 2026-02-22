@@ -1,0 +1,309 @@
+// Supabase Query Helpers
+import { getSupabase } from './supabaseClient.js';
+import {
+  Operative,
+  Mission,
+  Archive,
+  Portfolio,
+  Student,
+  MissionOperative,
+} from './types.js';
+
+// ==================== OPERATIVES ====================
+
+export async function getAllOperatives(): Promise<Operative[]> {
+  const supabase = getSupabase();
+  const { data, error } = await supabase
+    .from('operatives')
+    .select('*')
+    .order('created_at', { ascending: false });
+
+  if (error) throw new Error(`Failed to fetch operatives: ${error.message}`);
+  return data || [];
+}
+
+export async function getOperativeById(id: string): Promise<Operative | null> {
+  const supabase = getSupabase();
+  const { data, error } = await supabase
+    .from('operatives')
+    .select('*')
+    .eq('id', id)
+    .single();
+
+  if (error && error.code !== 'PGRST116') throw error;
+  return data || null;
+}
+
+export async function getActiveOperatives(): Promise<Operative[]> {
+  const supabase = getSupabase();
+  const { data, error } = await supabase
+    .from('operatives')
+    .select('*')
+    .eq('status', 'active')
+    .order('created_at', { ascending: false });
+
+  if (error) throw new Error(`Failed to fetch active operatives: ${error.message}`);
+  return data || [];
+}
+
+export async function getOperativesInMission(missionId: string): Promise<Operative[]> {
+  const supabase = getSupabase();
+  const { data, error } = await supabase
+    .from('mission_operatives')
+    .select('operatives(*)')
+    .eq('mission_id', missionId);
+
+  if (error) throw new Error(`Failed to fetch mission operatives: ${error.message}`);
+  return data?.map((mo: any) => mo.operatives).filter(Boolean) || [];
+}
+
+export async function createOperative(operative: Omit<Operative, 'id' | 'created_at'>): Promise<Operative> {
+  const supabase = getSupabase();
+  const { data, error } = await supabase
+    .from('operatives')
+    .insert([operative])
+    .select()
+    .single();
+
+  if (error) throw new Error(`Failed to create operative: ${error.message}`);
+  return data;
+}
+
+export async function updateOperative(id: string, updates: Partial<Operative>): Promise<Operative> {
+  const supabase = getSupabase();
+  const { data, error } = await supabase
+    .from('operatives')
+    .update(updates)
+    .eq('id', id)
+    .select()
+    .single();
+
+  if (error) throw new Error(`Failed to update operative: ${error.message}`);
+  return data;
+}
+
+export async function deleteOperative(id: string): Promise<void> {
+  const supabase = getSupabase();
+  const { error } = await supabase
+    .from('operatives')
+    .delete()
+    .eq('id', id);
+
+  if (error) throw new Error(`Failed to delete operative: ${error.message}`);
+}
+
+// ==================== MISSIONS ====================
+
+export async function getAllMissions(): Promise<Mission[]> {
+  const supabase = getSupabase();
+  const { data, error } = await supabase
+    .from('missions')
+    .select('*')
+    .order('created_at', { ascending: false });
+
+  if (error) throw new Error(`Failed to fetch missions: ${error.message}`);
+  return data || [];
+}
+
+export async function getMissionById(id: string): Promise<Mission | null> {
+  const supabase = getSupabase();
+  const { data, error } = await supabase
+    .from('missions')
+    .select('*')
+    .eq('id', id)
+    .single();
+
+  if (error && error.code !== 'PGRST116') throw error;
+  return data || null;
+}
+
+export async function getOngoingMissions(): Promise<Mission[]> {
+  const supabase = getSupabase();
+  const { data, error } = await supabase
+    .from('missions')
+    .select('*')
+    .eq('status', 'ongoing')
+    .order('start_date', { ascending: true });
+
+  if (error) throw new Error(`Failed to fetch ongoing missions: ${error.message}`);
+  return data || [];
+}
+
+export async function createMission(mission: Omit<Mission, 'id' | 'created_at'>): Promise<Mission> {
+  const supabase = getSupabase();
+  const { data, error } = await supabase
+    .from('missions')
+    .insert([mission])
+    .select()
+    .single();
+
+  if (error) throw new Error(`Failed to create mission: ${error.message}`);
+  return data;
+}
+
+export async function updateMission(id: string, updates: Partial<Mission>): Promise<Mission> {
+  const supabase = getSupabase();
+  const { data, error } = await supabase
+    .from('missions')
+    .update(updates)
+    .eq('id', id)
+    .select()
+    .single();
+
+  if (error) throw new Error(`Failed to update mission: ${error.message}`);
+  return data;
+}
+
+export async function deleteMission(id: string): Promise<void> {
+  const supabase = getSupabase();
+  const { error } = await supabase
+    .from('missions')
+    .delete()
+    .eq('id', id);
+
+  if (error) throw new Error(`Failed to delete mission: ${error.message}`);
+}
+
+export async function assignOperativeToMission(
+  missionId: string,
+  operativeId: string,
+  roleInMission?: string
+): Promise<MissionOperative> {
+  const supabase = getSupabase();
+  const { data, error } = await supabase
+    .from('mission_operatives')
+    .insert([{ mission_id: missionId, operative_id: operativeId, role_in_mission: roleInMission }])
+    .select()
+    .single();
+
+  if (error) throw new Error(`Failed to assign operative: ${error.message}`);
+  return data;
+}
+
+// ==================== ARCHIVES ====================
+
+export async function getArchivesByMission(missionId: string): Promise<Archive[]> {
+  const supabase = getSupabase();
+  const { data, error } = await supabase
+    .from('archives')
+    .select('*')
+    .eq('mission_id', missionId)
+    .order('date_recorded', { ascending: false });
+
+  if (error) throw new Error(`Failed to fetch archives: ${error.message}`);
+  return data || [];
+}
+
+export async function createArchive(archive: Omit<Archive, 'id'>): Promise<Archive> {
+  const supabase = getSupabase();
+  const { data, error } = await supabase
+    .from('archives')
+    .insert([archive])
+    .select()
+    .single();
+
+  if (error) throw new Error(`Failed to create archive: ${error.message}`);
+  return data;
+}
+
+// ==================== PORTFOLIO ====================
+
+export async function getPortfolioByVersion(version: string): Promise<Portfolio | null> {
+  const supabase = getSupabase();
+  const { data, error } = await supabase
+    .from('portfolio')
+    .select('*')
+    .eq('version', version)
+    .single();
+
+  if (error && error.code !== 'PGRST116') throw error;
+  return data || null;
+}
+
+export async function getAllPortfolios(): Promise<Portfolio[]> {
+  const supabase = getSupabase();
+  const { data, error } = await supabase
+    .from('portfolio')
+    .select('*')
+    .order('release_date', { ascending: false });
+
+  if (error) throw new Error(`Failed to fetch portfolios: ${error.message}`);
+  return data || [];
+}
+
+export async function getPortfolioWithMissions(portfolioId: string): Promise<{
+  portfolio: Portfolio;
+  missions: Mission[];
+} | null> {
+  const supabase = getSupabase();
+  
+  const { data: portfolioData, error: portError } = await supabase
+    .from('portfolio')
+    .select('*')
+    .eq('id', portfolioId)
+    .single();
+
+  if (portError) throw portError;
+  if (!portfolioData) return null;
+
+  const { data: missionsData, error: missError } = await supabase
+    .from('portfolio_missions')
+    .select('missions(*)')
+    .eq('portfolio_id', portfolioId);
+
+  if (missError) throw missError;
+
+  const missions = missionsData?.map((pm: any) => pm.missions).filter(Boolean) || [];
+  
+  return { portfolio: portfolioData, missions };
+}
+
+// ==================== STUDENTS ====================
+
+export async function getAllStudents(): Promise<Student[]> {
+  const supabase = getSupabase();
+  const { data, error } = await supabase
+    .from('students')
+    .select('*')
+    .order('id', { ascending: true });
+
+  if (error) throw new Error(`Failed to fetch students: ${error.message}`);
+  return data || [];
+}
+
+export async function getStudentById(id: number): Promise<Student | null> {
+  const supabase = getSupabase();
+  const { data, error } = await supabase
+    .from('students')
+    .select('*')
+    .eq('id', id)
+    .single();
+
+  if (error && error.code !== 'PGRST116') throw error;
+  return data || null;
+}
+
+export async function getStudentsByTerm(term: string): Promise<Student[]> {
+  const supabase = getSupabase();
+  const { data, error } = await supabase
+    .from('students')
+    .select('*')
+    .eq('term', term)
+    .order('name', { ascending: true });
+
+  if (error) throw new Error(`Failed to fetch students: ${error.message}`);
+  return data || [];
+}
+
+export async function updateStudent(id: number, updates: Partial<Student>): Promise<Student> {
+  const supabase = getSupabase();
+  const { data, error } = await supabase
+    .from('students')
+    .update(updates)
+    .eq('id', id)
+    .select()
+    .single();
+
+  if (error) throw new Error(`Failed to update student: ${error.message}`);
+  return data;
+}
