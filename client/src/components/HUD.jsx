@@ -5,8 +5,8 @@ import { LayoutDashboard, Users, UserCircle, Globe, Mail, LogOut, ShieldCheck } 
 
 const HUD = ({ user, onLogout }) => {
     return (
-        <header className="fixed inset-x-0 top-0 z-[60] py-4 bg-slate-900/80 backdrop-blur-xl border-b border-white/5">
-            <div className="container-premium flex justify-between items-center w-full">
+        <header className="fixed inset-x-0 top-6 z-[60] px-6">
+            <div className="container-premium flex justify-between items-center py-4 bg-slate-950/20 backdrop-blur-2xl border border-white/5 rounded-2xl shadow-2xl shadow-black/50">
 
                 {/* Brand / Logo */}
                 <motion.div

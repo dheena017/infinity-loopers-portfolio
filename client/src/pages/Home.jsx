@@ -20,27 +20,24 @@ const Home = () => {
                             animate={{ opacity: 1, scale: 1 }}
                             className="inline-flex items-center gap-2 px-4 py-2 bg-blue-500/10 border border-blue-500/20 rounded-full text-blue-400 text-xs font-bold uppercase tracking-widest"
                         >
-                            <Rocket size={14} />
-                            Platform Overview Ready
+                            <Rocket size={14} className="animate-bounce" />
+                            System Active: Frontier Protocol
                         </motion.div>
 
-                        <h1 className="text-6xl md:text-8xl font-black heading-display leading-tight">
-                            Modern <br />
-                            <span className="text-blue-500">Portfolio</span> <br />
+                        <h1 className="text-7xl md:text-8xl font-black heading-display leading-[0.85] tracking-tighter">
+                            Digital <br />
+                            <span className="text-blue-500 text-glow">Frontier</span> <br />
                             Engine
                         </h1>
 
-                        <p className="text-lg md:text-xl text-slate-400 max-w-lg leading-relaxed">
-                            A high-performance system for managing professional team data, projects, and global expeditions with a clean, focused user experience.
+                        <p className="text-lg md:text-xl text-slate-400 max-w-lg leading-relaxed font-medium">
+                            Explore the vast expanse of technical achievements and professional growth within our high-performance cosmic ecosystem.
                         </p>
                     </div>
 
                     <div className="flex flex-wrap gap-6 pt-4">
-                        <button className="btn-primary flex items-center gap-3 group">
-                            Get Started <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
-                        </button>
-                        <button className="px-8 py-4 border border-slate-700 hover:bg-slate-800 text-white font-bold rounded-lg transition-all active:scale-95">
-                            View Documentation
+                        <button className="btn-primary group">
+                            Initialize Portal <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
                         </button>
                     </div>
                 </motion.div>

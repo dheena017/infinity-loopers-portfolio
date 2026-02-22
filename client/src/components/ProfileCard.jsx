@@ -9,10 +9,10 @@ const ProfileCard = ({ member, alternate }) => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-            className={`group relative flex flex-col md:flex-row gap-12 items-center premium-card p-12 hover:bg-slate-800/80 transition-all duration-500 shadow-xl ${alternate ? 'md:flex-row-reverse' : ''}`}
+            className={`group relative flex flex-col md:flex-row gap-12 items-center premium-card p-12 bg-slate-950/20 backdrop-blur-3xl hover:bg-slate-900/40 transition-all duration-500 shadow-2xl ${alternate ? 'md:flex-row-reverse' : ''}`}
         >
             {/* Visual Highlight */}
-            <div className={`absolute top-0 bottom-0 w-1.5 bg-blue-600 rounded-full transition-all duration-700 opacity-0 group-hover:opacity-100 ${alternate ? 'right-4' : 'left-4'}`}></div>
+            <div className={`absolute top-0 bottom-0 w-1 bg-blue-500 transition-all duration-700 opacity-0 group-hover:opacity-100 shadow-[0_0_20px_rgba(59,130,246,0.5)] ${alternate ? 'right-0 rounded-l-full' : 'left-0 rounded-r-full'}`}></div>
 
             {/* Photo Container */}
             <div className="relative flex-shrink-0 w-64 h-80">
