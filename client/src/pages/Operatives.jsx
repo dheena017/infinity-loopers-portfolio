@@ -16,11 +16,11 @@ const Operatives = () => {
                         whileInView={{ opacity: 1, x: 0 }}
                         className="space-y-6"
                     >
-                        <div className="inline-flex items-center gap-2 px-3 py-1 bg-blue-500/10 border border-blue-500/20 rounded-full text-blue-400 text-[10px] font-bold uppercase tracking-widest">
+                        <div className="inline-flex items-center gap-2 px-3 py-1 bg-red-500/10 border border-red-500/20 rounded-full text-red-400 text-[10px] font-bold uppercase tracking-widest">
                             <Briefcase size={14} />
                             Strategic Leadership
                         </div>
-                        <h2 className="text-5xl sm:text-7xl font-black heading-display break-words">Core <br /><span className="text-blue-500">Advisory</span> Team</h2>
+                        <h2 className="text-5xl sm:text-7xl font-black heading-display break-words">Core <br /><span className="text-red-500">Advisory</span> Team</h2>
                         <p className="text-lg text-slate-400 max-w-lg leading-relaxed">
                             A highly specialized unit of architects and engineers focused on delivering high-performance digital ecosystems.
                         </p>
@@ -63,7 +63,7 @@ const Operatives = () => {
                 {/* Mentors Section */}
                 <div className="space-y-16">
                     <div className="flex items-center gap-6">
-                        <Users size={24} className="text-blue-500" />
+                        <Users size={24} className="text-red-500" />
                         <h3 className="text-4xl font-black heading-display">Board of Advisors</h3>
                         <div className="h-px flex-1 bg-white/5"></div>
                     </div>
@@ -79,10 +79,10 @@ const Operatives = () => {
                             >
                                 <div className="w-20 h-20 rounded-2xl overflow-hidden border border-white/5 relative">
                                     <img src={mentor.photo} alt={mentor.name} className="w-full h-full object-cover transition-transform group-hover:scale-110" />
-                                    <div className="absolute inset-0 bg-blue-500/10 group-hover:bg-transparent transition-colors"></div>
+                                    <div className="absolute inset-0 bg-red-500/10 group-hover:bg-transparent transition-colors"></div>
                                 </div>
                                 <div className="space-y-1">
-                                    <div className="text-[10px] font-black text-blue-500 uppercase tracking-widest">Advisory Board</div>
+                                    <div className="text-[10px] font-black text-red-500 uppercase tracking-widest">Advisory Board</div>
                                     <h4 className="text-xl font-bold heading-display text-white">{mentor.name}</h4>
                                     <p className="text-xs text-slate-500 font-bold uppercase tracking-wider">{mentor.role}</p>
                                 </div>

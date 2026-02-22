@@ -120,19 +120,12 @@ const HUD = ({ user, onLogout }) => {
                     </nav>
 
                     {/* --- SECTION 3: OPERATIONS --- */}
-                    <div className="flex items-center gap-10 shrink-0">
-                        <button className="group relative p-3">
-                            <div className="absolute inset-0 bg-red-500/0 group-hover:bg-red-500/10 rounded-xl blur-md transition-all duration-500"></div>
-                            <div className="relative flex items-center gap-3 bg-white/5 border border-white/10 px-4 py-2.5 rounded-xl group-hover:border-red-500/50 transition-all duration-500 overflow-hidden">
-                                <Search size={20} className="text-slate-400 group-hover:text-red-500 group-hover:scale-110 transition-all duration-500" />
-                                <div className="hidden xl:flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-white/5 border border-white/10">
-                                    <span className="text-[9px] font-black text-slate-500 group-hover:text-red-500/70">⌘</span>
-                                    <span className="text-[9px] font-black text-slate-500 group-hover:text-red-500/70">K</span>
-                                </div>
-                            </div>
+                    <div className="flex items-center gap-6 shrink-0">
+                        <button className="text-slate-400 hover:text-red-500 transition-all duration-300 p-2.5">
+                            <Search size={22} className="drop-shadow-[0_0_8px_rgba(239,68,68,0)] group-hover:drop-shadow-[0_0_8px_rgba(239,68,68,0.5)]" />
                         </button>
 
-                        <div className="w-[1px] h-10 bg-white/10"></div>
+                        <div className="w-[1px] h-10 bg-white/10 mx-2"></div>
 
                         {user ? (
                             <button

@@ -53,7 +53,7 @@ const EditModal = ({ student, onClose, onSave }) => {
             >
                 <div className="flex items-start justify-between">
                     <div>
-                        <div className="flex items-center gap-3 text-blue-500 mb-2 font-bold uppercase tracking-widest text-[10px]">
+                        <div className="flex items-center gap-3 text-red-500 mb-2 font-bold uppercase tracking-widest text-[10px]">
                             <ShieldCheck size={14} />
                             Administrative Access
                         </div>
@@ -71,7 +71,7 @@ const EditModal = ({ student, onClose, onSave }) => {
                         <input
                             value={form.name}
                             onChange={(e) => setForm(f => ({ ...f, name: e.target.value }))}
-                            className="w-full bg-slate-800/50 border border-white/5 rounded-lg p-4 text-sm focus:border-blue-500 outline-none transition-all"
+                            className="w-full bg-slate-800/50 border border-white/5 rounded-lg p-4 text-sm focus:border-red-500 outline-none transition-all"
                             placeholder="Full name"
                         />
                     </div>
@@ -82,7 +82,7 @@ const EditModal = ({ student, onClose, onSave }) => {
                             <input
                                 value={form.linkedin}
                                 onChange={(e) => setForm(f => ({ ...f, linkedin: e.target.value }))}
-                                className="w-full bg-slate-800/50 border border-white/5 rounded-lg p-4 pl-12 text-sm focus:border-blue-500 outline-none transition-all"
+                                className="w-full bg-slate-800/50 border border-white/5 rounded-lg p-4 pl-12 text-sm focus:border-red-500 outline-none transition-all"
                                 placeholder="https://linkedin.com/in/..."
                             />
                         </div>
@@ -94,7 +94,7 @@ const EditModal = ({ student, onClose, onSave }) => {
                             <input
                                 value={form.github}
                                 onChange={(e) => setForm(f => ({ ...f, github: e.target.value }))}
-                                className="w-full bg-slate-800/50 border border-white/5 rounded-lg p-4 pl-12 text-sm focus:border-blue-500 outline-none transition-all"
+                                className="w-full bg-slate-800/50 border border-white/5 rounded-lg p-4 pl-12 text-sm focus:border-red-500 outline-none transition-all"
                                 placeholder="https://github.com/..."
                             />
                         </div>
@@ -111,7 +111,7 @@ const EditModal = ({ student, onClose, onSave }) => {
                     <button
                         onClick={handleSave}
                         disabled={saving}
-                        className="flex-1 flex items-center justify-center gap-3 py-4 bg-blue-600 text-white font-bold uppercase tracking-widest text-xs rounded-lg hover:bg-blue-500 transition-all shadow-lg shadow-blue-900/40"
+                        className="flex-1 flex items-center justify-center gap-3 py-4 bg-red-600 text-white font-bold uppercase tracking-widest text-xs rounded-lg hover:bg-red-500 transition-all shadow-lg shadow-red-900/40"
                     >
                         <Save size={16} /> {saving ? 'Saving...' : 'Save Changes'}
                     </button>
@@ -153,7 +153,7 @@ const ProfileModal = ({ student, onClose, user, onEdit }) => (
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-900 to-transparent" />
                 <div className="absolute bottom-8 left-8 space-y-2">
-                    <span className="px-3 py-1 bg-blue-500/20 text-blue-400 border border-blue-500/30 rounded-full text-[10px] font-bold uppercase">Member Verified</span>
+                    <span className="px-3 py-1 bg-red-500/20 text-red-400 border border-red-500/30 rounded-full text-[10px] font-bold uppercase">Member Verified</span>
                 </div>
             </div>
 
@@ -165,7 +165,7 @@ const ProfileModal = ({ student, onClose, user, onEdit }) => (
 
                 <div className="space-y-8">
                     <div className="space-y-2">
-                        <div className="flex items-center gap-3 text-blue-500 text-xs font-bold uppercase tracking-widest">
+                        <div className="flex items-center gap-3 text-red-500 text-xs font-bold uppercase tracking-widest">
                             <Cpu size={14} />
                             Identification Code: 2024_{student.id}
                         </div>
@@ -183,33 +183,33 @@ const ProfileModal = ({ student, onClose, user, onEdit }) => (
                         </div>
                         <div className="space-y-1">
                             <span className="text-[10px] text-slate-500 uppercase tracking-widest font-bold">Current Term</span>
-                            <div className="text-sm font-bold text-blue-400 uppercase italic">{student.term || 'General'}</div>
+                            <div className="text-sm font-bold text-red-400 uppercase italic">{student.term || 'General'}</div>
                         </div>
                     </div>
                 </div>
 
                 <div className="flex gap-4 pt-8 flex-wrap">
                     {student.github && (
-                        <a href={student.github} target="_blank" rel="noopener noreferrer" className="p-4 bg-slate-800 border border-white/5 hover:border-blue-500/50 rounded-xl transition-all group">
-                            <Github size={20} className="text-slate-400 group-hover:text-blue-400 transition-colors" />
+                        <a href={student.github} target="_blank" rel="noopener noreferrer" className="p-4 bg-slate-800 border border-white/5 hover:border-red-500/50 rounded-xl transition-all group">
+                            <Github size={20} className="text-slate-400 group-hover:text-red-400 transition-colors" />
                         </a>
                     )}
                     {student.linkedin && (
-                        <a href={student.linkedin} target="_blank" rel="noopener noreferrer" className="p-4 bg-slate-800 border border-white/5 hover:border-blue-500/50 rounded-xl transition-all group">
-                            <Linkedin size={20} className="text-slate-400 group-hover:text-blue-400 transition-colors" />
+                        <a href={student.linkedin} target="_blank" rel="noopener noreferrer" className="p-4 bg-slate-800 border border-white/5 hover:border-red-500/50 rounded-xl transition-all group">
+                            <Linkedin size={20} className="text-slate-400 group-hover:text-red-400 transition-colors" />
                         </a>
                     )}
 
                     {user?.role === 'teacher' && (
                         <button
                             onClick={onEdit}
-                            className="flex items-center gap-3 px-8 py-4 bg-blue-600/10 border border-blue-500/30 text-blue-400 font-bold uppercase tracking-widest text-xs hover:bg-blue-600/20 rounded-xl transition-colors"
+                            className="flex items-center gap-3 px-8 py-4 bg-red-600/10 border border-red-500/30 text-red-400 font-bold uppercase tracking-widest text-xs hover:bg-red-600/20 rounded-xl transition-colors"
                         >
                             <Edit3 size={16} /> Edit Profile
                         </button>
                     )}
 
-                    <button className="flex-1 min-w-[140px] px-8 py-4 bg-white text-slate-950 font-bold uppercase tracking-widest text-xs hover:bg-blue-500 hover:text-white rounded-xl transition-colors flex items-center justify-center gap-3">
+                    <button className="flex-1 min-w-[140px] px-8 py-4 bg-white text-slate-950 font-bold uppercase tracking-widest text-xs hover:bg-red-500 hover:text-white rounded-xl transition-colors flex items-center justify-center gap-3">
                         View Resume <ExternalLink size={16} />
                     </button>
                 </div>
@@ -245,11 +245,11 @@ const Collective = ({ students, user, setStudents }) => {
                     className="flex flex-col md:flex-row md:items-end justify-between gap-12"
                 >
                     <div className="space-y-4">
-                        <div className="flex items-center gap-3 text-blue-500 font-bold uppercase tracking-[0.2em] text-[10px]">
+                        <div className="flex items-center gap-3 text-red-500 font-bold uppercase tracking-[0.2em] text-[10px]">
                             <LayoutGrid size={14} />
                             Directory System v3
                         </div>
-                        <h2 className="text-5xl sm:text-6xl md:text-7xl font-black heading-display break-words">Meet the <br /><span className="text-blue-500">Professional</span> Team</h2>
+                        <h2 className="text-5xl sm:text-6xl md:text-7xl font-black heading-display break-words">Meet the <br /><span className="text-red-500">Professional</span> Team</h2>
                     </div>
 
                     {/* Filter Section */}
@@ -263,7 +263,7 @@ const Collective = ({ students, user, setStudents }) => {
                                     key={term}
                                     onClick={() => setSelectedTerm(term)}
                                     className={`px-5 py-2.5 text-[11px] font-bold uppercase tracking-wider rounded-lg transition-all border ${selectedTerm === term
-                                        ? 'bg-blue-600 border-blue-600 text-white shadow-lg shadow-blue-900/40'
+                                        ? 'bg-red-600 border-red-600 text-white shadow-lg shadow-red-900/40'
                                         : 'border-white/5 text-slate-500 hover:text-white hover:bg-white/5'
                                         }`}
                                 >
@@ -291,12 +291,12 @@ const Collective = ({ students, user, setStudents }) => {
                                 onError={(e) => { e.target.src = `https://ui-avatars.com/api/?name=${student.name}&background=1e293b&color=fff&size=512`; }}
                             />
                             <div className="absolute inset-x-0 bottom-0 p-5 bg-gradient-to-t from-slate-950 via-slate-950/60 to-transparent">
-                                <span className="text-[10px] font-bold text-blue-500 uppercase tracking-widest mb-1 block opacity-0 group-hover:opacity-100 transition-opacity">ID_{student.id}</span>
+                                <span className="text-[10px] font-bold text-red-500 uppercase tracking-widest mb-1 block opacity-0 group-hover:opacity-100 transition-opacity">ID_{student.id}</span>
                                 <div className="text-sm font-bold text-white heading-display truncate">{student.name}</div>
                             </div>
 
                             {user?.role === 'teacher' && (
-                                <div className="absolute top-4 right-4 p-2 bg-blue-600 rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity">
+                                <div className="absolute top-4 right-4 p-2 bg-red-600 rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity">
                                     <Edit3 size={14} className="text-white" />
                                 </div>
                             )}

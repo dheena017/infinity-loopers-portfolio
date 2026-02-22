@@ -21,11 +21,11 @@ const Transmissions = () => {
                     animate={{ opacity: 1, y: 0 }}
                     className="space-y-6 text-center"
                 >
-                    <div className="inline-flex items-center gap-2 px-3 py-1 bg-blue-500/10 border border-blue-500/20 rounded-full text-blue-400 text-[10px] font-bold uppercase tracking-widest">
+                    <div className="inline-flex items-center gap-2 px-3 py-1 bg-red-500/10 border border-red-500/20 rounded-full text-red-400 text-[10px] font-bold uppercase tracking-widest">
                         <Mail size={14} />
                         Communications Center
                     </div>
-                    <h2 className="text-5xl sm:text-7xl font-black heading-display break-words">Contact <br /><span className="text-blue-500">The Team</span></h2>
+                    <h2 className="text-5xl sm:text-7xl font-black heading-display break-words">Contact <br /><span className="text-red-500">The Team</span></h2>
                     <p className="text-lg text-slate-400 max-w-lg mx-auto leading-relaxed">
                         Have a project in mind or just want to say hello? Our team is always open to discussing new opportunities and technical challenges.
                     </p>
@@ -48,7 +48,7 @@ const Transmissions = () => {
                                 <input
                                     type="text"
                                     placeholder="Enter your name"
-                                    className="w-full bg-slate-950 border border-white/5 p-5 focus:border-blue-500 outline-none transition-all rounded-xl text-white placeholder-slate-700 font-medium"
+                                    className="w-full bg-slate-950 border border-white/5 p-5 focus:border-red-500 outline-none transition-all rounded-xl text-white placeholder-slate-700 font-medium"
                                     required
                                 />
                             </div>
@@ -57,7 +57,7 @@ const Transmissions = () => {
                                 <input
                                     type="email"
                                     placeholder="your@company.com"
-                                    className="w-full bg-slate-950 border border-white/5 p-5 focus:border-blue-500 outline-none transition-all rounded-xl text-white placeholder-slate-700 font-medium"
+                                    className="w-full bg-slate-950 border border-white/5 p-5 focus:border-red-500 outline-none transition-all rounded-xl text-white placeholder-slate-700 font-medium"
                                     required
                                 />
                             </div>
@@ -68,14 +68,14 @@ const Transmissions = () => {
                             <textarea
                                 rows="6"
                                 placeholder="Describe your inquiry..."
-                                className="w-full bg-slate-950 border border-white/5 p-5 focus:border-blue-500 outline-none transition-all rounded-xl text-white placeholder-slate-700 font-medium resize-none"
+                                className="w-full bg-slate-950 border border-white/5 p-5 focus:border-red-500 outline-none transition-all rounded-xl text-white placeholder-slate-700 font-medium resize-none"
                                 required
                             />
                         </div>
 
                         <div className="flex flex-col md:flex-row items-center justify-between gap-8 pt-6 border-t border-white/5">
                             <div className="flex items-center gap-4 group">
-                                <div className={`w-2.5 h-2.5 rounded-full transition-colors ${status === 'SENT' ? 'bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)]' : 'bg-blue-500 shadow-[0_0_10px_rgba(59,130,246,0.5)] animate-pulse'}`}></div>
+                                <div className={`w-2.5 h-2.5 rounded-full transition-colors ${status === 'SENT' ? 'bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)]' : 'bg-red-500 shadow-[0_0_10px_rgba(239,68,68,0.5)] animate-pulse'}`}></div>
                                 <span className="text-[11px] font-bold uppercase tracking-widest text-slate-500 group-hover:text-slate-300 transition-colors">
                                     {status === 'IDLE' ? 'System Ready' : status === 'SENDING' ? 'Encapsulating Data' : 'Relay Successful'}
                                 </span>
@@ -86,7 +86,7 @@ const Transmissions = () => {
                                 disabled={status === 'SENDING' || status === 'SENT'}
                                 className={`group min-w-[220px] px-10 py-5 font-black uppercase tracking-widest text-[11px] rounded-xl flex items-center justify-center gap-4 transition-all active:scale-95 shadow-xl ${status === 'SENT'
                                     ? 'bg-emerald-500 text-white'
-                                    : 'bg-blue-600 hover:bg-blue-500 text-white shadow-blue-900/40'
+                                    : 'bg-red-600 hover:bg-red-500 text-white shadow-red-900/40'
                                     }`}
                             >
                                 {status === 'IDLE' && (
@@ -105,9 +105,9 @@ const Transmissions = () => {
 
                 <div className="flex flex-col items-center gap-4 pt-12">
                     <div className="flex gap-12 opacity-30 grayscale hover:grayscale-0 hover:opacity-100 transition-all duration-700">
-                        <Mail size={24} className="text-blue-500" />
-                        <ShieldCheck size={24} className="text-blue-500" />
-                        <MessageSquare size={24} className="text-blue-500" />
+                        <Mail size={24} className="text-red-500" />
+                        <ShieldCheck size={24} className="text-red-500" />
+                        <MessageSquare size={24} className="text-red-500" />
                     </div>
                     <span className="text-[9px] font-bold uppercase tracking-[0.5em] text-slate-600">Enterprise Communication Node 01</span>
                 </div>

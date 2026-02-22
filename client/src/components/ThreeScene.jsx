@@ -136,7 +136,7 @@ const ThreeScene = () => {
             randomness: 0.25,
             randomnessPower: 3,
             insideColor: '#ef4444', // Kalvium Red
-            outsideColor: '#0f172a' // Deep Space Blue-Red blend
+            outsideColor: '#1a0505' // Deep Cosmic Red
         });
         const starField = createStarfield(10000, 15, 0.04, '#ffffff'); // Increased star size
         const nebulae = createNebulae();

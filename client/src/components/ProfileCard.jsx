@@ -12,11 +12,11 @@ const ProfileCard = ({ member, alternate }) => {
             className={`group relative flex flex-col md:flex-row gap-12 items-center premium-card p-12 bg-slate-950/20 backdrop-blur-3xl hover:bg-slate-900/40 transition-all duration-500 shadow-2xl ${alternate ? 'md:flex-row-reverse' : ''}`}
         >
             {/* Visual Highlight */}
-            <div className={`absolute top-0 bottom-0 w-1 bg-blue-500 transition-all duration-700 opacity-0 group-hover:opacity-100 shadow-[0_0_20px_rgba(59,130,246,0.5)] ${alternate ? 'right-0 rounded-l-full' : 'left-0 rounded-r-full'}`}></div>
+            <div className={`absolute top-0 bottom-0 w-1 bg-red-500 transition-all duration-700 opacity-0 group-hover:opacity-100 shadow-[0_0_20px_rgba(239,68,68,0.5)] ${alternate ? 'right-0 rounded-l-full' : 'left-0 rounded-r-full'}`}></div>
 
             {/* Photo Container */}
             <div className="relative flex-shrink-0 w-64 h-80">
-                <div className="absolute -inset-4 bg-blue-500/10 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-1000"></div>
+                <div className="absolute -inset-4 bg-red-500/10 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-1000"></div>
 
                 <div className="relative w-full h-full overflow-hidden rounded-2xl border border-white/5 shadow-2xl">
                     <img
@@ -36,11 +36,11 @@ const ProfileCard = ({ member, alternate }) => {
             {/* Content Section */}
             <div className="flex-grow space-y-6">
                 <div className="space-y-3">
-                    <div className="flex items-center gap-2 text-blue-500 font-bold text-[10px] tracking-[0.2em] uppercase">
+                    <div className="flex items-center gap-2 text-red-500 font-bold text-[10px] tracking-[0.2em] uppercase">
                         <Briefcase size={14} />
                         <span>Executive Profile</span>
                     </div>
-                    <h2 className="text-4xl sm:text-5xl font-black heading-display text-white transition-colors group-hover:text-blue-50 break-words overflow-hidden">
+                    <h2 className="text-4xl sm:text-5xl font-black heading-display text-white transition-colors group-hover:text-red-50 break-words overflow-hidden">
                         {member.name}
                     </h2>
                     <div className="inline-block px-4 py-1.5 bg-slate-800 border border-white/10 rounded-lg">
@@ -56,18 +56,18 @@ const ProfileCard = ({ member, alternate }) => {
 
                 <div className="flex flex-wrap items-center gap-4 pt-6">
                     <div className="flex gap-3">
-                        <a href={member.github} target="_blank" rel="noopener noreferrer" className="p-3 bg-slate-900 border border-white/5 hover:border-blue-500/50 hover:bg-slate-800 rounded-xl transition-all group/link shadow-lg">
-                            <Github size={20} className="text-slate-500 group-hover/link:text-blue-400 transition-colors" />
+                        <a href={member.github} target="_blank" rel="noopener noreferrer" className="p-3 bg-slate-900 border border-white/5 hover:border-red-500/50 hover:bg-slate-800 rounded-xl transition-all group/link shadow-lg">
+                            <Github size={20} className="text-slate-500 group-hover/link:text-red-400 transition-colors" />
                         </a>
-                        <a href={member.linkedin} target="_blank" rel="noopener noreferrer" className="p-3 bg-slate-900 border border-white/5 hover:border-blue-500/50 hover:bg-slate-800 rounded-xl transition-all group/link shadow-lg">
-                            <Linkedin size={20} className="text-slate-500 group-hover/link:text-blue-400 transition-colors" />
+                        <a href={member.linkedin} target="_blank" rel="noopener noreferrer" className="p-3 bg-slate-900 border border-white/5 hover:border-red-500/50 hover:bg-slate-800 rounded-xl transition-all group/link shadow-lg">
+                            <Linkedin size={20} className="text-slate-500 group-hover/link:text-red-400 transition-colors" />
                         </a>
-                        <a href={`mailto:${member.email}`} className="p-3 bg-slate-900 border border-white/5 hover:border-blue-500/50 hover:bg-slate-800 rounded-xl transition-all group/link shadow-lg">
-                            <Mail size={20} className="text-slate-500 group-hover/link:text-blue-400 transition-colors" />
+                        <a href={`mailto:${member.email}`} className="p-3 bg-slate-900 border border-white/5 hover:border-red-500/50 hover:bg-slate-800 rounded-xl transition-all group/link shadow-lg">
+                            <Mail size={20} className="text-slate-500 group-hover/link:text-red-400 transition-colors" />
                         </a>
                     </div>
 
-                    <button className="px-8 py-3 bg-blue-600 text-white font-bold tracking-widest text-[10px] uppercase hover:bg-blue-500 rounded-xl transition-all flex items-center gap-3 ml-auto shadow-xl shadow-blue-900/20 active:scale-95">
+                    <button className="px-8 py-3 bg-red-600 text-white font-bold tracking-widest text-[10px] uppercase hover:bg-red-500 rounded-xl transition-all flex items-center gap-3 ml-auto shadow-xl shadow-red-900/20 active:scale-95">
                         Executive Summary <ExternalLink size={16} />
                     </button>
                 </div>
