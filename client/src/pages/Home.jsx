@@ -32,17 +32,18 @@ const Home = () => {
         <section className="min-h-screen flex flex-col justify-center py-20 overflow-hidden bg-transparent">
             <div className="container-premium space-y-32">
 
-                {/* ─── Elegant Hero ─── */}
-                <div className="max-w-6xl">
+                {/* ─── Elegant Hero (Centered) ─── */}
+                <div className="max-w-5xl mx-auto text-center space-y-12">
                     <motion.div
-                        initial={{ opacity: 0, y: 20 }}
+                        initial={{ opacity: 0, y: 30 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-                        className="space-y-10"
+                        className="space-y-8 flex flex-col items-center"
                     >
-                        <div className="flex items-center gap-4">
+                        <div className="flex items-center gap-4 justify-center">
                             <span className="w-12 h-[2px] bg-red-600"></span>
                             <span className="text-[11px] font-black uppercase tracking-[0.5em] text-red-500">v3.0 Core Active</span>
+                            <span className="w-12 h-[2px] bg-red-600"></span>
                         </div>
 
                         <h1 className="text-7xl sm:text-8xl md:text-9xl font-black heading-display leading-[0.9] tracking-tighter text-white">
@@ -50,15 +51,35 @@ const Home = () => {
                             <span className="text-red-500 italic drop-shadow-[0_0_30px_rgba(239,68,68,0.3)]">ENGINEERING.</span>
                         </h1>
 
-                        <p className="text-xl md:text-2xl text-slate-400 font-medium leading-relaxed max-w-2xl opacity-80">
+                        <p className="text-xl md:text-2xl text-slate-400 font-medium leading-relaxed max-w-2xl mx-auto opacity-80">
                             Explore the cold expanse of code through a high-performance ecosystem designed for the next generation of digital infrastructure.
                         </p>
 
-                        <div className="flex flex-wrap items-center gap-8 pt-4">
+                        <div className="w-full h-px bg-gradient-to-r from-transparent via-white/5 to-transparent my-12"></div>
+
+                        <div className="flex justify-center w-full pt-4">
                             <NavLink to="/collective" className="group relative">
-                                <div className="absolute -inset-2 bg-red-600 rounded-3xl blur-xl opacity-20 group-hover:opacity-60 transition-opacity"></div>
-                                <div className="relative flex items-center gap-8 bg-red-600 text-white px-16 py-8 rounded-[2rem] font-black uppercase tracking-[0.3em] text-lg active:scale-95 transition-all shadow-[0_20px_60px_-15px_rgba(239,68,68,0.5)]">
-                                    Initialize Sequence <ArrowRight size={28} className="group-hover:translate-x-3 transition-transform duration-500" />
+                                {/* Deep Ambient Glow */}
+                                <div className="absolute -inset-8 bg-red-600 rounded-[4rem] blur-3xl opacity-5 group-hover:opacity-30 transition-opacity duration-1000"></div>
+
+                                {/* The Command Button */}
+                                <div className="relative flex items-center justify-center bg-red-600 text-white w-[320px] h-20 rounded-[2.5rem] font-black uppercase shadow-[0_30px_70px_-15px_rgba(239,68,68,0.5)] active:scale-[0.98] transition-all duration-700 overflow-hidden border border-white/20">
+
+                                    {/* Glass Shine Effect */}
+                                    <div className="absolute inset-0 bg-gradient-to-tr from-white/10 via-transparent to-transparent pointer-events-none"></div>
+
+                                    {/* Centered Content */}
+                                    <div className="flex items-center gap-4 relative z-10 translate-x-2">
+                                        <span className="text-[10px] tracking-[0.4em] font-black">Initialize Sequence</span>
+                                        <ArrowRight size={18} className="group-hover:translate-x-2 transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]" />
+                                    </div>
+
+                                    {/* Animated Scanner Scanline */}
+                                    <motion.div
+                                        animate={{ top: ['-100%', '200%'] }}
+                                        transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+                                        className="absolute inset-x-0 h-8 bg-white/5 blur-md pointer-events-none"
+                                    ></motion.div>
                                 </div>
                             </NavLink>
                         </div>

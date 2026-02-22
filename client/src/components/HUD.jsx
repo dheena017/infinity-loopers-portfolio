@@ -58,7 +58,7 @@ const HUD = ({ user, onLogout }) => {
                                 <div className="relative w-16 h-16 bg-black border border-white/20 rounded-2xl flex items-center justify-center p-3.5 shadow-2xl group-hover/logo:border-red-500/50 transition-all duration-500 overflow-hidden">
                                     <div className="absolute inset-0 bg-gradient-to-b from-white/10 to-transparent pointer-events-none"></div>
                                     <img
-                                        src="/assets/kalvium-logo.svg"
+                                        src="/assets/kalvium-logo.png"
                                         alt="Kalvium"
                                         className="w-full h-full object-contain filter drop-shadow-[0_0_12px_rgba(239,68,68,0.6)]"
                                     />
