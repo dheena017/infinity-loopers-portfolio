@@ -17,11 +17,11 @@ const Home = () => {
                         className="space-y-6"
                     >
                         <div className="flex items-center gap-3">
-                            <div className="w-12 h-[1px] bg-blue-500/50"></div>
-                            <span className="text-[10px] font-black uppercase tracking-[0.4em] text-blue-400">Next-Gen Architecture</span>
+                            <div className="w-12 h-[1px] bg-red-500/50"></div>
+                            <span className="text-[10px] font-black uppercase tracking-[0.4em] text-red-400">Next-Gen Architecture</span>
                         </div>
                         <h1 className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-black heading-display leading-[0.8] tracking-tighter shrink-0">
-                            THE <span className="text-blue-500 text-glow">FUTURE</span> <br />
+                            THE <span className="text-red-500 text-glow">FUTURE</span> <br />
                             OF PORTFOLIO.
                         </h1>
                     </motion.div>
@@ -90,10 +90,10 @@ const Home = () => {
                                 className={`group block premium-card p-10 space-y-8 bg-gradient-to-br ${card.color} to-transparent border-white/5 hover:border-blue-500/30 transition-all active:scale-[0.98] h-full`}
                             >
                                 <div className="flex justify-between items-start">
-                                    <div className="p-4 rounded-2xl bg-slate-900 border border-white/5 group-hover:border-blue-500/50 transition-colors">
-                                        <card.icon size={28} className="text-slate-400 group-hover:text-blue-400" />
+                                    <div className="p-4 rounded-2xl bg-slate-900 border border-white/5 group-hover:border-red-500/50 transition-colors">
+                                        <card.icon size={28} className="text-slate-400 group-hover:text-red-400" />
                                     </div>
-                                    <ChevronRight size={24} className="text-slate-700 group-hover:text-blue-500 group-hover:translate-x-1 transition-all" />
+                                    <ChevronRight size={24} className="text-slate-700 group-hover:text-red-500 group-hover:translate-x-1 transition-all" />
                                 </div>
                                 <div className="space-y-4">
                                     <h3 className="text-3xl font-black heading-display">{card.title}</h3>

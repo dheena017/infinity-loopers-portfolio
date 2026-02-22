@@ -13,11 +13,20 @@ const HUD = ({ user, onLogout }) => {
                         initial={{ opacity: 0, x: -10 }}
                         animate={{ opacity: 1, x: 0 }}
                     >
-                        <NavLink to="/" className="group flex flex-col">
-                            <span className="text-xl font-black tracking-tighter text-white group-hover:text-blue-500 transition-colors">SQUAD_139</span>
-                            <div className="flex items-center gap-2">
-                                <div className="w-1 h-1 bg-blue-500 rounded-full animate-pulse"></div>
-                                <span className="text-[8px] font-black uppercase tracking-[0.3em] text-slate-500">{user ? user.role : 'PERSONNEL LOCKED'}</span>
+                        <NavLink to="/" className="group flex items-center gap-5">
+                            <div className="flex items-center gap-3 bg-white/5 py-2 px-4 rounded-2xl border border-white/10 group-hover:border-red-500/30 transition-all">
+                                <img
+                                    src="https://kalvium.com/wp-content/uploads/2023/04/Kalvium-Logo.svg"
+                                    alt="Kalvium"
+                                    className="h-6 w-auto object-contain transition-opacity"
+                                />
+                            </div>
+                            <div className="hidden lg:flex flex-col border-l border-white/10 pl-5">
+                                <span className="text-xl font-black tracking-tighter text-white group-hover:text-red-500 transition-colors uppercase">SQUAD_139</span>
+                                <div className="flex items-center gap-2">
+                                    <div className="w-1 h-1 bg-red-500 rounded-full animate-pulse shadow-[0_0_8px_rgba(239,68,68,0.5)]"></div>
+                                    <span className="text-[8px] font-black uppercase tracking-[0.3em] text-slate-500">{user ? user.role : 'PERSONNEL LOCKED'}</span>
+                                </div>
                             </div>
                         </NavLink>
                     </motion.div>
@@ -41,8 +50,8 @@ const HUD = ({ user, onLogout }) => {
                                 key={link.path}
                                 to={link.path}
                                 className={({ isActive }) => `
-                                group flex items-center gap-2 transition-all duration-300
-                                ${isActive ? 'text-blue-500' : 'text-slate-400 hover:text-white'}
+                                group flex items-center gap-2.5 transition-all duration-300
+                                ${isActive ? 'text-red-500' : 'text-slate-400 hover:text-white'}
                             `}
                             >
                                 <link.icon size={14} className="opacity-60 group-hover:opacity-100 transition-opacity" />
@@ -52,7 +61,7 @@ const HUD = ({ user, onLogout }) => {
                     </motion.nav>
 
                     <div className="flex items-center gap-8">
-                        <button className="text-slate-500 hover:text-white transition-colors">
+                        <button className="text-slate-500 hover:text-red-500 transition-colors">
                             <Search size={18} />
                         </button>
 

@@ -100,7 +100,7 @@ const ThreeScene = () => {
 
         const createNebulae = () => {
             const group = new THREE.Group();
-            const colors = ['#f59e0b', '#a855f7', '#6366f1', '#06b6d4'];
+            const colors = ['#ef4444', '#991b1b', '#dc2626', '#450a0a']; // Kalvium Reds and Crimsons
             for (let i = 0; i < 10; i++) { // Reduced count for performance
                 const count = 50;
                 const geo = new THREE.BufferGeometry();
@@ -135,8 +135,8 @@ const ThreeScene = () => {
             spin: 1,
             randomness: 0.25,
             randomnessPower: 3,
-            insideColor: '#fcd34d',
-            outsideColor: '#0c0a09'
+            insideColor: '#ef4444', // Kalvium Red
+            outsideColor: '#0f172a' // Deep Space Blue-Red blend
         });
         const starField = createStarfield(10000, 15, 0.02, '#ffffff');
         const nebulae = createNebulae();

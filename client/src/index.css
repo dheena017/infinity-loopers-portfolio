@@ -1,11 +1,11 @@
 @import "tailwindcss";
 
 @theme {
-  --color-brand-primary: #3b82f6; /* Modern Blue */
-  --color-brand-secondary: #6366f1; /* Indigo */
-  --color-accent: #f59e0b; /* Amber for highlights */
-  --color-bg-deep: #0f172a; /* Deep Slate Blue */
-  --color-bg-card: #1e293b; /* Slate Blue */
+  --color-brand-primary: #ef4444; /* Kalvium Red */
+  --color-brand-secondary: #f87171; /* Lighter Red */
+  --color-accent: #f59e0b; /* Amber remains for heat highlights */
+  --color-bg-deep: #0f172a; 
+  --color-bg-card: #1e293b;
   
   --font-sans: "Outfit", "Inter", sans-serif;
   --font-display: "Outfit", sans-serif;
@@ -68,10 +68,10 @@ body {
 }
 
 .premium-card:hover {
-  border-color: rgba(59, 130, 246, 0.3);
-  background: rgba(8, 10, 20, 0.5);
+  border-color: rgba(239, 68, 68, 0.3);
+  background: rgba(8, 10, 24, 0.8);
   transform: translateY(-4px) scale(1.01);
-  box-shadow: 0 12px 48px 0 rgba(0, 0, 0, 0.5);
+  box-shadow: 0 12px 48px 0 rgba(239, 68, 68, 0.15);
 }
 
 .glass-accent {
@@ -81,7 +81,7 @@ body {
 }
 
 .text-glow {
-  text-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+  text-shadow: 0 0 20px rgba(239, 68, 68, 0.5);
 }
 
 .heading-display {
@@ -93,7 +93,7 @@ body {
 }
 
 .btn-primary {
-  @apply px-8 py-4 bg-blue-600/20 hover:bg-blue-600/40 text-white font-black rounded-xl transition-all border border-blue-500/30 backdrop-blur-md shadow-2xl shadow-blue-900/40 active:scale-95 uppercase tracking-widest text-[10px];
+  @apply px-8 py-4 bg-red-600/20 hover:bg-red-600/40 text-white font-black rounded-xl transition-all border border-red-500/30 backdrop-blur-md shadow-2xl shadow-red-900/20 active:scale-95 uppercase tracking-widest text-[10px];
 }
 
 /* Custom Scrollbar */
