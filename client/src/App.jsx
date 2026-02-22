@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import ThreeScene from './components/ThreeScene';
 import HUD from './components/HUD';
 import Home from './pages/Home';
 import Operatives from './pages/Operatives';
@@ -62,6 +63,7 @@ function AppContent() {
 
   return (
     <div className="relative z-10 w-full">
+      <ThreeScene />
       <HUD user={user} onLogout={handleLogout} />
 
       <main className="pt-24 min-h-screen">
@@ -96,13 +98,7 @@ function AppContent() {
 function App() {
   return (
     <Router>
-      <div className="relative min-h-screen bg-[#0f172a] text-slate-50 font-sans">
-        {/* Background Decor */}
-        <div className="fixed inset-0 pointer-events-none overflow-hidden -z-10">
-          <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-blue-600/10 blur-[120px] rounded-full"></div>
-          <div className="absolute bottom-0 right-1/4 w-[600px] h-[600px] bg-indigo-600/10 blur-[150px] rounded-full"></div>
-        </div>
-
+      <div className="relative min-h-screen bg-[#030305] text-slate-50 font-sans">
         <AppContent />
       </div>
     </Router>
