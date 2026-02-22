@@ -126,20 +126,6 @@ const ThreeScene = () => {
             return group;
         };
 
-        // --- Pooled Shooting Star System ---
-        const shootingStarGeo = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, 0, 1)]);
-        const shootingStarMat = new THREE.LineBasicMaterial({ color: '#ffffff', transparent: true });
-        const shootingStars = [];
-        const spawnShootingStar = () => {
-            if (shootingStars.length > 5) return; // Cap simultaneous meteors
-            const s = new THREE.Line(shootingStarGeo, shootingStarMat.clone());
-            s.position.set((Math.random() - 0.5) * 100, (Math.random() - 0.5) * 60, -Math.random() * 20);
-            s.scale.z = 10 + Math.random() * 10;
-            s.userData = { vel: new THREE.Vector3((Math.random() - 0.5) * 1.2, (Math.random() - 0.5) * 1.2, (Math.random() - 0.5) * 1.2), life: 1.0 };
-            scene.add(s);
-            shootingStars.push(s);
-        };
-
         // --- Init ---
         const mainGalaxy = createGalaxy({
             count: 35000, // Balanced count
@@ -165,18 +151,7 @@ const ThreeScene = () => {
             mainGalaxy.rotation.y = time * 0.05;
             starField.rotation.y = time * 0.005;
 
-            if (Math.random() < 0.03) spawnShootingStar();
-            for (let i = shootingStars.length - 1; i >= 0; i--) {
-                const s = shootingStars[i];
-                s.position.add(s.userData.vel);
-                s.userData.life -= 0.02;
-                s.material.opacity = s.userData.life;
-                if (s.userData.life <= 0) {
-                    scene.remove(s);
-                    s.material.dispose();
-                    shootingStars.splice(i, 1);
-                }
-            }
+
             nebulae.children.forEach((n, i) => {
                 n.rotation.y = time * (0.01 + i * 0.001);
             });
