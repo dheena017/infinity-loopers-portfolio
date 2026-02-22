@@ -129,7 +129,7 @@ const ThreeScene = () => {
         // --- Init ---
         const mainGalaxy = createGalaxy({
             count: 35000, // Balanced count
-            size: 0.05,
+            size: 0.12, // Increased size for bold "dots"
             radius: 10,
             branches: 5,
             spin: 1,
@@ -138,7 +138,7 @@ const ThreeScene = () => {
             insideColor: '#ef4444', // Kalvium Red
             outsideColor: '#0f172a' // Deep Space Blue-Red blend
         });
-        const starField = createStarfield(10000, 15, 0.02, '#ffffff');
+        const starField = createStarfield(10000, 15, 0.04, '#ffffff'); // Increased star size
         const nebulae = createNebulae();
 
         camera.position.z = 14;
@@ -148,8 +148,8 @@ const ThreeScene = () => {
         const clock = new THREE.Clock();
         const animate = () => {
             const time = clock.getElapsedTime();
-            mainGalaxy.rotation.y = time * 0.05;
-            starField.rotation.y = time * 0.005;
+            mainGalaxy.rotation.y = time * 0.08; // Faster rotation
+            starField.rotation.y = time * 0.01; // Faster star movement
 
 
             nebulae.children.forEach((n, i) => {

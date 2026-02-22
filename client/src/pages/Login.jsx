@@ -46,8 +46,8 @@ const Login = ({ onLogin }) => {
                 className="w-full max-w-md premium-card p-12 bg-slate-900 shadow-2xl relative z-10"
             >
                 <div className="text-center mb-10">
-                    <div className="inline-flex items-center justify-center p-4 rounded-2xl bg-blue-500/10 mb-6">
-                        <Shield className="text-blue-500 w-8 h-8" />
+                    <div className="inline-flex items-center justify-center p-4 rounded-2xl bg-red-500/10 mb-6">
+                        <Shield className="text-red-500 w-8 h-8" />
                     </div>
                     <h2 className="text-3xl font-black heading-display text-white">Platform Access</h2>
                     <p className="text-[10px] text-slate-500 mt-2 uppercase tracking-[0.3em] font-bold">Secure Identity Authentication</p>
@@ -63,7 +63,7 @@ const Login = ({ onLogin }) => {
                             key={r.id}
                             onClick={() => setRole(r.id)}
                             className={`flex-1 flex flex-col items-center gap-2 p-4 rounded-xl border transition-all duration-300 ${role === r.id
-                                ? 'bg-blue-600/10 border-blue-600/50 text-blue-400 shadow-lg shadow-blue-900/10'
+                                ? 'bg-red-600/10 border-red-600/50 text-red-400 shadow-lg shadow-red-900/10'
                                 : 'bg-slate-950 border-white/5 text-slate-600 hover:border-white/10'
                                 }`}
                         >
@@ -84,7 +84,7 @@ const Login = ({ onLogin }) => {
                                         type="text"
                                         value={username}
                                         onChange={(e) => setUsername(e.target.value)}
-                                        className="w-full bg-slate-950 border border-white/5 p-4 pl-12 text-sm focus:border-blue-500 rounded-xl outline-none transition-all text-white font-medium"
+                                        className="w-full bg-slate-950 border border-white/5 p-4 pl-12 text-sm focus:border-red-500 rounded-xl outline-none transition-all text-white font-medium"
                                         placeholder="Username"
                                         required
                                     />
@@ -98,7 +98,7 @@ const Login = ({ onLogin }) => {
                                         type="password"
                                         value={password}
                                         onChange={(e) => setPassword(e.target.value)}
-                                        className="w-full bg-slate-950 border border-white/5 p-4 pl-12 text-sm focus:border-blue-500 rounded-xl outline-none transition-all text-white font-medium"
+                                        className="w-full bg-slate-950 border border-white/5 p-4 pl-12 text-sm focus:border-red-500 rounded-xl outline-none transition-all text-white font-medium"
                                         placeholder="••••••••"
                                         required
                                     />
@@ -120,7 +120,7 @@ const Login = ({ onLogin }) => {
 
                     <button
                         disabled={loading}
-                        className="w-full group relative flex items-center justify-center gap-4 py-5 bg-blue-600 text-white font-black uppercase tracking-widest text-[11px] rounded-xl overflow-hidden transition-all hover:bg-blue-500 shadow-xl shadow-blue-900/40 active:scale-95 disabled:opacity-50"
+                        className="w-full group relative flex items-center justify-center gap-4 py-5 bg-red-600 text-white font-black uppercase tracking-widest text-[11px] rounded-xl overflow-hidden transition-all hover:bg-red-500 shadow-xl shadow-red-900/40 active:scale-95 disabled:opacity-50"
                     >
                         {loading ? (
                             <Loader2 size={18} className="animate-spin" />
@@ -138,7 +138,7 @@ const Login = ({ onLogin }) => {
             </motion.div>
 
             {/* Background elements */}
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-blue-600/5 rounded-full blur-[160px] pointer-events-none"></div>
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-red-600/5 rounded-full blur-[160px] pointer-events-none"></div>
         </section>
     );
 };

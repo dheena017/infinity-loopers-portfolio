@@ -46,8 +46,8 @@ const Home = () => {
                         </NavLink>
 
                         <div className="hidden sm:flex items-center gap-4 group cursor-pointer">
-                            <div className="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center group-hover:border-blue-500/50 transition-colors">
-                                <Zap size={18} className="text-slate-500 group-hover:text-blue-400" />
+                            <div className="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center group-hover:border-red-500/50 transition-colors">
+                                <Zap size={18} className="text-slate-500 group-hover:text-red-400" />
                             </div>
                             <span className="text-[10px] font-bold uppercase tracking-widest text-slate-500 group-hover:text-white transition-colors">v3.0 Core Active</span>
                         </div>
@@ -62,21 +62,21 @@ const Home = () => {
                             desc: 'Internal personnel directory and operative profiles.',
                             path: '/team',
                             icon: Users,
-                            color: 'from-blue-600/10'
+                            color: 'from-red-600/10'
                         },
                         {
                             title: 'Expeditions',
                             desc: 'Comprehensive archive of global technical breakthroughs.',
                             path: '/expeditions',
                             icon: Globe2,
-                            color: 'from-indigo-600/10'
+                            color: 'from-red-800/10'
                         },
                         {
                             title: 'Operatives',
                             desc: 'Strategic leadership and core project architects.',
                             path: '/operatives',
                             icon: Briefcase,
-                            color: 'from-slate-600/10'
+                            color: 'from-red-950/10'
                         }
                     ].map((card, i) => (
                         <motion.div
@@ -87,7 +87,7 @@ const Home = () => {
                         >
                             <NavLink
                                 to={card.path}
-                                className={`group block premium-card p-10 space-y-8 bg-gradient-to-br ${card.color} to-transparent border-white/5 hover:border-blue-500/30 transition-all active:scale-[0.98] h-full`}
+                                className={`group block premium-card p-10 space-y-8 bg-gradient-to-br ${card.color} to-transparent border-white/5 hover:border-red-500/30 transition-all active:scale-[0.98] h-full`}
                             >
                                 <div className="flex justify-between items-start">
                                     <div className="p-4 rounded-2xl bg-slate-900 border border-white/5 group-hover:border-red-500/50 transition-colors">
@@ -101,7 +101,7 @@ const Home = () => {
                                         {card.desc}
                                     </p>
                                 </div>
-                                <div className="h-1 w-0 bg-blue-500 group-hover:w-full transition-all duration-700"></div>
+                                <div className="h-1 w-0 bg-red-500 group-hover:w-full transition-all duration-700"></div>
                             </NavLink>
                         </motion.div>
                     ))}
@@ -110,7 +110,7 @@ const Home = () => {
             </div>
 
             {/* Background Decorative Element */}
-            <div className="absolute top-1/2 right-0 -translate-y-1/2 translate-x-1/2 w-[800px] h-[800px] bg-blue-600/5 rounded-full blur-[160px] pointer-events-none -z-10"></div>
+            <div className="absolute top-1/2 right-0 -translate-y-1/2 translate-x-1/2 w-[800px] h-[800px] bg-red-600/5 rounded-full blur-[160px] pointer-events-none -z-10"></div>
         </section>
     );
 };
