@@ -37,11 +37,11 @@ const HUD = ({ user, onLogout }) => {
                     ></motion.div>
                 </div>
 
-                <div className="flex items-center justify-between px-10 py-5 relative">
+                <div className="flex items-center justify-between px-16 py-6 relative">
 
                     {/* --- SECTION 1: IDENTITY & LOGO --- */}
-                    <div className="flex items-center gap-10">
-                        <NavLink to="/" className="flex items-center gap-8 group/logo relative">
+                    <div className="flex items-center gap-16">
+                        <NavLink to="/" className="flex items-center gap-10 group/logo relative">
                             {/* Orbital Spinner */}
                             <div className="relative">
                                 <motion.div
@@ -70,7 +70,7 @@ const HUD = ({ user, onLogout }) => {
                                 </div>
                             </div>
 
-                            <div className="hidden xl:flex flex-col border-l border-white/10 pl-8">
+                            <div className="hidden xl:flex flex-col border-l border-white/10 pl-10">
                                 <span className="text-3xl font-black tracking-[-0.05em] uppercase text-white leading-none group-hover/logo:text-red-500 transition-colors">SQUAD_139</span>
                                 {user && (
                                     <span className="text-[10px] font-black tracking-[0.4em] text-red-500 uppercase mt-2">
@@ -82,7 +82,7 @@ const HUD = ({ user, onLogout }) => {
                     </div>
 
                     {/* --- SECTION 2: NAVIGATION BRIDGE --- */}
-                    <nav className="hidden lg:flex items-center justify-center gap-x-2 flex-1 px-12">
+                    <nav className="hidden lg:flex items-center justify-center gap-x-6 flex-1 px-20">
                         {[
                             { path: '/', label: 'HOME', icon: LayoutDashboard },
                             { path: '/operatives', label: 'ADVISORS', icon: UserCircle },
@@ -120,17 +120,17 @@ const HUD = ({ user, onLogout }) => {
                     </nav>
 
                     {/* --- SECTION 3: OPERATIONS --- */}
-                    <div className="flex items-center gap-6 shrink-0">
+                    <div className="flex items-center gap-16 shrink-0">
                         <button className="text-slate-400 hover:text-red-500 transition-all duration-300 p-2.5">
                             <Search size={22} className="drop-shadow-[0_0_8px_rgba(239,68,68,0)] group-hover:drop-shadow-[0_0_8px_rgba(239,68,68,0.5)]" />
                         </button>
 
-                        <div className="w-[1px] h-10 bg-white/10 mx-2"></div>
+                        <div className="w-[1px] h-10 bg-white/10 mx-4"></div>
 
                         {user ? (
                             <button
                                 onClick={onLogout}
-                                className="group flex items-center gap-4 bg-red-950/20 border border-red-500/30 px-6 py-4 rounded-2xl hover:bg-red-600/20 transition-all duration-500 active:scale-95"
+                                className="group flex items-center gap-6 bg-red-950/20 border border-red-500/30 px-8 py-4.5 rounded-2xl hover:bg-red-600/20 transition-all duration-500 active:scale-95"
                             >
                                 <LogOut size={16} className="text-red-500" />
                                 <span className="text-[11px] font-black text-white tracking-[0.2em] uppercase">SIGN OUT</span>
@@ -141,7 +141,7 @@ const HUD = ({ user, onLogout }) => {
                                 className="group relative"
                             >
                                 <div className="absolute -inset-2 bg-red-600/30 rounded-2.5xl blur-2xl opacity-0 group-hover:opacity-100 transition duration-700"></div>
-                                <div className="relative flex items-center gap-5 bg-gradient-to-br from-red-600 via-red-700 to-red-900 px-10 py-4.5 rounded-[1.25rem] border border-white/30 shadow-[0_15px_40px_-5px_rgba(220,38,38,0.5)] active:scale-95 transition-all duration-500">
+                                <div className="relative flex items-center gap-6 bg-gradient-to-br from-red-600 via-red-700 to-red-900 px-12 py-5 rounded-[1.25rem] border border-white/30 shadow-[0_15px_40px_-5px_rgba(220,38,38,0.5)] active:scale-95 transition-all duration-500">
                                     <div className="relative w-10 h-10 rounded-xl bg-white/10 border border-white/20 flex items-center justify-center backdrop-blur-md group-hover:rotate-[360deg] transition-transform duration-1000">
                                         <ShieldCheck size={20} className="text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.5)]" />
                                     </div>
