@@ -44,16 +44,16 @@ export const teamData = [
 export const mentorData = [
     {
         id: 1,
-        name: "Mentor Alpha",
+        name: "Director Alpha",
         role: "Technical Architect",
-        desc: "Expert in distributed systems and galactic scaling.",
+        desc: "Specialist in high-availability enterprise architectures and legacy systems integration.",
         photo: "/assets/mentor1.jpg"
     },
     {
         id: 2,
-        name: "Mentor Beta",
-        role: "Lead Designer",
-        desc: "Visionary in cosmic interfaces and spatial UX.",
+        name: "Director Beta",
+        role: "Creative Director",
+        desc: "Expert in user psychology, multi-platform brand strategy, and accessible interface design.",
         photo: "/assets/mentor2.jpg"
     }
 ];

@@ -1,100 +1,81 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, Users, UserCircle, Globe, Signal, Activity, Shield } from 'lucide-react';
+import { LayoutDashboard, Users, UserCircle, Globe, Mail, LogOut, ShieldCheck } from 'lucide-react';
 
 const HUD = ({ user, onLogout }) => {
     return (
-        <div className="fixed inset-x-0 top-0 z-[60] pointer-events-none p-12">
-            <div className="container-premium flex justify-between items-start w-full gap-6">
+        <header className="fixed inset-x-0 top-0 z-[60] py-4 bg-slate-900/80 backdrop-blur-xl border-b border-white/5">
+            <div className="container-premium flex justify-between items-center w-full">
 
                 {/* Brand / Logo */}
                 <motion.div
-                    initial={{ opacity: 0, x: -20 }}
+                    initial={{ opacity: 0, x: -10 }}
                     animate={{ opacity: 1, x: 0 }}
-                    className="pointer-events-auto group shrink-0"
+                    className="flex items-center gap-3"
                 >
                     <NavLink to="/" className="flex flex-col">
-                        <span className="text-xl font-black italic tracking-tighter text-white group-hover:text-cyan-400 transition-colors font-space">SQUAD_139</span>
+                        <span className="text-xl font-bold tracking-tight text-white hover:text-blue-500 transition-colors">PORTFOLIO</span>
                         <div className="flex items-center gap-2">
-                            <div className="w-1.5 h-1.5 bg-cyan-500 rounded-full animate-pulse"></div>
-                            <span className="font-mono-tech !text-[7px] uppercase tracking-widest">{user ? user.role : 'Guest_Mode'}</span>
+                            <div className="w-1.5 h-1.5 bg-blue-500 rounded-full"></div>
+                            <span className="text-[9px] font-bold uppercase tracking-widest text-slate-500">{user ? user.role : 'Guest Mode'}</span>
                         </div>
                     </NavLink>
                 </motion.div>
 
-                {/* Minimalist Navigation */}
+                {/* Navigation */}
                 <motion.nav
-                    initial={{ opacity: 0, y: -20 }}
+                    initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="pointer-events-auto glass-panel px-8 py-4 flex items-center gap-8 rounded-sm overflow-x-auto"
+                    className="flex items-center gap-8"
                 >
                     {[
-                        { path: '/', label: 'Overview', icon: LayoutDashboard },
-                        { path: '/operatives', label: 'Operatives', icon: UserCircle },
-                        { path: '/expeditions', label: 'Expeditions', icon: Globe },
-                        { path: '/the-crew', label: 'The Crew', icon: Users },
-                        { path: '/transmissions', label: 'Relay', icon: Signal },
+                        { path: '/', label: 'Dashboard', icon: LayoutDashboard },
+                        { path: '/operatives', label: 'Projects', icon: UserCircle },
+                        { path: '/expeditions', label: 'Global', icon: Globe },
+                        { path: '/team', label: 'The Team', icon: Users },
+                        { path: '/transmissions', label: 'Contact', icon: Mail },
                     ].map((link) => (
                         <NavLink
                             key={link.path}
                             to={link.path}
                             className={({ isActive }) => `
-                                group flex items-center gap-3 transition-all duration-500 shrink-0
-                                ${isActive ? 'text-cyan-400' : 'text-gray-500 hover:text-white'}
+                                group flex items-center gap-2.5 transition-all duration-300
+                                ${isActive ? 'text-blue-500' : 'text-slate-400 hover:text-white'}
                             `}
                         >
-                            <link.icon size={14} className="opacity-40 group-hover:opacity-100 transition-opacity" />
-                            <span className="text-[9px] font-bold uppercase tracking-[0.2em] font-space">{link.label}</span>
+                            <link.icon size={16} className="opacity-60 group-hover:opacity-100 transition-opacity" />
+                            <span className="text-[11px] font-bold uppercase tracking-wider">{link.label}</span>
                         </NavLink>
                     ))}
 
-                    <div className="w-[1px] h-4 bg-white/10 mx-2"></div>
+                    <div className="w-[1px] h-4 bg-white/10"></div>
 
                     {user ? (
                         <button
                             onClick={onLogout}
-                            className="flex items-center gap-3 text-red-500/50 hover:text-red-500 transition-all group shrink-0"
+                            className="flex items-center gap-2.5 text-slate-400 hover:text-red-400 transition-all font-bold uppercase text-[11px] tracking-wider"
                         >
-                            <Activity size={14} className="opacity-40 group-hover:opacity-100" />
-                            <span className="text-[9px] font-bold uppercase tracking-[0.2em] font-space">Disconnect</span>
+                            <LogOut size={16} className="opacity-60" />
+                            <span>Sign Out</span>
                         </button>
                     ) : (
                         <NavLink
                             to="/login"
                             className={({ isActive }) => `
-                                group flex items-center gap-3 transition-all duration-500 shrink-0
-                                ${isActive ? 'text-cyan-400' : 'text-gray-500 hover:text-white'}
+                                group flex items-center gap-2.5 transition-all duration-300
+                                ${isActive ? 'text-blue-500' : 'text-slate-400 hover:text-white'}
                             `}
                         >
-                            <Shield size={14} className="opacity-40 group-hover:opacity-100 transition-opacity" />
-                            <span className="text-[9px] font-bold uppercase tracking-[0.2em] font-space">Auth_Gate</span>
+                            <ShieldCheck size={16} className="opacity-60 group-hover:opacity-100 transition-opacity" />
+                            <span className="text-[11px] font-bold uppercase tracking-wider">Admin Login</span>
                         </NavLink>
                     )}
                 </motion.nav>
 
-                {/* Status Readout */}
-                <motion.div
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    className="pointer-events-auto hidden lg:flex flex-col items-end gap-3 text-right shrink-0"
-                >
-                    <div className="flex items-center gap-4 text-cyan-500/40">
-                        <Signal size={12} />
-                        <span className="font-mono-tech !text-[7px]">Comm_Link: {user ? 'Encrypted' : 'Open'}</span>
-                    </div>
-                    <div className="flex items-center gap-4">
-                        <div className="text-[9px] font-black italic text-gray-500 uppercase tracking-widest">
-                            {user ? `User: ${user.username}` : 'Sector_Coord: 001.03.IX'}
-                        </div>
-                        <Activity size={10} className="text-white/20" />
-                    </div>
-                </motion.div>
-
             </div>
-        </div>
+        </header>
     );
 };
 
 export default HUD;
-

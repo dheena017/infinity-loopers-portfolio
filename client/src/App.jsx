@@ -1,22 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
-import ThreeScene from './components/ThreeScene';
 import HUD from './components/HUD';
-import CustomCursor from './components/CustomCursor';
-import Landing from './pages/Landing';
 import Home from './pages/Home';
 import Operatives from './pages/Operatives';
 import Collective from './pages/Collective';
 import Expeditions from './pages/Expeditions';
 import Transmissions from './pages/Transmissions';
 import Login from './pages/Login';
-import { Activity, AlertTriangle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 function AppContent() {
-  const [isInitialized, setIsInitialized] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
   const [students, setStudents] = useState([]);
   const [user, setUser] = useState(null);
   const location = useLocation();
@@ -32,38 +26,27 @@ function AppContent() {
   };
 
   useEffect(() => {
-    // Check for saved session
     const savedUser = localStorage.getItem('squad_user');
     if (savedUser) {
       setUser(JSON.parse(savedUser));
     }
 
     const fetchData = async () => {
-
       try {
-        console.log("Initiating data fetch...");
         const response = await fetch('http://localhost:5000/api/students');
         if (!response.ok) throw new Error('Network response was not ok');
         const data = await response.json();
-        const studentList = Array.isArray(data) ? data : Object.entries(data).map(([id, info]) => ({ id: Number(id), ...info }));
-
-        const processed = studentList.map(s => ({
-          ...s,
-          photo: s.id <= 24 ? `/assets/student${s.id}.jpg` : `https://ui-avatars.com/api/?name=${s.name}&background=0891b2&color=fff&size=512`
-        }));
-        setStudents(processed);
+        setStudents(data);
       } catch (err) {
-        console.warn('Backend offline or error, using fallback data:', err.message);
+        console.warn('Backend offline, using fallback:', err.message);
         const fallback = Array.from({ length: 24 }, (_, i) => ({
           id: i + 1,
-          name: `Cadet_${i + 1}`,
+          name: `User_${i + 1}`,
           photo: `/assets/student${i + 1}.jpg`
         }));
         setStudents(fallback);
-        // We don't set error to true here because we have fallback data
       } finally {
-        // Ensure loading is cleared
-        setTimeout(() => setLoading(false), 500);
+        setLoading(false);
       }
     };
     fetchData();
@@ -71,64 +54,41 @@ function AppContent() {
 
   if (loading) {
     return (
-      <div className="fixed inset-0 bg-[#030305] flex flex-col items-center justify-center font-space z-[200]">
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="relative w-32 h-32 mb-12"
-        >
-          <div className="absolute inset-0 border border-cyan-500/10 rounded-full"></div>
-          <div className="absolute inset-0 border-t border-cyan-400 rounded-full animate-spin"></div>
-          <div className="absolute inset-0 flex items-center justify-center shadow-[0_0_50px_rgba(6,182,212,0.15)] rounded-full">
-            <Activity size={40} className="text-cyan-400 animate-pulse" />
-          </div>
-        </motion.div>
-        <div className="text-cyan-400 tracking-[1.5em] text-[10px] animate-pulse uppercase font-black italic">
-          SYNCING_COSMIC_DATA
-        </div>
+      <div className="fixed inset-0 bg-[#0f172a] flex items-center justify-center font-sans z-[200]">
+        <div className="w-12 h-12 border-4 border-blue-500/20 border-t-blue-500 rounded-full animate-spin"></div>
       </div>
     );
   }
 
   return (
-    <div className="relative min-h-screen bg-[#030305] text-white overflow-hidden scanline">
-      <CustomCursor />
-      <div className="grain-overlay" />
+    <div className="relative z-10 w-full">
+      <HUD user={user} onLogout={handleLogout} />
 
-      {/* Background Layer */}
-      <ThreeScene isInitialized={isInitialized} />
+      <main className="pt-24 min-h-screen">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={location.pathname}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.4 }}
+          >
+            <Routes location={location}>
+              <Route path="/" element={<Home />} />
+              <Route path="/login" element={<Login onLogin={handleLogin} />} />
+              <Route path="/operatives" element={<Operatives />} />
+              <Route path="/expeditions" element={<Expeditions />} />
+              <Route path="/team" element={<Collective students={students} user={user} setStudents={setStudents} />} />
+              <Route path="/transmissions" element={<Transmissions />} />
+            </Routes>
+          </motion.div>
+        </AnimatePresence>
+      </main>
 
-      {/* UI Layers */}
-      <AnimatePresence mode="wait">
-        {!isInitialized ? (
-          <Landing onInitiate={() => setIsInitialized(true)} />
-        ) : (
-          <div key="main-app" className="relative z-10 font-inter">
-            <HUD user={user} onLogout={handleLogout} />
-            <motion.div
-              key={location.pathname}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.8 }}
-            >
-              <Routes location={location}>
-                <Route path="/" element={<Home />} />
-                <Route path="/login" element={<Login onLogin={handleLogin} />} />
-                <Route path="/operatives" element={<Operatives />} />
-                <Route path="/expeditions" element={<Expeditions />} />
-                <Route path="/the-crew" element={<Collective students={students} user={user} setStudents={setStudents} />} />
-                <Route path="/transmissions" element={<Transmissions />} />
-              </Routes>
-            </motion.div>
-
-            <footer className="py-24 bg-black/60 text-center relative z-20 border-t border-white/5">
-              <div className="text-[10vw] font-black text-white/5 leading-none select-none italic uppercase font-space">INFIN_LOOP</div>
-              <div className="text-[10px] text-white/10 mt-8 tracking-[1em]">SQ139_VOYAGER_EXT_v2.0.0</div>
-            </footer>
-          </div>
-        )}
-      </AnimatePresence>
+      <footer className="py-20 border-t border-slate-800 text-center">
+        <div className="text-2xl font-bold tracking-tight text-white/10 uppercase">Portfolio System</div>
+        <div className="text-xs text-slate-500 mt-4 font-medium uppercase tracking-[0.2em]">Version 3.0.0 — Production Build</div>
+      </footer>
     </div>
   );
 }
@@ -136,7 +96,15 @@ function AppContent() {
 function App() {
   return (
     <Router>
-      <AppContent />
+      <div className="relative min-h-screen bg-[#0f172a] text-slate-50 font-sans">
+        {/* Background Decor */}
+        <div className="fixed inset-0 pointer-events-none overflow-hidden -z-10">
+          <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-blue-600/10 blur-[120px] rounded-full"></div>
+          <div className="absolute bottom-0 right-1/4 w-[600px] h-[600px] bg-indigo-600/10 blur-[150px] rounded-full"></div>
+        </div>
+
+        <AppContent />
+      </div>
     </Router>
   );
 }
