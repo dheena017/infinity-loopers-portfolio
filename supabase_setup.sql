@@ -1,44 +1,206 @@
--- SQL to set up your Supabase database for the Space Portfolio
+-- Supabase schema for Cosmic Frontier | Squad_139
 
--- 1. Create the students table
-CREATE TABLE IF NOT EXISTS students (
-  id SERIAL PRIMARY KEY,
-  name TEXT NOT NULL,
-  linkedin TEXT,
-  github TEXT,
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL
+create extension if not exists "pgcrypto";
+
+do $$ begin
+  create type operative_status as enum ('active', 'inactive', 'retired');
+exception when duplicate_object then null;
+end $$;
+
+do $$ begin
+  create type mission_status as enum ('planned', 'ongoing', 'completed');
+exception when duplicate_object then null;
+end $$;
+
+create table if not exists operatives (
+  id uuid primary key default gen_random_uuid(),
+  name text not null,
+  role text not null,
+  skills text[] not null default '{}',
+  status operative_status not null default 'active',
+  created_at timestamptz not null default now()
 );
 
--- 2. Insert initial data (Squad 139 Members)
-INSERT INTO students (name, linkedin, github) VALUES
-('hariz', '', ''),
-('sham', '', ''),
-('amarnath', 'https://www.linkedin.com/in/amarnath-p-s-942782322/', 'https://github.com/amarnath-cdr'),
-('arulananthan', '', ''),
-('kamala kiruthi', 'https://www.linkedin.com/in/kamala-kiruthi/', 'https://github.com/kamalakiruthi8'),
-('lohith', 'https://www.linkedin.com/in/chinthalapalli-lohith-126447384/', 'https://github.com/lohithchinthalalpalli'),
-('hari', 'https://www.linkedin.com/in/hari-r-bb3181370/', 'https://github.com/harirs139-ui'),
-('jayseelan', 'https://www.linkedin.com/in/jayaseelan-d-1951952a6', 'https://www.linkedin.com/in/jayaseelan-d-1951952a6'),
-('durga saranya', 'https://www.linkedin.com/feed/', 'https://github.com/durgasaranyas139-lgtm'),
-('gokul', 'http://www.linkedin.com/in/gokul-raj95', 'https://www.linkedin.com/in/gokul-raj95'),
-('joy arnold', 'https://www.linkedin.com/in/joyarnold21?utm_source=share_via&utm_content=profile&utm_medium=member_android', ''),
-('kathiravan', 'https://www.linkedin.com/in/kathiravan-e-56688a39b?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app', 'https://github.com/ekathiravanelumalai71-a11y'),
-('mosses', 'https://www.linkedin.com/in/moses-acknal-7957973a4/', 'https://github.com/mosesacknals139'),
-('priyadharsan', 'http://www.linkedin.com/in/priyadharsan-s2007', 'https://github.com/Priyadharsan2911'),
-('abinay', 'https://www.linkedin.com/feed/?trk=guest_homepage-basic_google-one-tap-submit', ''),
-('suriya', '', ''),
-('yakesh', 'https://www.linkedin.com/in/yakesh-r-92648a383?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app', 'https://github.com/yakpranu-design'),
-('nanthakumar', 'http://www.linkedin.com/in/nandhakumar-pm-8276b7381', 'https://github.com/nandhakumar1980'),
-('srinithi', 'https://www.linkedin.com/in/srinithi-vijayakumar-981785344/', 'https://github.com/srinithivijayakumars139-wq'),
-('srimathi', 'https://www.linkedin.com/in/srimathi-vijayakumar-10518a383/', 'https://github.com/srimajaya123-blip'),
-('srinidthi', 'https://www.linkedin.com/in/srinidhi-v-123193384/', 'https://github.com/srinidhivs139-ai'),
-('mohan', 'http://www.linkedin.com/in/mohan-e-b7945b2b2', 'https://github.com/mohanes139-cell'),
-('nabi rasool', 'http://www.linkedin.com/in/nabi-rasool-129494393', ''),
-('keerthana', 'https://www.linkedin.com/feed/', 'https://github.com/krishnakeerthanamitte-tech')
-ON CONFLICT (id) DO NOTHING;
+create table if not exists missions (
+  id uuid primary key default gen_random_uuid(),
+  title text not null,
+  description text,
+  start_date date,
+  end_date date,
+  status mission_status not null default 'planned',
+  created_at timestamptz not null default now()
+);
 
--- 3. Enable Row Level Security (RLS)
-ALTER TABLE students ENABLE ROW LEVEL SECURITY;
+create table if not exists mission_operatives (
+  mission_id uuid not null references missions(id) on delete cascade,
+  operative_id uuid not null references operatives(id) on delete cascade,
+  assigned_at timestamptz not null default now(),
+  role_in_mission text,
+  primary key (mission_id, operative_id)
+);
 
--- 4. Create policy to allow everyone to read
-CREATE POLICY "Allow public read access" ON students FOR SELECT USING (true);
+create table if not exists archives (
+  id uuid primary key default gen_random_uuid(),
+  mission_id uuid not null references missions(id) on delete cascade,
+  summary text not null,
+  date_recorded timestamptz not null default now()
+);
+
+create table if not exists portfolio (
+  id uuid primary key default gen_random_uuid(),
+  version text not null,
+  release_date date not null,
+  features jsonb not null default '{}'::jsonb,
+  created_at timestamptz not null default now()
+);
+
+create table if not exists portfolio_missions (
+  portfolio_id uuid not null references portfolio(id) on delete cascade,
+  mission_id uuid not null references missions(id) on delete cascade,
+  linked_at timestamptz not null default now(),
+  primary key (portfolio_id, mission_id)
+);
+
+create table if not exists students (
+  id serial primary key,
+  name text not null,
+  linkedin text,
+  github text,
+  term text not null,
+  created_at timestamptz not null default now()
+);
+
+create index if not exists idx_operatives_role on operatives(role);
+create index if not exists idx_operatives_status on operatives(status);
+create index if not exists idx_missions_status on missions(status);
+create index if not exists idx_missions_start_date on missions(start_date);
+create index if not exists idx_archives_mission_id on archives(mission_id);
+create index if not exists idx_mission_operatives_operative_id on mission_operatives(operative_id);
+create index if not exists idx_portfolio_missions_mission_id on portfolio_missions(mission_id);
+create index if not exists idx_students_term on students(term);
+
+insert into operatives (id, name, role, skills, status) values
+  ('11111111-1111-1111-1111-111111111111', 'Astra Voss', 'Systems Architect', '{Postgres, Supabase, Security}', 'active'),
+  ('22222222-2222-2222-2222-222222222222', 'Juno Kade', 'UI/UX Engineer', '{React, UX, Motion}', 'active'),
+  ('33333333-3333-3333-3333-333333333333', 'Orion Vale', 'Platform Engineer', '{Node, Infra, CI}', 'inactive');
+
+insert into missions (id, title, description, start_date, end_date, status) values
+  ('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', 'Starlight Mesh', 'Distributed comms grid for deep-space ops', '2026-01-10', null, 'ongoing'),
+  ('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb', 'Nebula Forge', 'Pipeline for rapid system evolution', '2025-11-01', '2026-02-01', 'completed'),
+  ('cccccccc-cccc-cccc-cccc-cccccccccccc', 'Void Relay', 'Secure mission relay infrastructure', '2026-03-01', null, 'planned');
+
+insert into mission_operatives (mission_id, operative_id, role_in_mission) values
+  ('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', '11111111-1111-1111-1111-111111111111', 'Lead Architect'),
+  ('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', '22222222-2222-2222-2222-222222222222', 'Interface Lead'),
+  ('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb', '33333333-3333-3333-3333-333333333333', 'Platform Support');
+
+insert into archives (id, mission_id, summary, date_recorded) values
+  ('dddddddd-dddd-dddd-dddd-dddddddddddd', 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb', 'Completed rollout of Nebula Forge v2 with 30% faster deploy cycles', '2026-02-02 10:00:00+00'),
+  ('eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee', 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb', 'Stabilized multi-region failover process', '2026-02-05 14:30:00+00');
+
+insert into portfolio (id, version, release_date, features) values
+  ('99999999-9999-9999-9999-999999999999', 'v3.0.0', '2026-02-15', '{"highlights":["Universe UI","Faster routing","Mission archive"],"status":"stable"}'),
+  ('88888888-8888-8888-8888-888888888888', 'v3.1.0', '2026-03-01', '{"highlights":["Nebula theming","Auth refresh"],"status":"beta"}');
+
+insert into portfolio_missions (portfolio_id, mission_id) values
+  ('99999999-9999-9999-9999-999999999999', 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb'),
+  ('99999999-9999-9999-9999-999999999999', 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa'),
+  ('88888888-8888-8888-8888-888888888888', 'cccccccc-cccc-cccc-cccc-cccccccccccc');
+
+insert into students (id, name, linkedin, github, term) values
+  (1, 'hariz', '', '', 'Term 1'),
+  (2, 'sham', '', '', 'Term 1'),
+  (3, 'amarnath', 'https://www.linkedin.com/in/amarnath-p-s-942782322/', 'https://github.com/amarnath-cdr', 'Term 1'),
+  (4, 'arulananthan', '', '', 'Term 1'),
+  (5, 'kamala kiruthi', 'https://www.linkedin.com/in/kama
+alter table students enable row level security;la-kiruthi/', 'https://github.com/kamalakiruthi8', 'Term 1'),
+  (6, 'lohith', 'https://www.linkedin.com/in/chinthalapalli-lohith-126447384/', 'https://github.com/lohithchinthalalpalli', 'Term 1'),
+  (7, 'hari', 'https://www.linkedin.com/in/hari-r-bb3181370/', 'https://github.com/harirs139-ui', 'Term 1'),
+  (8, 'jayseelan', 'https://www.linkedin.com/in/jayaseelan-d-1951952a6', 'https://www.linkedin.com/in/jayaseelan-d-1951952a6', 'Term 1'),
+  (9, 'durga saranya', 'https://www.linkedin.com/feed/', 'https://github.com/durgasaranyas139-lgtm', 'Term 1'),
+  (10, 'gokul', 'http://www.linkedin.com/in/gokul-raj95', 'https://www.linkedin.com/in/gokul-raj95', 'Term 1'),
+  (11, 'joy arnold', 'https://www.linkedin.com/in/joyarnold21?utm_source=share_via&utm_content=profile&utm_medium=member_android', '', 'Term 1'),
+  (12, 'kathiravan', 'https://www.linkedin.com/in/kathiravan-e-56688a39b?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app', 'https://github.com/ekathiravanelumalai71-a11y', 'Term 1'),
+  (13, 'mosses', 'https://www.linkedin.com/in/moses-acknal-7957973a4/', 'https://github.com/mosesacknals139', 'Term 2'),
+  (14, 'priyadharsan', 'http://www.linkedin.com/in/priyadharsan-s2007', 'https://github.com/Priyadharsan2911', 'Term 2'),
+  (15, 'abinay', 'https://www.linkedin.com/feed/?trk=guest_homepage-basic_google-one-tap-submit', '', 'Term 2'),
+  (16, 'suriya', '', '', 'Term 2'),
+  (17, 'yakesh', 'https://www.linkedin.com/in/yakesh-r-92648a383?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app', 'https://github.com/yakpranu-design', 'Term 2'),
+  (18, 'nanthakumar', 'http://www.linkedin.com/in/nandhakumar-pm-8276b7381', 'https://github.com/nandhakumar1980', 'Term 2'),
+  (19, 'srinithi', 'https://www.linkedin.com/in/srinithi-vijayakumar-981785344/', 'https://github.com/srinithivijayakumars139-wq', 'Term 2'),
+  (20, 'srimathi', 'https://www.linkedin.com/in/srimathi-vijayakumar-10518a383/', 'https://github.com/srimajaya123-blip', 'Term 2'),
+  (21, 'srinidthi', 'https://www.linkedin.com/in/srinidhi-v-123193384/', 'https://github.com/srinidhivs139-ai', 'Term 2'),
+  (22, 'mohan', 'http://www.linkedin.com/in/mohan-e-b7945b2b2', 'https://github.com/mohanes139-cell', 'Term 3'),
+  (23, 'nabi rasool', 'http://www.linkedin.com/in/nabi-rasool-129494393', '', 'Term 3'),
+  (24, 'keerthana', 'https://www.linkedin.com/feed/', 'https://github.com/krishnakeerthanamitte-tech', 'Term 3');
+
+alter table operatives enable row level security;
+alter table missions enable row level security;
+alter table mission_operatives enable row level security;
+alter table archives enable row level security;
+alter table portfolio enable row level security;
+alter table portfolio_missions enable row level security;
+
+create policy "public read operatives" on operatives
+  for select using (true);
+create policy "public read missions" on missions
+  for select using (true);
+create policy "public read mission operatives" on mission_operatives
+  for select using (true);
+create policy "public read archives" on archives
+  for select using (true);
+create policy "public read portfolio" on portfolio
+  for select using (true);
+create policy "public read portfolio missions" on portfolio_missions
+  for select using (true);
+
+create policy "auth write operatives" on operatives
+  for insert with check (auth.role() = 'authenticated');
+create policy "auth update operatives" on operatives
+  for update using (auth.role() = 'authenticated');
+create policy "auth delete operatives" on operatives
+  for delete using (auth.role() = 'authenticated');
+
+create policy "auth write missions" on missions
+  for insert with check (auth.role() = 'authenticated');
+create policy "auth update missions" on missions
+  for update using (auth.role() = 'authenticated');
+create policy "auth delete missions" on missions
+  for delete using (auth.role() = 'authenticated');
+
+create policy "auth write mission operatives" on mission_operatives
+  for insert with check (auth.role() = 'authenticated');
+create policy "auth update mission operatives" on mission_operatives
+  for update using (auth.role() = 'authenticated');
+create policy "auth delete mission operatives" on mission_operatives
+  for delete using (auth.role() = 'authenticated');
+
+create policy "auth write archives" on archives
+  for insert with check (auth.role() = 'authenticated');
+create policy "auth update archives" on archives
+  for update using (auth.role() = 'authenticated');
+create policy "auth delete archives" on archives
+  for delete using (auth.role() = 'authenticated');
+
+create policy "auth write portfolio" on portfolio
+  for insert with check (auth.role() = 'authenticated');
+create policy "auth update portfolio" on portfolio
+  for update using (auth.role() = 'authenticated');
+create policy "auth delete portfolio" on portfolio
+  for delete using (auth.role() = 'authenticated');
+
+create policy "auth write portfolio missions" on portfolio_missions
+  for insert with check (auth.role() = 'authenticated');
+create policy "auth update portfolio missions" on portfolio_missions
+  for update using (auth.role() = 'authenticated');
+create policy "auth delete portfolio missions" on p
+
+create policy "public read students" on students
+  for select using (true);
+create policy "auth write students" on students
+  for insert with check (auth.role() = 'authenticated');
+create policy "auth update students" on students
+  for update using (auth.role() = 'authenticated');
+create policy "auth delete students" on students
+  for delete using (auth.role() = 'authenticated');ortfolio_missions
+  for delete using (auth.role() = 'authenticated');
