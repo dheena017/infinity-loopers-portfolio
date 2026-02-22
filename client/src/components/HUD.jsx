@@ -1,91 +1,88 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { NavLink, useLocation } from 'react-router-dom';
 import {
     LayoutDashboard, Users, UserCircle, Globe,
     Mail, LogOut, ShieldCheck, GitBranch,
-    Search, Activity, Cpu, Wifi
+    Search
 } from 'lucide-react';
 
 const HUD = ({ user, onLogout }) => {
     const location = useLocation();
-    const [time, setTime] = useState(new Date().toLocaleTimeString());
 
-    useEffect(() => {
-        const timer = setInterval(() => setTime(new Date().toLocaleTimeString()), 1000);
-        return () => clearInterval(timer);
-    }, []);
+    // Helper for active link styles
+    const getLinkClass = (isActive) => `
+        relative px-6 py-2.5 group flex flex-col items-center gap-1.5 transition-all duration-700
+        ${isActive ? 'text-red-500' : 'text-slate-500 hover:text-white'}
+    `;
 
     return (
-        <header className="fixed inset-x-0 top-0 z-[60] w-full px-4 sm:px-8 py-6 pointer-events-none">
+        <header className="fixed inset-x-0 top-0 z-[60] w-full px-6 py-8 pointer-events-none">
             <motion.div
-                initial={{ y: -100, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ type: "spring", stiffness: 100, damping: 20 }}
-                className="max-w-[1920px] mx-auto bg-slate-950/60 backdrop-blur-3xl border border-white/10 rounded-[2rem] shadow-[0_25px_80px_-15px_rgba(0,0,0,0.6)] overflow-hidden pointer-events-auto relative group"
+                initial={{ y: -100, opacity: 0, scale: 0.98 }}
+                animate={{ y: 0, opacity: 1, scale: 1 }}
+                transition={{ type: "spring", stiffness: 80, damping: 15 }}
+                className="max-w-[2000px] mx-auto bg-[#080a0f]/90 backdrop-blur-[40px] border border-white/10 rounded-[2.5rem] shadow-[0_40px_100px_-20px_rgba(0,0,0,0.8),inset_0_1px_1px_rgba(255,255,255,0.1)] overflow-hidden pointer-events-auto relative group"
             >
-                {/* Subtle Scanline Effect */}
-                <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.03] pointer-events-none"></div>
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-red-500/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-[2000ms] ease-in-out"></div>
+                {/* --- INDUSTRIAL FX LAYER --- */}
+                <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:30px_30px] opacity-20 [mask-image:radial-gradient(ellipse_at_center,black,transparent_80%)]"></div>
 
-                <div className="flex items-center justify-between px-8 py-3.5 relative">
+                {/* System Integrity Bar */}
+                <div className="absolute top-0 inset-x-0 h-[3px] flex">
+                    <motion.div
+                        initial={{ width: "0%" }}
+                        animate={{ width: "100%" }}
+                        transition={{ duration: 2 }}
+                        className="h-full bg-gradient-to-r from-red-600 via-red-400 to-red-600 shadow-[0_0_15px_rgba(220,38,38,0.5)]"
+                    ></motion.div>
+                </div>
 
-                    {/* --- LEFT: LOGO & TELEMETRY --- */}
-                    <div className="flex items-center gap-8">
-                        <NavLink to="/" className="flex items-center gap-6 group/logo">
+                <div className="flex items-center justify-between px-10 py-5 relative">
+
+                    {/* --- SECTION 1: IDENTITY & LOGO --- */}
+                    <div className="flex items-center gap-10">
+                        <NavLink to="/" className="flex items-center gap-8 group/logo relative">
+                            {/* Orbital Spinner */}
                             <div className="relative">
                                 <motion.div
-                                    animate={{ rotate: [0, 90, 180, 270, 360] }}
-                                    transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-                                    className="absolute -inset-3 border border-red-500/10 rounded-full border-dashed"
+                                    animate={{ rotate: 360 }}
+                                    transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
+                                    className="absolute -inset-4 border-[1.5px] border-red-500/20 rounded-2xl border-dashed"
                                 ></motion.div>
-                                <div className="relative w-14 h-14 bg-black border border-white/10 rounded-2xl flex items-center justify-center p-3 shadow-[0_0_30px_rgba(239,68,68,0.1)] group-hover/logo:border-red-500/30 transition-all duration-500 overflow-hidden">
-                                    <div className="absolute inset-x-0 top-0 h-[1px] bg-white/20"></div>
+                                <motion.div
+                                    animate={{ rotate: -360 }}
+                                    transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
+                                    className="absolute -inset-2 border-[1px] border-white/10 rounded-full"
+                                ></motion.div>
+
+                                <div className="relative w-16 h-16 bg-black border border-white/20 rounded-2xl flex items-center justify-center p-3.5 shadow-2xl group-hover/logo:border-red-500/50 transition-all duration-500 overflow-hidden">
+                                    <div className="absolute inset-0 bg-gradient-to-b from-white/10 to-transparent pointer-events-none"></div>
                                     <img
                                         src="https://kalvium.com/wp-content/uploads/2023/04/Kalvium-Logo.svg"
                                         alt="Kalvium"
-                                        className="w-full h-full object-contain filter drop-shadow-[0_0_8px_rgba(239,68,68,0.5)]"
+                                        className="w-full h-full object-contain filter drop-shadow-[0_0_12px_rgba(239,68,68,0.6)]"
                                     />
+                                    <motion.div
+                                        animate={{ top: ['-100%', '200%'] }}
+                                        transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
+                                        className="absolute inset-x-0 h-4 bg-red-500/10 blur-sm pointer-events-none"
+                                    ></motion.div>
                                 </div>
                             </div>
 
-                            <div className="hidden xl:flex flex-col border-l border-white/10 pl-6 space-y-1">
-                                <span className="text-xl font-black tracking-tighter uppercase text-white leading-none">SQUAD_139</span>
-                                <div className="flex items-center gap-3">
-                                    <div className="flex gap-1">
-                                        {[1, 2, 3].map(i => (
-                                            <motion.div
-                                                key={i}
-                                                animate={{ height: [4, 10, 4] }}
-                                                transition={{ duration: 1.5, repeat: Infinity, delay: i * 0.2 }}
-                                                className="w-0.5 bg-red-500/50"
-                                            />
-                                        ))}
-                                    </div>
-                                    <span className="text-[8px] font-black tracking-[0.5em] text-slate-500 uppercase">
-                                        {user ? user.role : 'IDENTITY_LOCKED'}
+                            <div className="hidden xl:flex flex-col border-l border-white/10 pl-8">
+                                <span className="text-3xl font-black tracking-[-0.05em] uppercase text-white leading-none group-hover/logo:text-red-500 transition-colors">SQUAD_139</span>
+                                {user && (
+                                    <span className="text-[10px] font-black tracking-[0.4em] text-red-500 uppercase mt-2">
+                                        {user.role}
                                     </span>
-                                </div>
+                                )}
                             </div>
                         </NavLink>
-
-                        {/* Telemetry Dots */}
-                        <div className="hidden 2xl:flex items-center gap-6 border-l border-white/5 pl-8">
-                            <div className="flex flex-col gap-1">
-                                <div className="flex items-center gap-2">
-                                    <Activity size={10} className="text-red-500/60" />
-                                    <span className="text-[7px] font-bold text-slate-500 uppercase tracking-widest leading-none">Vitals: Optimal</span>
-                                </div>
-                                <div className="flex items-center gap-2">
-                                    <Wifi size={10} className="text-blue-500/60" />
-                                    <span className="text-[7px] font-bold text-slate-500 uppercase tracking-widest leading-none">Uplink: Live</span>
-                                </div>
-                            </div>
-                        </div>
                     </div>
 
-                    {/* --- CENTER: CORE NAV --- */}
-                    <nav className="hidden lg:flex items-center justify-center gap-x-2 flex-1 px-8">
+                    {/* --- SECTION 2: NAVIGATION BRIDGE --- */}
+                    <nav className="hidden lg:flex items-center justify-center gap-x-2 flex-1 px-12">
                         {[
                             { path: '/', label: 'HOME', icon: LayoutDashboard },
                             { path: '/operatives', label: 'ADVISORS', icon: UserCircle },
@@ -98,70 +95,64 @@ const HUD = ({ user, onLogout }) => {
                             <NavLink
                                 key={link.path}
                                 to={link.path}
-                                className={({ isActive }) => `
-                                    relative px-5 py-2 group flex flex-col items-center gap-1.5 transition-all duration-500
-                                    ${isActive ? 'text-red-500' : 'text-slate-400 hover:text-white'}
-                                `}
+                                className={({ isActive }) => getLinkClass(isActive)}
                             >
-                                <link.icon size={15} className={`transition-all duration-500 ${location.pathname === link.path ? 'scale-110 opacity-100' : 'opacity-40 group-hover:opacity-100 group-hover:scale-110'}`} />
-                                <span className="text-[9px] font-black tracking-[0.25em]">{link.label}</span>
-
-                                <AnimatePresence>
+                                <div className="relative">
                                     {location.pathname === link.path && (
                                         <motion.div
-                                            layoutId="nav-glow"
-                                            className="absolute -inset-x-1 -inset-y-1 bg-red-500/5 rounded-xl -z-10 blur-sm"
-                                            initial={{ opacity: 0 }}
-                                            animate={{ opacity: 1 }}
-                                            exit={{ opacity: 0 }}
+                                            layoutId="nav-aura"
+                                            className="absolute -inset-4 bg-red-600/10 rounded-full blur-xl"
                                         />
                                     )}
-                                </AnimatePresence>
+                                    <link.icon size={16} className={`relative z-10 transition-all duration-700 ${location.pathname === link.path ? 'scale-125 text-red-500 drop-shadow-[0_0_8px_rgba(239,68,68,0.5)]' : 'opacity-40 filter grayscale hover:grayscale-0'}`} />
+                                </div>
+                                <span className={`text-[10px] font-black tracking-[0.3em] mt-1 relative z-10 ${location.pathname === link.path ? 'text-white' : ''}`}>
+                                    {link.label}
+                                </span>
                                 {location.pathname === link.path && (
                                     <motion.div
-                                        layoutId="nav-line"
-                                        className="h-0.5 w-6 bg-red-500 rounded-full absolute -bottom-1"
+                                        layoutId="active-bracket"
+                                        className="absolute -bottom-1 h-[2px] w-8 bg-red-600 rounded-full shadow-[0_0_10px_rgba(220,38,38,0.8)]"
                                     />
                                 )}
                             </NavLink>
                         ))}
                     </nav>
 
-                    {/* --- RIGHT: OPERATIONS --- */}
-                    <div className="flex items-center gap-8 shrink-0">
-                        {/* Status Clock */}
-                        <div className="hidden sm:flex flex-col items-end leading-none">
-                            <span className="text-[12px] font-black tracking-widest text-white/90">{time}</span>
-                            <span className="text-[7px] font-bold text-slate-500 uppercase tracking-[0.3em] mt-1">Mission Clock</span>
-                        </div>
+                    {/* --- SECTION 3: OPERATIONS --- */}
+                    <div className="flex items-center gap-10 shrink-0">
+                        <button className="group relative p-3">
+                            <div className="absolute inset-0 bg-red-500/0 group-hover:bg-red-500/10 rounded-xl blur-md transition-all duration-500"></div>
+                            <div className="relative flex items-center gap-3 bg-white/5 border border-white/10 px-4 py-2.5 rounded-xl group-hover:border-red-500/50 transition-all duration-500 overflow-hidden">
+                                <Search size={20} className="text-slate-400 group-hover:text-red-500 group-hover:scale-110 transition-all duration-500" />
+                                <div className="hidden xl:flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-white/5 border border-white/10">
+                                    <span className="text-[9px] font-black text-slate-500 group-hover:text-red-500/70">⌘</span>
+                                    <span className="text-[9px] font-black text-slate-500 group-hover:text-red-500/70">K</span>
+                                </div>
+                            </div>
+                        </button>
 
-                        <div className="w-[1px] h-8 bg-white/10 mx-2"></div>
+                        <div className="w-[1px] h-10 bg-white/10"></div>
 
                         {user ? (
                             <button
                                 onClick={onLogout}
-                                className="group flex items-center gap-4 bg-red-950/20 border border-red-500/20 px-6 py-3 rounded-2xl hover:bg-red-500/20 transition-all duration-300 active:scale-95"
+                                className="group flex items-center gap-4 bg-red-950/20 border border-red-500/30 px-6 py-4 rounded-2xl hover:bg-red-600/20 transition-all duration-500 active:scale-95"
                             >
-                                <LogOut size={16} className="text-red-500 group-hover:rotate-12 transition-transform" />
-                                <div className="flex flex-col items-start leading-none">
-                                    <span className="text-[11px] font-black text-white tracking-widest">SIGN OUT</span>
-                                    <span className="text-[7px] font-bold text-red-500/60 tracking-widest">TERMINATE</span>
-                                </div>
+                                <LogOut size={16} className="text-red-500" />
+                                <span className="text-[11px] font-black text-white tracking-[0.2em] uppercase">SIGN OUT</span>
                             </button>
                         ) : (
                             <NavLink
                                 to="/login"
                                 className="group relative"
                             >
-                                <div className="absolute -inset-1 bg-gradient-to-r from-red-600 to-red-400 rounded-2xl blur opacity-30 group-hover:opacity-60 transition duration-500"></div>
-                                <div className="relative flex items-center gap-4 bg-gradient-to-br from-red-600 to-red-800 px-7 py-3.5 rounded-2xl border border-white/20 shadow-2xl active:scale-95 transition-all">
-                                    <div className="w-8 h-8 rounded-lg bg-white/20 border border-white/20 flex items-center justify-center backdrop-blur-md group-hover:rotate-6 transition-transform">
-                                        <ShieldCheck size={18} className="text-white" />
+                                <div className="absolute -inset-2 bg-red-600/30 rounded-2.5xl blur-2xl opacity-0 group-hover:opacity-100 transition duration-700"></div>
+                                <div className="relative flex items-center gap-5 bg-gradient-to-br from-red-600 via-red-700 to-red-900 px-10 py-4.5 rounded-[1.25rem] border border-white/30 shadow-[0_15px_40px_-5px_rgba(220,38,38,0.5)] active:scale-95 transition-all duration-500">
+                                    <div className="relative w-10 h-10 rounded-xl bg-white/10 border border-white/20 flex items-center justify-center backdrop-blur-md group-hover:rotate-[360deg] transition-transform duration-1000">
+                                        <ShieldCheck size={20} className="text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.5)]" />
                                     </div>
-                                    <div className="flex flex-col items-start leading-none">
-                                        <span className="text-[12px] font-black uppercase text-white tracking-widest">ACCESS PORTAL</span>
-                                        <span className="text-[7px] font-bold text-red-100/60 uppercase tracking-[0.2em] mt-0.5">AUTHORIZE</span>
-                                    </div>
+                                    <span className="text-[14px] font-black uppercase text-white tracking-[0.25em]">LOGIN PORTAL</span>
                                 </div>
                             </NavLink>
                         )}
