@@ -4,104 +4,97 @@ import { ArrowRight, ChevronRight, Users, Globe2, Briefcase, Zap } from 'lucide-
 import { NavLink } from 'react-router-dom';
 
 const Home = () => {
-    return (
-        <section className="min-h-screen flex flex-col justify-center py-20 overflow-hidden">
-            <div className="container-premium space-y-24">
+    const pillars = [
+        {
+            title: 'Collective',
+            desc: 'Internal personnel directory and operative profiles.',
+            path: '/collective',
+            icon: Users,
+            tag: 'Directory'
+        },
+        {
+            title: 'Expeditions',
+            desc: 'Comprehensive archive of global technical breakthroughs.',
+            path: '/expeditions',
+            icon: Globe2,
+            tag: 'Archive'
+        },
+        {
+            title: 'Operatives',
+            desc: 'Strategic leadership and core project architects.',
+            path: '/operatives',
+            icon: Briefcase,
+            tag: 'Leadership'
+        }
+    ];
 
-                {/* ─── Hero Section ─── */}
-                <div className="max-w-5xl space-y-10 relative z-10 pt-20">
+    return (
+        <section className="min-h-screen flex flex-col justify-center py-20 overflow-hidden bg-transparent">
+            <div className="container-premium space-y-32">
+
+                {/* ─── Elegant Hero ─── */}
+                <div className="max-w-6xl">
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 1 }}
-                        className="space-y-6"
+                        transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+                        className="space-y-10"
                     >
-                        <div className="flex items-center gap-3">
-                            <div className="w-12 h-[1px] bg-red-500/50"></div>
-                            <span className="text-[10px] font-black uppercase tracking-[0.4em] text-red-400">Next-Gen Architecture</span>
+                        <div className="flex items-center gap-4">
+                            <span className="w-12 h-[2px] bg-red-600"></span>
+                            <span className="text-[11px] font-black uppercase tracking-[0.5em] text-red-500">v3.0 Core Active</span>
                         </div>
-                        <h1 className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-black heading-display leading-[0.8] tracking-tighter shrink-0">
-                            THE <span className="text-red-500 text-glow">FUTURE</span> <br />
-                            OF PORTFOLIO.
+
+                        <h1 className="text-7xl sm:text-8xl md:text-9xl font-black heading-display leading-[0.9] tracking-tighter text-white">
+                            DESIGN MEETS <br />
+                            <span className="text-red-500 italic drop-shadow-[0_0_30px_rgba(239,68,68,0.3)]">ENGINEERING.</span>
                         </h1>
-                    </motion.div>
 
-                    <motion.p
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ delay: 0.5, duration: 1 }}
-                        className="text-xl md:text-2xl text-slate-400 font-medium leading-relaxed max-w-2xl"
-                    >
-                        Expedition through a high-performance ecosystem where design meets engineering in the cold expanse of code.
-                    </motion.p>
+                        <p className="text-xl md:text-2xl text-slate-400 font-medium leading-relaxed max-w-2xl opacity-80">
+                            Explore the cold expanse of code through a high-performance ecosystem designed for the next generation of digital infrastructure.
+                        </p>
 
-                    <motion.div
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: 0.8 }}
-                        className="flex items-center gap-8 pt-6"
-                    >
-                        <NavLink to="/operatives" className="btn-primary flex items-center gap-4 group px-10 py-5">
-                            Initialize Sequence <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
-                        </NavLink>
-
-                        <div className="hidden sm:flex items-center gap-4 group cursor-pointer">
-                            <div className="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center group-hover:border-red-500/50 transition-colors">
-                                <Zap size={18} className="text-slate-500 group-hover:text-red-400" />
-                            </div>
-                            <span className="text-[10px] font-bold uppercase tracking-widest text-slate-500 group-hover:text-white transition-colors">v3.0 Core Active</span>
+                        <div className="flex flex-wrap items-center gap-8 pt-4">
+                            <NavLink to="/collective" className="group relative">
+                                <div className="absolute -inset-2 bg-red-600 rounded-3xl blur-xl opacity-20 group-hover:opacity-60 transition-opacity"></div>
+                                <div className="relative flex items-center gap-8 bg-red-600 text-white px-16 py-8 rounded-[2rem] font-black uppercase tracking-[0.3em] text-lg active:scale-95 transition-all shadow-[0_20px_60px_-15px_rgba(239,68,68,0.5)]">
+                                    Initialize Sequence <ArrowRight size={28} className="group-hover:translate-x-3 transition-transform duration-500" />
+                                </div>
+                            </NavLink>
                         </div>
                     </motion.div>
                 </div>
 
-                {/* ─── Main Pillars (Horizontal Cards) ─── */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative z-10">
-                    {[
-                        {
-                            title: 'Collective',
-                            desc: 'Internal personnel directory and operative profiles.',
-                            path: '/team',
-                            icon: Users,
-                            color: 'from-red-600/10'
-                        },
-                        {
-                            title: 'Expeditions',
-                            desc: 'Comprehensive archive of global technical breakthroughs.',
-                            path: '/expeditions',
-                            icon: Globe2,
-                            color: 'from-red-800/10'
-                        },
-                        {
-                            title: 'Operatives',
-                            desc: 'Strategic leadership and core project architects.',
-                            path: '/operatives',
-                            icon: Briefcase,
-                            color: 'from-red-950/10'
-                        }
-                    ].map((card, i) => (
+                {/* ─── Minimalist Pillars ─── */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+                    {pillars.map((card, i) => (
                         <motion.div
                             key={card.title}
-                            initial={{ opacity: 0, y: 30 }}
+                            initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 1 + (i * 0.1), duration: 0.8 }}
+                            transition={{ delay: 0.5 + (i * 0.1), duration: 1 }}
                         >
                             <NavLink
                                 to={card.path}
-                                className={`group block premium-card p-10 space-y-8 bg-gradient-to-br ${card.color} to-transparent border-white/5 hover:border-red-500/30 transition-all active:scale-[0.98] h-full`}
+                                className="group block premium-card p-12 bg-slate-950/40 border-white/5 hover:border-red-500/40 transition-all duration-500 h-full overflow-hidden"
                             >
-                                <div className="flex justify-between items-start">
-                                    <div className="p-4 rounded-2xl bg-slate-900 border border-white/5 group-hover:border-red-500/50 transition-colors">
-                                        <card.icon size={28} className="text-slate-400 group-hover:text-red-400" />
+                                <div className="flex justify-between items-start mb-12">
+                                    <div className="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center group-hover:bg-red-600/10 group-hover:border-red-500/50 transition-all">
+                                        <card.icon size={24} className="text-slate-500 group-hover:text-red-500 transition-colors" />
                                     </div>
-                                    <ChevronRight size={24} className="text-slate-700 group-hover:text-red-500 group-hover:translate-x-1 transition-all" />
+                                    <span className="text-[9px] font-black text-slate-600 tracking-[0.3em] uppercase">{card.tag}</span>
                                 </div>
+
                                 <div className="space-y-4">
-                                    <h3 className="text-3xl font-black heading-display">{card.title}</h3>
-                                    <p className="text-sm text-slate-500 font-medium leading-relaxed group-hover:text-slate-300 transition-colors">
+                                    <h3 className="text-4xl font-black heading-display group-hover:text-white transition-colors">{card.title}</h3>
+                                    <p className="text-[15px] text-slate-500 font-medium leading-relaxed">
                                         {card.desc}
                                     </p>
                                 </div>
-                                <div className="h-1 w-0 bg-red-500 group-hover:w-full transition-all duration-700"></div>
+
+                                <div className="mt-8 flex items-center gap-2 text-red-500 text-[10px] font-black tracking-widest opacity-0 group-hover:opacity-100 transition-all -translate-x-2 group-hover:translate-x-0">
+                                    EXPLORE <ArrowRight size={12} />
+                                </div>
                             </NavLink>
                         </motion.div>
                     ))}
@@ -109,8 +102,8 @@ const Home = () => {
 
             </div>
 
-            {/* Background Decorative Element */}
-            <div className="absolute top-1/2 right-0 -translate-y-1/2 translate-x-1/2 w-[800px] h-[800px] bg-red-600/5 rounded-full blur-[160px] pointer-events-none -z-10"></div>
+            {/* Subtle Gradient Glow */}
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1000px] h-[600px] bg-red-600/5 rounded-full blur-[150px] pointer-events-none -z-10"></div>
         </section>
     );
 };
