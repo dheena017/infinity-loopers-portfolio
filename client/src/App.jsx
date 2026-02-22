@@ -8,7 +8,7 @@ import Collective from './pages/Collective';
 import Expeditions from './pages/Expeditions';
 import Transmissions from './pages/Transmissions';
 import Login from './pages/Login';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion as Motion, AnimatePresence } from 'framer-motion';
 
 function AppContent() {
   const [loading, setLoading] = useState(true);
@@ -66,9 +66,9 @@ function AppContent() {
       <ThreeScene />
       <HUD user={user} onLogout={handleLogout} />
 
-      <main className="pt-24 min-h-screen">
+      <main className="pt-36 sm:pt-40 md:pt-44 min-h-screen">
         <AnimatePresence mode="wait">
-          <motion.div
+          <Motion.div
             key={location.pathname}
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
@@ -83,7 +83,7 @@ function AppContent() {
               <Route path="/team" element={<Collective students={students} user={user} setStudents={setStudents} />} />
               <Route path="/transmissions" element={<Transmissions />} />
             </Routes>
-          </motion.div>
+          </Motion.div>
         </AnimatePresence>
       </main>
 

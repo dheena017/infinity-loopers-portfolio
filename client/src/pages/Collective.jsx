@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion as Motion, AnimatePresence } from 'framer-motion';
 import { Users, X, Github, Linkedin, ExternalLink, Activity, LayoutGrid, Cpu, UserCheck, Edit3, Save, XCircle, ShieldCheck, Filter } from 'lucide-react';
 
 // ─── Edit Modal (Admin/Teacher only) ───────────────────────────────────────────────
@@ -38,14 +38,14 @@ const EditModal = ({ student, onClose, onSave }) => {
 
     return (
         <div className="fixed inset-0 z-[200] flex items-center justify-center p-8">
-            <motion.div
+            <Motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 onClick={onClose}
                 className="absolute inset-0 bg-slate-950/90 backdrop-blur-xl"
             />
-            <motion.div
+            <Motion.div
                 initial={{ opacity: 0, scale: 0.98, y: 10 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.98 }}
@@ -122,7 +122,7 @@ const EditModal = ({ student, onClose, onSave }) => {
                         {saveMsg}
                     </p>
                 )}
-            </motion.div>
+            </Motion.div>
         </div>
     );
 };
@@ -130,14 +130,14 @@ const EditModal = ({ student, onClose, onSave }) => {
 // ─── Profile Modal (View) ────────────────────────────────────────────────────
 const ProfileModal = ({ student, onClose, user, onEdit }) => (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-8">
-        <motion.div
+        <Motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
             className="absolute inset-0 bg-slate-950/90 backdrop-blur-2xl"
         />
-        <motion.div
+        <Motion.div
             initial={{ opacity: 0, scale: 0.98, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.98, y: 20 }}
@@ -214,7 +214,7 @@ const ProfileModal = ({ student, onClose, user, onEdit }) => (
                     </button>
                 </div>
             </div>
-        </motion.div>
+        </Motion.div>
     </div>
 );
 
@@ -236,24 +236,24 @@ const Collective = ({ students, user, setStudents }) => {
         : students.filter(s => s.term === selectedTerm);
 
     return (
-        <section className="py-24 min-h-screen">
-            <div className="container-premium space-y-24">
+        <section className="section-shell">
+            <div className="section-stack">
                 {/* Header */}
-                <motion.div
+                <Motion.div
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="flex flex-col md:flex-row md:items-end justify-between gap-12"
+                    className="flex flex-col md:flex-row md:items-end justify-between gap-8 md:gap-12"
                 >
                     <div className="space-y-4">
                         <div className="flex items-center gap-3 text-red-500 font-bold uppercase tracking-[0.2em] text-[10px]">
                             <LayoutGrid size={14} />
                             Directory System v3
                         </div>
-                        <h2 className="text-5xl sm:text-6xl md:text-7xl font-black heading-display break-words">Meet the <br /><span className="text-red-500">Professional</span> Team</h2>
+                        <h2 className="section-heading">Meet the <br /><span className="text-red-500">Professional</span> Team</h2>
                     </div>
 
                     {/* Filter Section */}
-                    <div className="space-y-4 bg-slate-900/50 p-6 rounded-2xl border border-white/5">
+                    <div className="space-y-4 bg-slate-900/50 p-4 sm:p-5 lg:p-6 rounded-2xl border border-white/5">
                         <div className="flex items-center gap-2 text-slate-500 text-[10px] font-bold uppercase tracking-widest ml-1">
                             <Filter size={12} /> Filter Results
                         </div>
@@ -262,7 +262,7 @@ const Collective = ({ students, user, setStudents }) => {
                                 <button
                                     key={term}
                                     onClick={() => setSelectedTerm(term)}
-                                    className={`px-5 py-2.5 text-[11px] font-bold uppercase tracking-wider rounded-lg transition-all border ${selectedTerm === term
+                                    className={`px-4 sm:px-5 py-2.5 text-[10px] sm:text-[11px] font-bold uppercase tracking-wider rounded-lg transition-all border ${selectedTerm === term
                                         ? 'bg-red-600 border-red-600 text-white shadow-lg shadow-red-900/40'
                                         : 'border-white/5 text-slate-500 hover:text-white hover:bg-white/5'
                                         }`}
@@ -272,17 +272,18 @@ const Collective = ({ students, user, setStudents }) => {
                             ))}
                         </div>
                     </div>
-                </motion.div>
+                </Motion.div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 gap-6">
+                <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 gap-3 sm:gap-4 lg:gap-6">
                     {filteredStudents.map((student, idx) => (
-                        <motion.div
+                        <Motion.button
                             key={student.id}
+                            type="button"
                             initial={{ opacity: 0, scale: 0.95 }}
                             animate={{ opacity: 1, scale: 1 }}
                             transition={{ delay: idx * 0.03 }}
                             onClick={() => setSelectedStudent(student)}
-                            className="group relative cursor-pointer premium-card overflow-hidden aspect-[4/5]"
+                            className="group relative cursor-pointer premium-card overflow-hidden aspect-[4/5] text-left"
                         >
                             <img
                                 src={student.photo}
@@ -290,9 +291,9 @@ const Collective = ({ students, user, setStudents }) => {
                                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-80 group-hover:opacity-100"
                                 onError={(e) => { e.target.src = `https://ui-avatars.com/api/?name=${student.name}&background=1e293b&color=fff&size=512`; }}
                             />
-                            <div className="absolute inset-x-0 bottom-0 p-5 bg-gradient-to-t from-slate-950 via-slate-950/60 to-transparent">
+                            <div className="absolute inset-x-0 bottom-0 p-3 sm:p-5 bg-gradient-to-t from-slate-950 via-slate-950/60 to-transparent">
                                 <span className="text-[10px] font-bold text-red-500 uppercase tracking-widest mb-1 block opacity-0 group-hover:opacity-100 transition-opacity">ID_{student.id}</span>
-                                <div className="text-sm font-bold text-white heading-display truncate">{student.name}</div>
+                                <div className="text-xs sm:text-sm font-bold text-white heading-display truncate">{student.name}</div>
                             </div>
 
                             {user?.role === 'teacher' && (
@@ -300,7 +301,7 @@ const Collective = ({ students, user, setStudents }) => {
                                     <Edit3 size={14} className="text-white" />
                                 </div>
                             )}
-                        </motion.div>
+                        </Motion.button>
                     ))}
                 </div>
             </div>

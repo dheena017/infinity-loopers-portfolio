@@ -1,10 +1,10 @@
 import React from 'react';
 import { Github, Linkedin, Mail, ExternalLink, Briefcase } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { motion as Motion } from 'framer-motion';
 
 const ProfileCard = ({ member, alternate }) => {
     return (
-        <motion.div
+        <Motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-100px" }}
@@ -67,12 +67,12 @@ const ProfileCard = ({ member, alternate }) => {
                         </a>
                     </div>
 
-                    <button className="px-8 py-3 bg-red-600 text-white font-bold tracking-widest text-[10px] uppercase hover:bg-red-500 rounded-xl transition-all flex items-center gap-3 ml-auto shadow-xl shadow-red-900/20 active:scale-95">
+                    <a href={member.linkedin} target="_blank" rel="noopener noreferrer" className="px-8 py-3 bg-red-600 text-white font-bold tracking-widest text-[10px] uppercase hover:bg-red-500 rounded-xl transition-all flex items-center gap-3 ml-auto shadow-xl shadow-red-900/20 active:scale-95">
                         Executive Summary <ExternalLink size={16} />
-                    </button>
+                    </a>
                 </div>
             </div>
-        </motion.div>
+        </Motion.div>
     );
 };
 

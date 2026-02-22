@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { Send, Mail, MessageSquare, ShieldCheck, CheckCircle2, Loader2, ArrowRight } from 'lucide-react';
+import { motion as Motion } from 'framer-motion';
+import { Mail, MessageSquare, ShieldCheck, CheckCircle2, Loader2, ArrowRight } from 'lucide-react';
 
 const Transmissions = () => {
     const [status, setStatus] = useState("IDLE");
@@ -12,11 +12,11 @@ const Transmissions = () => {
     };
 
     return (
-        <section className="py-24 min-h-screen">
-            <div className="container-premium space-y-24 max-w-4xl">
+        <section className="section-shell">
+            <div className="section-stack max-w-4xl">
 
                 {/* Header Section */}
-                <motion.div
+                <Motion.div
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     className="space-y-6 text-center"
@@ -25,17 +25,17 @@ const Transmissions = () => {
                         <Mail size={14} />
                         Communications Center
                     </div>
-                    <h2 className="text-5xl sm:text-7xl font-black heading-display break-words">Contact <br /><span className="text-red-500">The Team</span></h2>
-                    <p className="text-lg text-slate-400 max-w-lg mx-auto leading-relaxed">
+                    <h2 className="section-heading">Contact <br /><span className="text-red-500">The Team</span></h2>
+                    <p className="section-copy max-w-lg mx-auto">
                         Have a project in mind or just want to say hello? Our team is always open to discussing new opportunities and technical challenges.
                     </p>
-                </motion.div>
+                </Motion.div>
 
                 {/* Contact Form */}
-                <motion.div
+                <Motion.div
                     initial={{ opacity: 0, scale: 0.98 }}
                     animate={{ opacity: 1, scale: 1 }}
-                    className="premium-card p-12 md:p-16 shadow-2xl relative overflow-hidden"
+                    className="panel-card p-8 md:p-12 lg:p-14 shadow-2xl relative overflow-hidden"
                 >
                     <div className="absolute top-0 right-0 p-8 opacity-5">
                         <MessageSquare size={120} className="text-white" />
@@ -101,7 +101,7 @@ const Transmissions = () => {
                             </button>
                         </div>
                     </form>
-                </motion.div>
+                </Motion.div>
 
                 <div className="flex flex-col items-center gap-4 pt-12">
                     <div className="flex gap-12 opacity-30 grayscale hover:grayscale-0 hover:opacity-100 transition-all duration-700">

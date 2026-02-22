@@ -118,6 +118,44 @@ body {
   @apply max-w-7xl mx-auto px-6 sm:px-8 lg:px-12;
 }
 
+.section-shell {
+  @apply min-h-screen py-20 md:py-24;
+}
+
+.section-stack {
+  @apply max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 space-y-20 md:space-y-24;
+}
+
+.section-heading {
+  @apply text-4xl sm:text-6xl md:text-7xl font-black break-words;
+  font-family: var(--font-display);
+  letter-spacing: -0.04em;
+  line-height: 0.9;
+  text-transform: uppercase;
+}
+
+.section-copy {
+  @apply text-base md:text-lg text-slate-400 leading-relaxed;
+}
+
+.panel-card {
+  background: rgba(8, 10, 24, 0.6);
+  backdrop-filter: blur(24px) saturate(200%);
+  -webkit-backdrop-filter: blur(24px) saturate(200%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 1.5rem;
+  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+  @apply bg-slate-900/40;
+}
+
+.panel-card:hover {
+  border-color: rgba(239, 68, 68, 0.3);
+  background: rgba(8, 10, 24, 0.8);
+  transform: translateY(-4px) scale(1.01);
+  box-shadow: 0 12px 48px 0 rgba(239, 68, 68, 0.15);
+}
+
 /* Remove Space Theme Specifics */
 .scanline, .grain-overlay, .grid-bg, .glow-text, .font-mono-tech {
   display: none !important;

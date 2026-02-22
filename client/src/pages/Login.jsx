@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion as Motion } from 'framer-motion';
 import { Shield, User, UserCheck, Eye, LogIn, AlertCircle, Loader2, ArrowRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
@@ -31,7 +31,7 @@ const Login = ({ onLogin }) => {
             } else {
                 setError(data.message || 'Authentication failed');
             }
-        } catch (err) {
+        } catch {
             setError('Server connection error');
         } finally {
             setLoading(false);
@@ -39,11 +39,11 @@ const Login = ({ onLogin }) => {
     };
 
     return (
-        <section className="min-h-screen flex items-center justify-center py-24 px-6 relative overflow-hidden">
-            <motion.div
+        <section className="section-shell flex items-center justify-center px-6 relative overflow-hidden">
+            <Motion.div
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="w-full max-w-md premium-card p-12 bg-slate-900 shadow-2xl relative z-10"
+                className="w-full max-w-md panel-card p-8 md:p-10 shadow-2xl relative z-10"
             >
                 <div className="text-center mb-10">
                     <div className="inline-flex items-center justify-center p-4 rounded-2xl bg-red-500/10 mb-6">
@@ -108,14 +108,14 @@ const Login = ({ onLogin }) => {
                     )}
 
                     {error && (
-                        <motion.div
+                        <Motion.div
                             initial={{ opacity: 0, x: -10 }}
                             animate={{ opacity: 1, x: 0 }}
                             className="flex items-center gap-3 p-4 bg-rose-500/10 border border-rose-500/20 text-rose-500 rounded-xl text-xs font-bold"
                         >
                             <AlertCircle size={14} />
                             <span>{error}</span>
-                        </motion.div>
+                        </Motion.div>
                     )}
 
                     <button
@@ -135,10 +135,10 @@ const Login = ({ onLogin }) => {
                         System access is logged and encrypted. <br /> Secure Environment v3.1.0
                     </p>
                 </div>
-            </motion.div>
+            </Motion.div>
 
             {/* Background elements */}
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-red-600/5 rounded-full blur-[160px] pointer-events-none"></div>
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-amber-400/10 rounded-full blur-[160px] pointer-events-none"></div>
         </section>
     );
 };

@@ -1,6 +1,6 @@
 import React from 'react';
-import { motion } from 'framer-motion';
-import { Briefcase, Shield, Zap, Target, ArrowUpRight, Github, ExternalLink, Globe2, Compass } from 'lucide-react';
+import { motion as Motion } from 'framer-motion';
+import { Briefcase, Shield, Zap, ArrowUpRight, Github, ExternalLink, Globe2, Compass } from 'lucide-react';
 
 const projects = [
     {
@@ -9,7 +9,9 @@ const projects = [
         desc: "A high-performance data synchronisation platform designed for large-scale enterprise architectures.",
         tags: ["React", "TypeScript", "Redis"],
         icon: Zap,
-        color: "blue"
+        color: "blue",
+        github: "https://github.com",
+        demo: "https://example.com"
     },
     {
         id: 2,
@@ -17,7 +19,9 @@ const projects = [
         desc: "Managing historical and real-time records through a secure, distributed database system.",
         tags: ["PostgreSQL", "Node.js", "AWS"],
         icon: Globe2,
-        color: "indigo"
+        color: "indigo",
+        github: "https://github.com",
+        demo: "https://example.com"
     },
     {
         id: 3,
@@ -25,7 +29,9 @@ const projects = [
         desc: "Advanced security protocols and identity management for cross-border communications.",
         tags: ["OAuth2", "Next.js", "Prisma"],
         icon: Shield,
-        color: "slate"
+        color: "slate",
+        github: "https://github.com",
+        demo: "https://example.com"
     },
     {
         id: 4,
@@ -33,17 +39,19 @@ const projects = [
         desc: "The latest evolution of our internal dashboard and performance tracking engine.",
         tags: ["GraphQL", "Tailwind", "Framer"],
         icon: Briefcase,
-        color: "blue"
+        color: "blue",
+        github: "https://github.com",
+        demo: "https://example.com"
     }
 ];
 
 const Expeditions = () => {
     return (
-        <section className="py-24 min-h-screen">
-            <div className="container-premium space-y-32">
+        <section className="section-shell">
+            <div className="section-stack md:space-y-28">
 
                 {/* Header Section */}
-                <motion.div
+                <Motion.div
                     initial={{ opacity: 0, y: 10 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     className="flex flex-col md:flex-row md:items-end justify-between gap-12"
@@ -53,35 +61,35 @@ const Expeditions = () => {
                             <Compass size={14} />
                             Strategic Initiatives 2024
                         </div>
-                        <h2 className="text-5xl sm:text-7xl font-black heading-display break-words">Global <br /><span className="text-red-500">Expeditions</span></h2>
+                        <h2 className="section-heading">Global <br /><span className="text-red-500">Expeditions</span></h2>
                     </div>
 
-                    <p className="text-lg text-slate-400 max-w-sm leading-relaxed border-l border-white/5 pl-8">
+                    <p className="section-copy max-w-sm border-l border-white/5 pl-8">
                         A dedicated showcase of our most complex and impactful technical breakthroughs in global engineering.
                     </p>
-                </motion.div>
+                </Motion.div>
 
                 {/* Project Grid */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
                     {projects.map((project, idx) => (
-                        <motion.div
+                        <Motion.div
                             key={project.id}
                             initial={{ opacity: 0, y: 20 }}
                             whileInView={{ opacity: 1, y: 0 }}
                             transition={{ delay: idx * 0.1 }}
-                            className="group relative premium-card p-12 flex flex-col gap-10 bg-slate-900/40"
+                            className="group relative panel-card p-8 lg:p-10 flex flex-col gap-8"
                         >
                             <div className="flex justify-between items-start">
                                 <div className={`p-4 rounded-xl bg-slate-950 border border-white/5`}>
                                     <project.icon size={28} className="text-red-500" />
                                 </div>
                                 <div className="flex gap-3">
-                                    <button className="p-3 bg-slate-950 rounded-xl border border-white/5 hover:border-red-500/50 transition-colors">
+                                    <a href={project.github} target="_blank" rel="noopener noreferrer" className="p-3 bg-slate-950 rounded-xl border border-white/5 hover:border-red-500/50 transition-colors">
                                         <Github size={18} className="text-slate-500 group-hover:text-white" />
-                                    </button>
-                                    <button className="p-3 bg-slate-950 rounded-xl border border-white/5 hover:border-red-500/50 transition-colors">
+                                    </a>
+                                    <a href={project.demo} target="_blank" rel="noopener noreferrer" className="p-3 bg-slate-950 rounded-xl border border-white/5 hover:border-red-500/50 transition-colors">
                                         <ExternalLink size={18} className="text-slate-500 group-hover:text-white" />
-                                    </button>
+                                    </a>
                                 </div>
                             </div>
 
@@ -105,7 +113,7 @@ const Expeditions = () => {
                             <div className="absolute top-6 right-6 opacity-0 group-hover:opacity-100 transition-all group-hover:translate-x-1 group-hover:-translate-y-1">
                                 <ArrowUpRight size={24} className="text-red-500/40" />
                             </div>
-                        </motion.div>
+                        </Motion.div>
                     ))}
                 </div>
             </div>

@@ -5,6 +5,7 @@ const ThreeScene = () => {
     const containerRef = useRef();
 
     useEffect(() => {
+        const container = containerRef.current;
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 15000);
         const renderer = new THREE.WebGLRenderer({
@@ -14,7 +15,7 @@ const ThreeScene = () => {
         });
         renderer.setSize(window.innerWidth, window.innerHeight);
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5)); // Lower pixel ratio for smoother frames
-        containerRef.current.appendChild(renderer.domElement);
+        container.appendChild(renderer.domElement);
 
         // --- Optimized Textures (Memoized) ---
         const createGlowTexture = () => {
@@ -100,7 +101,7 @@ const ThreeScene = () => {
 
         const createNebulae = () => {
             const group = new THREE.Group();
-            const colors = ['#ef4444', '#991b1b', '#dc2626', '#450a0a']; // Kalvium Reds and Crimsons
+            const colors = ['#1d4ed8', '#3730a3', '#7c3aed', '#0ea5e9', '#a78bfa'];
             for (let i = 0; i < 10; i++) { // Reduced count for performance
                 const count = 50;
                 const geo = new THREE.BufferGeometry();
@@ -119,7 +120,7 @@ const ThreeScene = () => {
                 }
                 geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
                 geo.setAttribute('color', new THREE.BufferAttribute(col, 3));
-                const mat = new THREE.PointsMaterial({ size: 4000, map: glowTex, vertexColors: true, transparent: true, opacity: 0.05, blending: THREE.AdditiveBlending, depthWrite: false });
+                const mat = new THREE.PointsMaterial({ size: 4200, map: glowTex, vertexColors: true, transparent: true, opacity: 0.035, blending: THREE.AdditiveBlending, depthWrite: false });
                 group.add(new THREE.Points(geo, mat));
             }
             scene.add(group);
@@ -129,16 +130,17 @@ const ThreeScene = () => {
         // --- Init ---
         const mainGalaxy = createGalaxy({
             count: 35000, // Balanced count
-            size: 0.12, // Increased size for bold "dots"
+            size: 0.1,
             radius: 10,
             branches: 5,
-            spin: 1,
+            spin: 0.82,
             randomness: 0.25,
             randomnessPower: 3,
-            insideColor: '#ef4444', // Kalvium Red
-            outsideColor: '#1a0505' // Deep Cosmic Red
+            insideColor: '#e2e8f0',
+            outsideColor: '#312e81'
         });
-        const starField = createStarfield(10000, 15, 0.04, '#ffffff'); // Increased star size
+        const nearStars = createStarfield(9500, 15, 0.032, '#f8fafc');
+        const deepStars = createStarfield(15000, 20, 0.016, '#bfdbfe');
         const nebulae = createNebulae();
 
         camera.position.z = 14;
@@ -148,12 +150,15 @@ const ThreeScene = () => {
         const clock = new THREE.Clock();
         const animate = () => {
             const time = clock.getElapsedTime();
-            mainGalaxy.rotation.y = time * 0.08; // Faster rotation
-            starField.rotation.y = time * 0.01; // Faster star movement
+            mainGalaxy.rotation.y = time * 0.045;
+            nearStars.rotation.y = time * 0.008;
+            deepStars.rotation.y = -time * 0.003;
+            nearStars.material.opacity = 0.44 + Math.sin(time * 0.35) * 0.04;
+            deepStars.material.opacity = 0.3 + Math.cos(time * 0.28) * 0.03;
 
 
             nebulae.children.forEach((n, i) => {
-                n.rotation.y = time * (0.01 + i * 0.001);
+                n.rotation.y = time * (0.004 + i * 0.0005);
             });
 
             renderer.render(scene, camera);
@@ -170,7 +175,7 @@ const ThreeScene = () => {
 
         return () => {
             window.removeEventListener('resize', onResize);
-            if (containerRef.current) containerRef.current.removeChild(renderer.domElement);
+            if (container) container.removeChild(renderer.domElement);
             scene.traverse(o => {
                 if (o.geometry) o.geometry.dispose();
                 if (o.material) (Array.isArray(o.material) ? o.material : [o.material]).forEach(m => m.dispose());
@@ -179,7 +184,15 @@ const ThreeScene = () => {
         };
     }, []);
 
-    return <div ref={containerRef} className="fixed inset-0 -z-20 pointer-events-none bg-[#030304]" />;
+    return (
+        <div
+            ref={containerRef}
+            className="fixed inset-0 -z-20 pointer-events-none"
+            style={{
+                background: 'radial-gradient(1200px 700px at 50% 40%, rgba(59, 130, 246, 0.10), rgba(10, 10, 28, 0.9) 45%, #02030a 100%)'
+            }}
+        />
+    );
 };
 
 export default ThreeScene;
