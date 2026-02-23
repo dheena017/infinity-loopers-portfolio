@@ -23,6 +23,8 @@
   color: #f8fafc;
   background-color: var(--color-bg-deep);
   -webkit-font-smoothing: antialiased;
+  scroll-padding-top: 180px;
+  scroll-behavior: smooth;
 }
 
 * {
@@ -142,7 +144,7 @@ body {
 }
 
 .section-shell {
-  @apply min-h-screen py-20 md:py-24;
+  @apply min-h-screen pt-40 pb-20 md:pt-52 md:pb-24 lg:pt-64;
 }
 
 .section-stack {
