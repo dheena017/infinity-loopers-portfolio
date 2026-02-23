@@ -57,3 +57,21 @@ export const mentorData = [
         photo: "/assets/mentor2.jpg"
     }
 ];
+
+// Additional mentors requested
+mentorData.push(
+    {
+        id: 3,
+        name: "Dr. Cassandra Voss",
+        role: "AI & ML Advisor",
+        desc: "Leads applied research in machine learning and interpretable AI for realtime systems.",
+        photo: "/assets/mentor3.jpg"
+    },
+    {
+        id: 4,
+        name: "Professor Imani Ruiz",
+        role: "Systems & Security",
+        desc: "Specializes in distributed systems security, threat modeling, and resilient architectures.",
+        photo: "/assets/mentor4.jpg"
+    }
+);

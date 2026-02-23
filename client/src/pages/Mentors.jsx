@@ -1,65 +1,92 @@
 import React from 'react';
 import { motion as Motion } from 'framer-motion';
-import { mentorData } from '../data/team';
+import { useEffect, useState } from 'react';
+import { mentorData as localMentors } from '../data/team';
+import ProfileCard from '../components/ProfileCard';
+import { Briefcase, Star, Users } from 'lucide-react';
 import { Users, ChevronRight, Briefcase } from 'lucide-react';
 
 const Mentors = () => {
+    const [mentors, setMentors] = useState(localMentors);
+    const [loading, setLoading] = useState(false);
+
+    useEffect(() => {
+        let cancelled = false;
+        setLoading(true);
+        fetch('/api/mentors')
+            .then((r) => r.json())
+            .then((payload) => {
+                if (cancelled) return;
+                if (payload && payload.success && Array.isArray(payload.data)) {
+                    setMentors(payload.data);
+                }
+            })
+            .catch((err) => {
+                console.warn('Mentors fetch failed, using local data:', err);
+            })
+            .finally(() => { if (!cancelled) setLoading(false); });
+
+        return () => { cancelled = true; };
+    }, []);
+
     return (
         <section className="section-shell">
             <div className="section-stack md:space-y-28">
-                {/* Header */}
-                <Motion.div
-                    initial={{ opacity: 0, y: -20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="space-y-6 text-center max-w-4xl mx-auto"
-                >
-                    <div className="inline-flex items-center gap-2 px-3 py-1 bg-red-500/10 border border-red-500/20 rounded-full text-red-400 text-[10px] font-bold uppercase tracking-widest mx-auto">
-                        <Users size={14} />
-                        Professional Guidance
-                    </div>
-                    <h2 className="section-heading">Board of <br /><span className="text-red-500">Advisors</span></h2>
-                    <p className="section-copy max-w-lg mx-auto">
-                        Experienced industry leaders providing strategic direction and technical architectural oversight.
-                    </p>
-                </Motion.div>
 
-                {/* Mentors Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
-                    {mentorData.map((mentor, idx) => (
-                        <Motion.div
+                {/* Section Header */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                    <Motion.div
+                        initial={{ opacity: 0, x: -20 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        className="space-y-6"
+                    >
+                        <div className="inline-flex items-center gap-2 px-3 py-1 bg-red-500/10 border border-red-500/20 rounded-full text-red-400 text-[10px] font-bold uppercase tracking-widest">
+                            <Briefcase size={14} />
+                            Advisory Leadership
+                        </div>
+                        <h2 className="section-heading">Board of <br /><span className="text-red-500">Advisors</span></h2>
+                        <p className="section-copy max-w-lg">
+                            Experienced industry leaders providing strategic direction and technical architectural oversight.
+                        </p>
+                    </Motion.div>
+
+                    <Motion.div
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        whileInView={{ opacity: 1, scale: 1 }}
+                        className="panel-card p-8 lg:p-10 flex flex-col gap-6"
+                    >
+                        <div className="flex items-center gap-4 text-slate-200">
+                            <Star size={20} className="text-amber-500" />
+                            <span className="font-bold text-lg heading-display">Mentor Network</span>
+                        </div>
+                        <p className="text-sm text-slate-400 leading-relaxed">
+                            Our mentors bring deep domain expertise across systems, security, and product strategy.
+                        </p>
+                        <div className="h-px bg-white/5"></div>
+                        <div className="flex justify-between items-center text-xs font-bold uppercase tracking-widest text-slate-500">
+                            <span>Trusted Advisors</span>
+                            <span>Community Verified</span>
+                        </div>
+                    </Motion.div>
+                </div>
+
+                {/* Mentors List (ProfileCard style) */}
+                <div className="grid grid-cols-1 gap-12">
+                    {mentors.map((mentor, idx) => (
+                        <ProfileCard
                             key={mentor.id}
-                            initial={{ opacity: 0, y: 20 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true }}
-                            transition={{ delay: idx * 0.1 }}
-                            className="panel-card p-6 lg:p-8 flex items-center gap-6 lg:gap-8 group"
-                        >
-                            <div className="w-24 h-24 sm:w-32 sm:h-32 rounded-2xl overflow-hidden border border-white/5 relative flex-shrink-0 bg-slate-950">
-                                <img 
-                                    src={mentor.photo} 
-                                    alt={mentor.name} 
-                                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                                    onError={(e) => { e.target.src = `https://ui-avatars.com/api/?name=${mentor.name}&background=1e293b&color=fff&size=512`; }}
-                                />
-                                <div className="absolute inset-0 bg-red-500/10 group-hover:bg-transparent transition-colors"></div>
-                            </div>
-                            
-                            <div className="space-y-3 flex-1">
-                                <div className="text-[10px] font-black text-red-500 uppercase tracking-[0.2em] opacity-80 group-hover:opacity-100 transition-opacity">
-                                    {mentor.role}
-                                </div>
-                                <h3 className="text-2xl sm:text-3xl font-black heading-display text-white group-hover:text-red-50 transition-colors leading-tight">
-                                    {mentor.name}
-                                </h3>
-                                <p className="text-sm text-slate-400 leading-relaxed line-clamp-3">
-                                    {mentor.desc}
-                                </p>
-                            </div>
-
-                            <div className="opacity-0 group-hover:opacity-100 transition-opacity -translate-x-4 group-hover:translate-x-0 duration-500">
-                                <ChevronRight size={24} className="text-red-500" />
-                            </div>
-                        </Motion.div>
+                            member={{
+                                id: mentor.id,
+                                name: mentor.name,
+                                role: mentor.role || 'Advisor',
+                                bio: mentor.desc || '',
+                                github: mentor.github || '',
+                                linkedin: mentor.linkedin || '',
+                                email: mentor.email || '',
+                                photo: mentor.photo || '/assets/mentor1.jpg'
+                            }}
+                            alternate={idx % 2 !== 0}
+                        />
                     ))}
                 </div>
             </div>

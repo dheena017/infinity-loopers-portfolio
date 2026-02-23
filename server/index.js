@@ -10,6 +10,7 @@ import missionRoutes from './routes/missions.js';
 import archiveRoutes from './routes/archives.js';
 import portfolioRoutes from './routes/portfolio.js';
 import secretaryRoutes from './routes/secretaries.js';
+import mentorRoutes from './routes/mentors.js';
 import { getStudentByEmail } from './queries.js';
 
 dotenv.config();
@@ -41,6 +42,7 @@ app.use('/api/missions', missionRoutes);
 app.use('/api/archives', archiveRoutes);
 app.use('/api/portfolio', portfolioRoutes);
 app.use('/api/secretaries', secretaryRoutes);
+app.use('/api/mentors', mentorRoutes);
 
 // Auth Route (Keeping for now as it's simple)
 app.post('/api/login', async (req, res) => {
