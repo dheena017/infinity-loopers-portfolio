@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import ThreeScene from './components/ThreeScene';
 import HUD from './components/HUD';
+import Loading from './components/Loading';
 import Home from './pages/Home';
 import Operatives from './pages/Operatives';
 import Mentors from './pages/Mentors';
@@ -66,6 +67,7 @@ function AppContent() {
     }
 
     const fetchData = async () => {
+      const startTime = Date.now();
       try {
         const response = await fetch('http://localhost:5000/api/students');
         if (!response.ok) throw new Error('Network response was not ok');
@@ -80,18 +82,17 @@ function AppContent() {
         }));
         setStudents(fallback);
       } finally {
-        setLoading(false);
+        // Ensure loading screen shows for at least 2 seconds
+        const elapsed = Date.now() - startTime;
+        const minLoadTime = 2000;
+        setTimeout(() => setLoading(false), Math.max(0, minLoadTime - elapsed));
       }
     };
     fetchData();
   }, []);
 
   if (loading) {
-    return (
-      <div className="fixed inset-0 bg-[#0f172a] flex items-center justify-center font-sans z-[200]">
-        <div className="w-12 h-12 border-4 border-blue-500/20 border-t-blue-500 rounded-full animate-spin"></div>
-      </div>
-    );
+    return <Loading />;
   }
 
   return (
