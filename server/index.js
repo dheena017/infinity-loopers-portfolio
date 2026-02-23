@@ -1,7 +1,14 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import { getSupabase, initSupabase } from './supabaseClient.js';
+import { initSupabase } from './supabaseClient.js';
+
+// Import Routes
+import studentRoutes from './routes/students.js';
+import operativeRoutes from './routes/operatives.js';
+import missionRoutes from './routes/missions.js';
+import archiveRoutes from './routes/archives.js';
+import portfolioRoutes from './routes/portfolio.js';
 
 dotenv.config();
 
@@ -25,163 +32,14 @@ app.get('/', (req, res) => {
     res.json({ message: 'Space Portfolio Backend API Running' });
 });
 
-// ==================== STUDENTS ====================
+// Register Routes
+app.use('/api/students', studentRoutes);
+app.use('/api/operatives', operativeRoutes);
+app.use('/api/missions', missionRoutes);
+app.use('/api/archives', archiveRoutes);
+app.use('/api/portfolio', portfolioRoutes);
 
-// GET /api/students - Get all students
-app.get('/api/students', async (req, res) => {
-    try {
-        const supabase = getSupabase();
-        const { data, error } = await supabase
-            .from('students')
-            .select('*')
-            .order('id', { ascending: true });
-
-        if (error) throw error;
-        res.json({ success: true, data: data || [] });
-    } catch (error) {
-        res.status(500).json({ success: false, error: error.message });
-    }
-});
-
-// GET /api/students/:id - Get student by ID
-app.get('/api/students/:id', async (req, res) => {
-    try {
-        const supabase = getSupabase();
-        const { data, error } = await supabase
-            .from('students')
-            .select('*')
-            .eq('id', parseInt(req.params.id))
-            .single();
-
-        if (error && error.code !== 'PGRST116') throw error;
-        if (!data) return res.status(404).json({ success: false, error: 'Student not found' });
-
-        res.json({ success: true, data });
-    } catch (error) {
-        res.status(500).json({ success: false, error: error.message });
-    }
-});
-
-// PUT /api/students/:id - Update student
-app.put('/api/students/:id', async (req, res) => {
-    try {
-        const supabase = getSupabase();
-        const { data, error } = await supabase
-            .from('students')
-            .update(req.body)
-            .eq('id', parseInt(req.params.id))
-            .select()
-            .single();
-
-        if (error) throw error;
-        res.json({ success: true, data });
-    } catch (error) {
-        res.status(500).json({ success: false, error: error.message });
-    }
-});
-
-// ==================== OPERATIVES ====================
-
-// GET /api/operatives - Get all operatives
-app.get('/api/operatives', async (req, res) => {
-    try {
-        const supabase = getSupabase();
-        const { data, error } = await supabase
-            .from('operatives')
-            .select('*')
-            .order('created_at', { ascending: false });
-
-        if (error) throw error;
-        res.json({ success: true, data: data || [] });
-    } catch (error) {
-        res.status(500).json({ success: false, error: error.message });
-    }
-});
-
-// ==================== MISSIONS ====================
-
-// GET /api/missions - Get all missions
-app.get('/api/missions', async (req, res) => {
-    try {
-        const supabase = getSupabase();
-        // Join with operatives via mission_operatives if needed, but for now simple select
-        const { data, error } = await supabase
-            .from('missions')
-            .select(`
-                *,
-                operatives:mission_operatives(
-                    operative:operatives(*)
-                )
-            `)
-            .order('created_at', { ascending: false });
-
-        if (error) throw error;
-        
-        // Transform data to flattening the structure if desired, or keep as is
-        const transformedData = data.map(mission => ({
-            ...mission,
-            assigned_operatives: mission.operatives.map(mo => mo.operative)
-        }));
-
-        res.json({ success: true, data: transformedData });
-    } catch (error) {
-        res.status(500).json({ success: false, error: error.message });
-    }
-});
-
-// ==================== ARCHIVES ====================
-
-// GET /api/archives - Get all archives
-app.get('/api/archives', async (req, res) => {
-    try {
-        const supabase = getSupabase();
-        const { data, error } = await supabase
-            .from('archives')
-            .select(`
-                *,
-                mission:missions(title)
-            `)
-            .order('date_recorded', { ascending: false });
-
-        if (error) throw error;
-        res.json({ success: true, data: data || [] });
-    } catch (error) {
-        res.status(500).json({ success: false, error: error.message });
-    }
-});
-
-// ==================== PORTFOLIO ====================
-
-// GET /api/portfolio - Get portfolio versions
-app.get('/api/portfolio', async (req, res) => {
-    try {
-        const supabase = getSupabase();
-        const { data, error } = await supabase
-            .from('portfolio')
-            .select(`
-                *,
-                missions:portfolio_missions(
-                    mission:missions(title, status)
-                )
-            `)
-            .order('release_date', { ascending: false });
-
-        if (error) throw error;
-
-         // Transform data
-         const transformedData = data.map(item => ({
-            ...item,
-            linked_missions: item.missions.map(pm => pm.mission)
-        }));
-
-        res.json({ success: true, data: transformedData });
-    } catch (error) {
-        res.status(500).json({ success: false, error: error.message });
-    }
-});
-
-// ==================== AUTH ====================
-
+// Auth Route (Keeping for now as it's simple)
 app.post('/api/login', (req, res) => {
     const { username, password, role } = req.body;
 
@@ -199,4 +57,3 @@ app.post('/api/login', (req, res) => {
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
-

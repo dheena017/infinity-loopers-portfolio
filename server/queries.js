@@ -1,17 +1,9 @@
 // Supabase Query Helpers
 import { getSupabase } from './supabaseClient.js';
-import {
-  Operative,
-  Mission,
-  Archive,
-  Portfolio,
-  Student,
-  MissionOperative,
-} from './types.js';
 
 // ==================== OPERATIVES ====================
 
-export async function getAllOperatives(): Promise<Operative[]> {
+export async function getAllOperatives() {
   const supabase = getSupabase();
   const { data, error } = await supabase
     .from('operatives')
@@ -22,7 +14,7 @@ export async function getAllOperatives(): Promise<Operative[]> {
   return data || [];
 }
 
-export async function getOperativeById(id: string): Promise<Operative | null> {
+export async function getOperativeById(id) {
   const supabase = getSupabase();
   const { data, error } = await supabase
     .from('operatives')
@@ -34,7 +26,7 @@ export async function getOperativeById(id: string): Promise<Operative | null> {
   return data || null;
 }
 
-export async function getActiveOperatives(): Promise<Operative[]> {
+export async function getActiveOperatives() {
   const supabase = getSupabase();
   const { data, error } = await supabase
     .from('operatives')
@@ -46,7 +38,7 @@ export async function getActiveOperatives(): Promise<Operative[]> {
   return data || [];
 }
 
-export async function getOperativesInMission(missionId: string): Promise<Operative[]> {
+export async function getOperativesInMission(missionId) {
   const supabase = getSupabase();
   const { data, error } = await supabase
     .from('mission_operatives')
@@ -54,10 +46,10 @@ export async function getOperativesInMission(missionId: string): Promise<Operati
     .eq('mission_id', missionId);
 
   if (error) throw new Error(`Failed to fetch mission operatives: ${error.message}`);
-  return data?.map((mo: any) => mo.operatives).filter(Boolean) || [];
+  return data?.map((mo) => mo.operatives).filter(Boolean) || [];
 }
 
-export async function createOperative(operative: Omit<Operative, 'id' | 'created_at'>): Promise<Operative> {
+export async function createOperative(operative) {
   const supabase = getSupabase();
   const { data, error } = await supabase
     .from('operatives')
@@ -69,7 +61,7 @@ export async function createOperative(operative: Omit<Operative, 'id' | 'created
   return data;
 }
 
-export async function updateOperative(id: string, updates: Partial<Operative>): Promise<Operative> {
+export async function updateOperative(id, updates) {
   const supabase = getSupabase();
   const { data, error } = await supabase
     .from('operatives')
@@ -82,7 +74,7 @@ export async function updateOperative(id: string, updates: Partial<Operative>): 
   return data;
 }
 
-export async function deleteOperative(id: string): Promise<void> {
+export async function deleteOperative(id) {
   const supabase = getSupabase();
   const { error } = await supabase
     .from('operatives')
@@ -94,7 +86,7 @@ export async function deleteOperative(id: string): Promise<void> {
 
 // ==================== MISSIONS ====================
 
-export async function getAllMissions(): Promise<Mission[]> {
+export async function getAllMissions() {
   const supabase = getSupabase();
   const { data, error } = await supabase
     .from('missions')
@@ -105,7 +97,7 @@ export async function getAllMissions(): Promise<Mission[]> {
   return data || [];
 }
 
-export async function getMissionById(id: string): Promise<Mission | null> {
+export async function getMissionById(id) {
   const supabase = getSupabase();
   const { data, error } = await supabase
     .from('missions')
@@ -117,7 +109,7 @@ export async function getMissionById(id: string): Promise<Mission | null> {
   return data || null;
 }
 
-export async function getOngoingMissions(): Promise<Mission[]> {
+export async function getOngoingMissions() {
   const supabase = getSupabase();
   const { data, error } = await supabase
     .from('missions')
@@ -129,7 +121,7 @@ export async function getOngoingMissions(): Promise<Mission[]> {
   return data || [];
 }
 
-export async function createMission(mission: Omit<Mission, 'id' | 'created_at'>): Promise<Mission> {
+export async function createMission(mission) {
   const supabase = getSupabase();
   const { data, error } = await supabase
     .from('missions')
@@ -141,7 +133,7 @@ export async function createMission(mission: Omit<Mission, 'id' | 'created_at'>)
   return data;
 }
 
-export async function updateMission(id: string, updates: Partial<Mission>): Promise<Mission> {
+export async function updateMission(id, updates) {
   const supabase = getSupabase();
   const { data, error } = await supabase
     .from('missions')
@@ -154,7 +146,7 @@ export async function updateMission(id: string, updates: Partial<Mission>): Prom
   return data;
 }
 
-export async function deleteMission(id: string): Promise<void> {
+export async function deleteMission(id) {
   const supabase = getSupabase();
   const { error } = await supabase
     .from('missions')
@@ -165,10 +157,10 @@ export async function deleteMission(id: string): Promise<void> {
 }
 
 export async function assignOperativeToMission(
-  missionId: string,
-  operativeId: string,
-  roleInMission?: string
-): Promise<MissionOperative> {
+  missionId,
+  operativeId,
+  roleInMission
+) {
   const supabase = getSupabase();
   const { data, error } = await supabase
     .from('mission_operatives')
@@ -182,7 +174,7 @@ export async function assignOperativeToMission(
 
 // ==================== ARCHIVES ====================
 
-export async function getArchivesByMission(missionId: string): Promise<Archive[]> {
+export async function getArchivesByMission(missionId) {
   const supabase = getSupabase();
   const { data, error } = await supabase
     .from('archives')
@@ -194,7 +186,7 @@ export async function getArchivesByMission(missionId: string): Promise<Archive[]
   return data || [];
 }
 
-export async function createArchive(archive: Omit<Archive, 'id'>): Promise<Archive> {
+export async function createArchive(archive) {
   const supabase = getSupabase();
   const { data, error } = await supabase
     .from('archives')
@@ -208,7 +200,7 @@ export async function createArchive(archive: Omit<Archive, 'id'>): Promise<Archi
 
 // ==================== PORTFOLIO ====================
 
-export async function getPortfolioByVersion(version: string): Promise<Portfolio | null> {
+export async function getPortfolioByVersion(version) {
   const supabase = getSupabase();
   const { data, error } = await supabase
     .from('portfolio')
@@ -220,7 +212,7 @@ export async function getPortfolioByVersion(version: string): Promise<Portfolio 
   return data || null;
 }
 
-export async function getAllPortfolios(): Promise<Portfolio[]> {
+export async function getAllPortfolios() {
   const supabase = getSupabase();
   const { data, error } = await supabase
     .from('portfolio')
@@ -231,10 +223,7 @@ export async function getAllPortfolios(): Promise<Portfolio[]> {
   return data || [];
 }
 
-export async function getPortfolioWithMissions(portfolioId: string): Promise<{
-  portfolio: Portfolio;
-  missions: Mission[];
-} | null> {
+export async function getPortfolioWithMissions(portfolioId) {
   const supabase = getSupabase();
   
   const { data: portfolioData, error: portError } = await supabase
@@ -253,14 +242,14 @@ export async function getPortfolioWithMissions(portfolioId: string): Promise<{
 
   if (missError) throw missError;
 
-  const missions = missionsData?.map((pm: any) => pm.missions).filter(Boolean) || [];
+  const missions = missionsData?.map((pm) => pm.missions).filter(Boolean) || [];
   
   return { portfolio: portfolioData, missions };
 }
 
 // ==================== STUDENTS ====================
 
-export async function getAllStudents(): Promise<Student[]> {
+export async function getAllStudents() {
   const supabase = getSupabase();
   const { data, error } = await supabase
     .from('students')
@@ -271,7 +260,7 @@ export async function getAllStudents(): Promise<Student[]> {
   return data || [];
 }
 
-export async function getStudentById(id: number): Promise<Student | null> {
+export async function getStudentById(id) {
   const supabase = getSupabase();
   const { data, error } = await supabase
     .from('students')
@@ -283,7 +272,7 @@ export async function getStudentById(id: number): Promise<Student | null> {
   return data || null;
 }
 
-export async function getStudentsByTerm(term: string): Promise<Student[]> {
+export async function getStudentsByTerm(term) {
   const supabase = getSupabase();
   const { data, error } = await supabase
     .from('students')
@@ -295,7 +284,7 @@ export async function getStudentsByTerm(term: string): Promise<Student[]> {
   return data || [];
 }
 
-export async function updateStudent(id: number, updates: Partial<Student>): Promise<Student> {
+export async function updateStudent(id, updates) {
   const supabase = getSupabase();
   const { data, error } = await supabase
     .from('students')
