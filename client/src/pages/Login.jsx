@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion as Motion } from 'framer-motion';
-import { Shield, User, UserCheck, Eye, LogIn, AlertCircle, Loader2, ArrowRight, Briefcase } from 'lucide-react';
+import { Shield, User, UserCheck, LogIn, AlertCircle, Loader2, ArrowRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const Login = ({ onLogin }) => {
@@ -27,9 +27,7 @@ const Login = ({ onLogin }) => {
 
             if (data.success) {
                 onLogin(data.user);
-                if (data.user.role === 'secretary') {
-                    navigate('/secretary');
-                } else if (data.user.role === 'student') {
+                if (data.user.role === 'student') {
                     navigate('/student');
                 } else if (data.user.role === 'teacher') {
                     navigate('/admin');
@@ -51,102 +49,115 @@ const Login = ({ onLogin }) => {
             <Motion.div
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="w-full max-w-md panel-card p-8 md:p-10 shadow-2xl relative z-10"
+                className="w-full max-w-xl panel-card p-10 md:p-16 shadow-2xl relative z-10"
             >
-                <div className="text-center mb-10">
-                    <div className="inline-flex items-center justify-center p-4 rounded-2xl bg-red-500/10 mb-6">
-                        <Shield className="text-red-500 w-8 h-8" />
+                {/* Header */}
+                <div className="text-center mb-12">
+                    <div className="inline-flex items-center justify-center p-5 rounded-2xl bg-red-500/10 mb-8">
+                        <Shield className="text-red-500 w-12 h-12" />
                     </div>
-                    <h2 className="text-3xl font-black heading-display text-white">Platform Access</h2>
-                    <p className="text-[10px] text-slate-500 mt-2 uppercase tracking-[0.3em] font-bold">Secure Identity Authentication</p>
+                    <h2 className="text-5xl font-black heading-display text-white">Platform Access</h2>
+                    <p className="text-xs text-slate-500 mt-3 uppercase tracking-[0.3em] font-bold">Secure Identity Authentication</p>
                 </div>
 
-                <div className="flex gap-2 mb-10">
-                    {[
-                        { id: 'teacher', label: 'Admin', icon: Shield },
-                        { id: 'secretary', label: 'Secretary', icon: Briefcase },
-                        { id: 'student', label: 'Member', icon: UserCheck },
-                        { id: 'visitor', label: 'Guest', icon: Eye }
-                    ].map((r) => (
-                        <button
-                            key={r.id}
-                            onClick={() => setRole(r.id)}
-                            className={`flex-1 flex flex-col items-center gap-2 p-4 rounded-xl border transition-all duration-300 ${role === r.id
-                                ? 'bg-red-600/10 border-red-600/50 text-red-400 shadow-lg shadow-red-900/10'
-                                : 'bg-slate-950 border-white/5 text-slate-600 hover:border-white/10'
-                                }`}
-                        >
-                            <r.icon size={16} />
-                            <span className="text-[10px] font-black uppercase tracking-wider">{r.label}</span>
-                        </button>
-                    ))}
-                </div>
+                {/* Form */}
+                <form onSubmit={handleSubmit} className="space-y-8">
 
-                <form onSubmit={handleSubmit} className="space-y-6">
-                    {role !== 'visitor' && (
-                        <>
-                            <div className="space-y-2">
-                                <label className="text-[10px] font-bold uppercase tracking-widest text-slate-500 ml-1">Identity Handle</label>
-                                <div className="relative">
-                                    <User className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-600" size={16} />
-                                    <input
-                                        type="text"
-                                        value={username}
-                                        onChange={(e) => setUsername(e.target.value)}
-                                        className="w-full bg-slate-950 border border-white/5 p-4 pl-12 text-sm focus:border-red-500 rounded-xl outline-none transition-all text-white font-medium"
-                                        placeholder="Username"
-                                        required
-                                    />
-                                </div>
-                            </div>
-                            <div className="space-y-2">
-                                <label className="text-[10px] font-bold uppercase tracking-widest text-slate-500 ml-1">Access Key</label>
-                                <div className="relative">
-                                    <LogIn className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-600" size={16} />
-                                    <input
-                                        type="password"
-                                        value={password}
-                                        onChange={(e) => setPassword(e.target.value)}
-                                        className="w-full bg-slate-950 border border-white/5 p-4 pl-12 text-sm focus:border-red-500 rounded-xl outline-none transition-all text-white font-medium"
-                                        placeholder="••••••••"
-                                        required
-                                    />
-                                </div>
-                            </div>
-                        </>
-                    )}
+                    {/* Email / Username */}
+                    <div className="space-y-3">
+                        <label className="text-xs font-bold uppercase tracking-widest text-slate-500 ml-1">
+                            {role === 'student' ? 'Email' : 'Username'}
+                        </label>
+                        <div className="relative">
+                            <User className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-600" size={20} />
+                            <input
+                                id="login-username"
+                                type="text"
+                                value={username}
+                                onChange={(e) => setUsername(e.target.value)}
+                                className="w-full bg-slate-950 border border-white/5 p-5 pl-14 text-base focus:border-red-500 rounded-xl outline-none transition-all text-white font-medium placeholder:text-slate-700"
+                                placeholder={role === 'student' ? 'your.email@kalvium.community' : 'admin'}
+                                required
+                            />
+                        </div>
+                    </div>
 
+                    {/* Password */}
+                    <div className="space-y-3">
+                        <label className="text-xs font-bold uppercase tracking-widest text-slate-500 ml-1">Password</label>
+                        <div className="relative">
+                            <LogIn className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-600" size={20} />
+                            <input
+                                id="login-password"
+                                type="password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                className="w-full bg-slate-950 border border-white/5 p-5 pl-14 text-base focus:border-red-500 rounded-xl outline-none transition-all text-white font-medium placeholder:text-slate-700"
+                                placeholder="••••••••"
+                                required
+                            />
+                        </div>
+                    </div>
+
+                    {/* Error */}
                     {error && (
                         <Motion.div
                             initial={{ opacity: 0, x: -10 }}
                             animate={{ opacity: 1, x: 0 }}
-                            className="flex items-center gap-3 p-4 bg-rose-500/10 border border-rose-500/20 text-rose-500 rounded-xl text-xs font-bold"
+                            className="flex items-center gap-3 p-5 bg-rose-500/10 border border-rose-500/20 text-rose-500 rounded-xl text-sm font-bold"
                         >
-                            <AlertCircle size={14} />
+                            <AlertCircle size={18} />
                             <span>{error}</span>
                         </Motion.div>
                     )}
 
+                    {/* Role selector — Student & Teacher only */}
+                    <div className="space-y-3">
+                        <label className="text-xs font-bold uppercase tracking-widest text-slate-500 ml-1">Login As</label>
+                        <div className="grid grid-cols-2 gap-4">
+                            {[
+                                { id: 'student', label: 'Student', icon: UserCheck },
+                                { id: 'teacher', label: 'Teacher', icon: Shield },
+                            ].map((r) => (
+                                <button
+                                    key={r.id}
+                                    type="button"
+                                    onClick={() => { setRole(r.id); setError(''); }}
+                                    className={`flex items-center justify-center gap-3 p-5 rounded-xl border font-black text-sm uppercase tracking-widest transition-all duration-300 ${role === r.id
+                                            ? 'bg-red-600/15 border-red-500/60 text-red-400 shadow-lg shadow-red-900/20'
+                                            : 'bg-slate-950 border-white/5 text-slate-500 hover:border-white/15 hover:text-slate-300'
+                                        }`}
+                                >
+                                    <r.icon size={20} />
+                                    {r.label}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Submit */}
                     <button
+                        id="login-submit"
+                        type="submit"
                         disabled={loading}
-                        className="w-full group relative flex items-center justify-center gap-4 py-5 bg-red-600 text-white font-black uppercase tracking-widest text-[11px] rounded-xl overflow-hidden transition-all hover:bg-red-500 shadow-xl shadow-red-900/40 active:scale-95 disabled:opacity-50"
+                        className="w-full group relative flex items-center justify-center gap-4 py-6 bg-red-600 text-white font-black uppercase tracking-widest text-sm rounded-xl overflow-hidden transition-all hover:bg-red-500 shadow-xl shadow-red-900/40 active:scale-95 disabled:opacity-50"
                     >
                         {loading ? (
-                            <Loader2 size={18} className="animate-spin" />
+                            <Loader2 size={22} className="animate-spin" />
                         ) : (
-                            <>Authorize Session <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" /></>
+                            <>Authorize Session <ArrowRight size={22} className="group-hover:translate-x-1 transition-transform" /></>
                         )}
                     </button>
                 </form>
 
-                <div className="mt-10 pt-10 border-t border-white/5 text-center">
-                    <p className="text-[9px] text-slate-600 uppercase tracking-widest font-black leading-loose">
+                <div className="mt-12 pt-10 border-t border-white/5 text-center">
+                    <p className="text-[10px] text-slate-600 uppercase tracking-widest font-black leading-loose">
                         System access is logged and encrypted. <br /> Secure Environment v3.1.0
                     </p>
                 </div>
             </Motion.div>
 
-            {/* Background elements */}
+            {/* Background glow */}
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-amber-400/10 rounded-full blur-[160px] pointer-events-none"></div>
         </section>
     );
