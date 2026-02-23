@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { motion as Motion, AnimatePresence } from 'framer-motion';
-import { Users, X, Github, Linkedin, ExternalLink, Activity, LayoutGrid, Cpu, UserCheck, Edit3, Save, XCircle, ShieldCheck, Filter } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Users, X, Github, Linkedin, ExternalLink, Activity, LayoutGrid, Cpu, UserCheck, Edit3, Save, XCircle, ShieldCheck } from 'lucide-react';
 
 // ─── Edit Modal (Admin/Teacher only) ───────────────────────────────────────────────
 const EditModal = ({ student, onClose, onSave }) => {
@@ -38,14 +38,14 @@ const EditModal = ({ student, onClose, onSave }) => {
 
     return (
         <div className="fixed inset-0 z-[200] flex items-center justify-center p-8">
-            <Motion.div
+            <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 onClick={onClose}
                 className="absolute inset-0 bg-slate-950/90 backdrop-blur-xl"
             />
-            <Motion.div
+            <motion.div
                 initial={{ opacity: 0, scale: 0.98, y: 10 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.98 }}
@@ -57,7 +57,7 @@ const EditModal = ({ student, onClose, onSave }) => {
                             <ShieldCheck size={14} />
                             Administrative Access
                         </div>
-                        <h3 className="text-3xl font-black heading-display">Update Profile</h3>
+                        <h3 className="text-3xl font-black text-white heading-display">Update Profile</h3>
                         <p className="text-xs text-slate-500 mt-1 font-bold uppercase tracking-wider">Member ID: {student.id}</p>
                     </div>
                     <button onClick={onClose} className="text-slate-500 hover:text-white transition-colors">
@@ -71,7 +71,7 @@ const EditModal = ({ student, onClose, onSave }) => {
                         <input
                             value={form.name}
                             onChange={(e) => setForm(f => ({ ...f, name: e.target.value }))}
-                            className="w-full bg-slate-800/50 border border-white/5 rounded-lg p-4 text-sm focus:border-red-500 outline-none transition-all"
+                            className="w-full bg-slate-800/50 border border-white/5 rounded-lg p-4 text-sm text-white focus:border-red-500 outline-none transition-all"
                             placeholder="Full name"
                         />
                     </div>
@@ -82,7 +82,7 @@ const EditModal = ({ student, onClose, onSave }) => {
                             <input
                                 value={form.linkedin}
                                 onChange={(e) => setForm(f => ({ ...f, linkedin: e.target.value }))}
-                                className="w-full bg-slate-800/50 border border-white/5 rounded-lg p-4 pl-12 text-sm focus:border-red-500 outline-none transition-all"
+                                className="w-full bg-slate-800/50 border border-white/5 rounded-lg p-4 pl-12 text-sm text-white focus:border-red-500 outline-none transition-all"
                                 placeholder="https://linkedin.com/in/..."
                             />
                         </div>
@@ -94,7 +94,7 @@ const EditModal = ({ student, onClose, onSave }) => {
                             <input
                                 value={form.github}
                                 onChange={(e) => setForm(f => ({ ...f, github: e.target.value }))}
-                                className="w-full bg-slate-800/50 border border-white/5 rounded-lg p-4 pl-12 text-sm focus:border-red-500 outline-none transition-all"
+                                className="w-full bg-slate-800/50 border border-white/5 rounded-lg p-4 pl-12 text-sm text-white focus:border-red-500 outline-none transition-all"
                                 placeholder="https://github.com/..."
                             />
                         </div>
@@ -122,7 +122,7 @@ const EditModal = ({ student, onClose, onSave }) => {
                         {saveMsg}
                     </p>
                 )}
-            </Motion.div>
+            </motion.div>
         </div>
     );
 };
@@ -130,14 +130,14 @@ const EditModal = ({ student, onClose, onSave }) => {
 // ─── Profile Modal (View) ────────────────────────────────────────────────────
 const ProfileModal = ({ student, onClose, user, onEdit }) => (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-8">
-        <Motion.div
+        <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
             className="absolute inset-0 bg-slate-950/90 backdrop-blur-2xl"
         />
-        <Motion.div
+        <motion.div
             initial={{ opacity: 0, scale: 0.98, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.98, y: 20 }}
@@ -169,7 +169,7 @@ const ProfileModal = ({ student, onClose, user, onEdit }) => (
                             <Cpu size={14} />
                             Identification Code: 2024_{student.id}
                         </div>
-                        <h2 className="text-4xl sm:text-5xl md:text-6xl font-black heading-display break-words">{student.name}</h2>
+                        <h2 className="text-4xl sm:text-5xl md:text-6xl font-black text-white heading-display break-words">{student.name}</h2>
                     </div>
 
                     <p className="text-lg text-slate-400 font-medium leading-relaxed max-w-lg">
@@ -214,7 +214,7 @@ const ProfileModal = ({ student, onClose, user, onEdit }) => (
                     </button>
                 </div>
             </div>
-        </Motion.div>
+        </motion.div>
     </div>
 );
 
@@ -222,7 +222,6 @@ const ProfileModal = ({ student, onClose, user, onEdit }) => (
 const Collective = ({ students, user, setStudents }) => {
     const [selectedStudent, setSelectedStudent] = useState(null);
     const [editingStudent, setEditingStudent] = useState(null);
-    const [selectedTerm, setSelectedTerm] = useState('All Terms');
 
     const handleSave = (updated) => {
         setStudents(prev => prev.map(s => s.id === updated.id ? { ...s, ...updated } : s));
@@ -230,90 +229,51 @@ const Collective = ({ students, user, setStudents }) => {
         setEditingStudent(null);
     };
 
-    const terms = ['All Terms', ...new Set(students.map(s => s.term).filter(Boolean))];
-    const filteredStudents = selectedTerm === 'All Terms'
-        ? students
-        : students.filter(s => s.term === selectedTerm);
-
     return (
-        <section className="section-shell">
-            <div className="section-stack">
+        <section className="pt-64 pb-24 min-h-screen">
+            <div className="container-premium space-y-24">
                 {/* Header */}
-                <Motion.div
+                <motion.div
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="flex flex-col md:flex-row md:items-end justify-between gap-8 md:gap-12"
+                    className="flex flex-col md:flex-row md:items-end justify-between gap-12"
                 >
                     <div className="space-y-4">
                         <div className="flex items-center gap-3 text-red-500 font-bold uppercase tracking-[0.2em] text-[10px]">
                             <LayoutGrid size={14} />
                             Directory System v3
                         </div>
-                        <h2 className="section-heading">Meet the <br /><span className="text-red-500">Professional</span> Team</h2>
+                        <h2 className="text-5xl sm:text-6xl md:text-7xl font-black text-white heading-display break-words">Meet the <br /><span className="text-red-500">Professional</span> Team</h2>
                     </div>
+                </motion.div>
 
-                    {/* Filter Section */}
-                    <div className="space-y-4 bg-slate-900/50 p-4 sm:p-5 lg:p-6 rounded-2xl border border-white/5">
-                        <div className="flex items-center gap-2 text-slate-500 text-[10px] font-bold uppercase tracking-widest ml-1">
-                            <Filter size={12} /> Filter Results
-                        </div>
-                        <div className="flex flex-wrap gap-2">
-                            {terms.map(term => (
-                                <button
-                                    key={term}
-                                    onClick={() => setSelectedTerm(term)}
-                                    className={`px-4 sm:px-5 py-2.5 text-[10px] sm:text-[11px] font-bold uppercase tracking-wider rounded-lg transition-all border ${selectedTerm === term
-                                        ? 'bg-red-600 border-red-600 text-white shadow-lg shadow-red-900/40'
-                                        : 'border-white/5 text-slate-500 hover:text-white hover:bg-white/5'
-                                        }`}
-                                >
-                                    {term}
-                                </button>
-                            ))}
-                        </div>
-                    </div>
-                </Motion.div>
-
-                <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 gap-3 sm:gap-4 lg:gap-6">
-                    {filteredStudents.map((student, idx) => (
-                        <Motion.button
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 gap-6">
+                    {students.map((student, idx) => (
+                        <motion.div
                             key={student.id}
-                            type="button"
-                            initial={{ opacity: 0, scale: 0.98 }}
-                            whileInView={{ opacity: 1, scale: 1 }}
-                            viewport={{ once: true }}
-                            whileHover={{ scale: 1.02, y: -2 }}
-                            transition={{ duration: 0.3, ease: "easeInOut" }}
+                            initial={{ opacity: 0, scale: 0.95 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            transition={{ delay: idx * 0.03 }}
                             onClick={() => setSelectedStudent(student)}
-                            className="group relative cursor-pointer aspect-[3/4] w-full text-left"
+                            className="group relative cursor-pointer premium-card overflow-hidden aspect-[4/5]"
                         >
-                            {/* Layer 1: Visual Shell (Rounded, Clipped Effects) */}
-                            <div className="absolute inset-0 rounded-2xl overflow-hidden border border-white/10 bg-slate-900/40 hover:border-red-500/40 hover:shadow-[0_0_30px_rgba(239,68,68,0.15)] transition-all duration-300 z-0">
-                                <img
-                                    src={student.photo}
-                                    alt=""
-                                    className="w-full h-full object-cover opacity-60 group-hover:opacity-90 transition-opacity duration-500"
-                                    onError={(e) => { e.target.src = `https://ui-avatars.com/api/?name=${student.name}&background=1e293b&color=fff&size=512`; }}
-                                />
-                                <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent"></div>
+                            <img
+                                src={student.photo}
+                                alt={student.name}
+                                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-80 group-hover:opacity-100"
+                                onError={(e) => { e.target.src = `https://ui-avatars.com/api/?name=${student.name}&background=1e293b&color=fff&size=512`; }}
+                            />
+                            <div className="absolute inset-x-0 bottom-0 p-5 bg-gradient-to-t from-slate-950 via-slate-950/60 to-transparent">
+                                <span className="text-[10px] font-bold text-red-500 uppercase tracking-widest mb-1 block opacity-0 group-hover:opacity-100 transition-opacity">ID_{student.id}</span>
+                                <div className="text-sm font-bold text-white heading-display truncate">{student.name}</div>
+                            </div>
 
-                                {/* Premium Light Sweep (Clipped inside Shell) */}
-                                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none">
-                                    <Motion.div
-                                        animate={{ x: ["-150%", "150%"] }}
-                                        transition={{ duration: 2, repeat: Infinity, ease: "linear", repeatDelay: 1 }}
-                                        className="absolute inset-y-0 w-1/3 bg-gradient-to-r from-transparent via-white/10 to-transparent skew-x-[-25deg]"
-                                    />
+                            {user?.role === 'teacher' && (
+                                <div className="absolute top-4 right-4 p-2 bg-red-600 rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <Edit3 size={14} className="text-white" />
                                 </div>
-                            </div>
-
-                            {/* Layer 2: Safe Content Layer (Bottom Center) */}
-                            <div className="absolute inset-x-0 bottom-0 z-30 p-8 flex flex-col items-center text-center pointer-events-none">
-                                <h3 className="text-xl sm:text-2xl font-bold text-white font-tech leading-tight truncate max-w-[95%] drop-shadow-2xl transition-transform duration-500 group-hover:scale-110">
-                                    {student.name}
-                                </h3>
-                            </div>
-                        </Motion.button>
+                            )}
+                        </motion.div>
                     ))}
                 </div>
             </div>
