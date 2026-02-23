@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion as Motion, AnimatePresence } from 'framer-motion';
 import { User, Edit3, Save, X, Github, Linkedin, MessageSquare, Shield, Cpu, Activity, Layout, Camera, Lock, Eye, EyeOff, CheckCircle2, AlertCircle } from 'lucide-react';
 
-const StudentDashboard = ({ user }) => {
+const StudentDashboard = ({ user, onUpdate }) => {
     const [studentData, setStudentData] = useState(null);
     const [isEditing, setIsEditing] = useState(false);
     const [loading, setLoading] = useState(true);
@@ -61,8 +61,19 @@ const StudentDashboard = ({ user }) => {
                 body: JSON.stringify(form),
             });
             const data = await res.json();
-            if (data.success || data.id) {
-                setStudentData({ ...studentData, ...form });
+            if (data.success || data.id || data.data) {
+                const saved = data.data || form;
+                setStudentData(prev => ({ ...prev, ...saved }));
+
+                // Build an updates object for every field that changed
+                // so the HUD, welcome line & Collective page all update instantly
+                if (onUpdate) {
+                    const userUpdates = {};
+                    if (form.name && form.name !== user.username) userUpdates.username = form.name;
+                    if (form.photo && form.photo !== user.photo) userUpdates.photo = form.photo;
+                    if (Object.keys(userUpdates).length > 0) onUpdate(userUpdates);
+                }
+
                 setMessage('CORE UPDATED');
                 setIsEditing(false);
                 setTimeout(() => setMessage(''), 3000);
@@ -418,8 +429,8 @@ const StudentDashboard = ({ user }) => {
                                                         animate={{ opacity: 1, y: 0 }}
                                                         exit={{ opacity: 0, y: -6 }}
                                                         className={`flex items-center gap-3 p-4 rounded-xl border text-xs font-bold ${pwMessage.type === 'success'
-                                                                ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400'
-                                                                : 'bg-red-600/10 border-red-500/20 text-red-400'
+                                                            ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400'
+                                                            : 'bg-red-600/10 border-red-500/20 text-red-400'
                                                             }`}
                                                     >
                                                         {pwMessage.type === 'success'

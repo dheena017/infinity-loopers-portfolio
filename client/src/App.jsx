@@ -29,6 +29,33 @@ function AppContent() {
     localStorage.removeItem('squad_user');
   };
 
+  const handleUserUpdate = (updates) => {
+    // 1. Update the logged-in user object & localStorage (use functional update so
+    //    we always have the latest prev value, no stale-closure issue)
+    setUser(prev => {
+      const updated = { ...prev, ...updates };
+      localStorage.setItem('squad_user', JSON.stringify(updated));
+      return updated;
+    });
+
+    // 2. Patch the matching student card in the students[] list so the
+    //    Collective/Team page also reflects the change instantly.
+    //    We read studentId from the *current* user closure, not from localStorage.
+    if (user?.studentId && (updates.username || updates.photo)) {
+      setStudents(prev =>
+        prev.map(s =>
+          s.id === user.studentId
+            ? {
+              ...s,
+              ...(updates.username ? { name: updates.username } : {}),
+              ...(updates.photo ? { photo: updates.photo } : {}),
+            }
+            : s
+        )
+      );
+    }
+  };
+
   useEffect(() => {
     const savedUser = localStorage.getItem('squad_user');
     if (savedUser) {
@@ -85,7 +112,7 @@ function AppContent() {
               <Route path="/expeditions" element={<Expeditions />} />
               <Route path="/team" element={<Collective students={students} user={user} setStudents={setStudents} />} />
               <Route path="/secretary" element={<SecretaryDashboard />} />
-              <Route path="/student" element={<StudentDashboard user={user} />} />
+              <Route path="/student" element={<StudentDashboard user={user} onUpdate={handleUserUpdate} />} />
               <Route path="/admin" element={<TeacherDashboard students={students} setStudents={setStudents} />} />
               <Route path="/transmissions" element={<Transmissions />} />
             </Routes>
