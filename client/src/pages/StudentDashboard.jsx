@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion as Motion, AnimatePresence } from 'framer-motion';
-import { User, Edit3, Save, X, Github, Linkedin, MessageSquare, Shield, Cpu, Activity, Layout, Camera } from 'lucide-react';
+import { User, Edit3, Save, X, Github, Linkedin, MessageSquare, Shield, Cpu, Activity, Layout, Camera, Lock, Eye, EyeOff, CheckCircle2, AlertCircle } from 'lucide-react';
 
 const StudentDashboard = ({ user }) => {
     const [studentData, setStudentData] = useState(null);
@@ -12,9 +12,19 @@ const StudentDashboard = ({ user }) => {
         bio: '',
         linkedin: '',
         github: '',
-        photo: ''
+        photo: '',
+        resume_url: ''
     });
     const [message, setMessage] = useState('');
+
+    // ── Change Password state ──────────────────────────────
+    const [showPasswordPanel, setShowPasswordPanel] = useState(false);
+    const [pwForm, setPwForm] = useState({ current: '', newPw: '', confirm: '' });
+    const [pwMessage, setPwMessage] = useState({ text: '', type: '' }); // type: 'success' | 'error'
+    const [pwLoading, setPwLoading] = useState(false);
+    const [showCurrent, setShowCurrent] = useState(false);
+    const [showNew, setShowNew] = useState(false);
+    const [showConfirm, setShowConfirm] = useState(false);
 
     useEffect(() => {
         const fetchStudent = async () => {
@@ -29,7 +39,8 @@ const StudentDashboard = ({ user }) => {
                     bio: data.bio || '',
                     linkedin: data.linkedin || '',
                     github: data.github || '',
-                    photo: data.photo || ''
+                    photo: data.photo || '',
+                    resume_url: data.resume_url || ''
                 });
             } catch (error) {
                 console.error('Error fetching student data:', error);
@@ -60,6 +71,39 @@ const StudentDashboard = ({ user }) => {
             }
         } catch (error) {
             setMessage('ERROR: SERVER OFFLINE');
+        }
+    };
+
+    const handleChangePassword = async () => {
+        setPwMessage({ text: '', type: '' });
+        if (!pwForm.current || !pwForm.newPw || !pwForm.confirm) {
+            return setPwMessage({ text: 'Please fill in all fields.', type: 'error' });
+        }
+        if (pwForm.newPw !== pwForm.confirm) {
+            return setPwMessage({ text: 'New passwords do not match.', type: 'error' });
+        }
+        if (pwForm.newPw.length < 6) {
+            return setPwMessage({ text: 'Password must be at least 6 characters.', type: 'error' });
+        }
+        setPwLoading(true);
+        try {
+            const res = await fetch(`http://localhost:5000/api/students/${user.studentId}/change-password`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ currentPassword: pwForm.current, newPassword: pwForm.newPw }),
+            });
+            const data = await res.json();
+            if (data.success) {
+                setPwMessage({ text: 'Password updated successfully!', type: 'success' });
+                setPwForm({ current: '', newPw: '', confirm: '' });
+                setTimeout(() => { setShowPasswordPanel(false); setPwMessage({ text: '', type: '' }); }, 2500);
+            } else {
+                setPwMessage({ text: data.message || 'Failed to update password.', type: 'error' });
+            }
+        } catch {
+            setPwMessage({ text: 'Server offline. Please try again.', type: 'error' });
+        } finally {
+            setPwLoading(false);
         }
     };
 
@@ -245,6 +289,20 @@ const StudentDashboard = ({ user }) => {
                                     />
                                 </div>
                             </div>
+
+                            <div className="space-y-4">
+                                <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] ml-1 flex items-center gap-2">
+                                    Professional Resume (G-Drive/PDF Link)
+                                </label>
+                                <input
+                                    type="text"
+                                    disabled={!isEditing}
+                                    value={form.resume_url}
+                                    onChange={(e) => setForm({ ...form, resume_url: e.target.value })}
+                                    className={`w-full p-4 rounded-xl text-sm font-bold bg-slate-900 border transition-all outline-none ${isEditing ? 'border-red-500/50 text-white focus:bg-slate-800' : 'border-white/5 text-slate-500'}`}
+                                    placeholder="https://drive.google.com/your-resume-link"
+                                />
+                            </div>
                         </div>
 
                         {/* Recent Activity Mockup */}
@@ -265,6 +323,130 @@ const StudentDashboard = ({ user }) => {
                                     </div>
                                 ))}
                             </div>
+                        </div>
+
+                        {/* ── Change Password Panel ── */}
+                        <div className="panel-card bg-slate-950/50 border border-white/5 overflow-hidden">
+                            <button
+                                onClick={() => { setShowPasswordPanel(v => !v); setPwMessage({ text: '', type: '' }); }}
+                                className="w-full flex items-center justify-between p-8 hover:bg-white/[0.02] transition-colors group"
+                            >
+                                <div className="flex items-center gap-4">
+                                    <div className="w-9 h-9 rounded-lg bg-red-600/10 border border-red-500/20 flex items-center justify-center group-hover:bg-red-600/20 transition-colors">
+                                        <Lock size={15} className="text-red-500" />
+                                    </div>
+                                    <div className="text-left">
+                                        <p className="text-sm font-black text-white uppercase tracking-tight">Change Password</p>
+                                        <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mt-0.5">Update your access credentials</p>
+                                    </div>
+                                </div>
+                                <Motion.div animate={{ rotate: showPasswordPanel ? 180 : 0 }} transition={{ duration: 0.2 }}>
+                                    <X size={14} className={`transition-colors ${showPasswordPanel ? 'text-red-500' : 'text-slate-600'}`} />
+                                </Motion.div>
+                            </button>
+
+                            <AnimatePresence>
+                                {showPasswordPanel && (
+                                    <Motion.div
+                                        initial={{ height: 0, opacity: 0 }}
+                                        animate={{ height: 'auto', opacity: 1 }}
+                                        exit={{ height: 0, opacity: 0 }}
+                                        transition={{ duration: 0.25, ease: 'easeInOut' }}
+                                        className="overflow-hidden"
+                                    >
+                                        <div className="px-8 pb-8 space-y-5 border-t border-white/5 pt-6">
+
+                                            {/* Current Password */}
+                                            <div className="space-y-2">
+                                                <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] ml-1">Current Password</label>
+                                                <div className="relative">
+                                                    <input
+                                                        id="pw-current"
+                                                        type={showCurrent ? 'text' : 'password'}
+                                                        value={pwForm.current}
+                                                        onChange={e => setPwForm({ ...pwForm, current: e.target.value })}
+                                                        placeholder="Enter current password"
+                                                        className="w-full p-4 pr-12 rounded-xl text-sm font-bold bg-slate-900 border border-white/10 text-white outline-none focus:border-red-500/60 transition-all placeholder:text-slate-700"
+                                                    />
+                                                    <button type="button" onClick={() => setShowCurrent(v => !v)} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 transition-colors">
+                                                        {showCurrent ? <EyeOff size={15} /> : <Eye size={15} />}
+                                                    </button>
+                                                </div>
+                                            </div>
+
+                                            {/* New Password */}
+                                            <div className="space-y-2">
+                                                <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] ml-1">New Password</label>
+                                                <div className="relative">
+                                                    <input
+                                                        id="pw-new"
+                                                        type={showNew ? 'text' : 'password'}
+                                                        value={pwForm.newPw}
+                                                        onChange={e => setPwForm({ ...pwForm, newPw: e.target.value })}
+                                                        placeholder="Min. 6 characters"
+                                                        className="w-full p-4 pr-12 rounded-xl text-sm font-bold bg-slate-900 border border-white/10 text-white outline-none focus:border-red-500/60 transition-all placeholder:text-slate-700"
+                                                    />
+                                                    <button type="button" onClick={() => setShowNew(v => !v)} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 transition-colors">
+                                                        {showNew ? <EyeOff size={15} /> : <Eye size={15} />}
+                                                    </button>
+                                                </div>
+                                            </div>
+
+                                            {/* Confirm Password */}
+                                            <div className="space-y-2">
+                                                <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] ml-1">Confirm New Password</label>
+                                                <div className="relative">
+                                                    <input
+                                                        id="pw-confirm"
+                                                        type={showConfirm ? 'text' : 'password'}
+                                                        value={pwForm.confirm}
+                                                        onChange={e => setPwForm({ ...pwForm, confirm: e.target.value })}
+                                                        placeholder="Repeat new password"
+                                                        className="w-full p-4 pr-12 rounded-xl text-sm font-bold bg-slate-900 border border-white/10 text-white outline-none focus:border-red-500/60 transition-all placeholder:text-slate-700"
+                                                    />
+                                                    <button type="button" onClick={() => setShowConfirm(v => !v)} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 transition-colors">
+                                                        {showConfirm ? <EyeOff size={15} /> : <Eye size={15} />}
+                                                    </button>
+                                                </div>
+                                            </div>
+
+                                            {/* Feedback Message */}
+                                            <AnimatePresence>
+                                                {pwMessage.text && (
+                                                    <Motion.div
+                                                        initial={{ opacity: 0, y: -6 }}
+                                                        animate={{ opacity: 1, y: 0 }}
+                                                        exit={{ opacity: 0, y: -6 }}
+                                                        className={`flex items-center gap-3 p-4 rounded-xl border text-xs font-bold ${pwMessage.type === 'success'
+                                                                ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400'
+                                                                : 'bg-red-600/10 border-red-500/20 text-red-400'
+                                                            }`}
+                                                    >
+                                                        {pwMessage.type === 'success'
+                                                            ? <CheckCircle2 size={14} />
+                                                            : <AlertCircle size={14} />}
+                                                        {pwMessage.text}
+                                                    </Motion.div>
+                                                )}
+                                            </AnimatePresence>
+
+                                            {/* Submit Button */}
+                                            <button
+                                                id="btn-change-password"
+                                                onClick={handleChangePassword}
+                                                disabled={pwLoading}
+                                                className="w-full flex items-center justify-center gap-2 px-6 py-4 bg-red-600 hover:bg-red-500 disabled:bg-red-900/40 disabled:text-red-700 text-white rounded-xl font-black text-xs uppercase tracking-widest transition-all shadow-lg shadow-red-900/30"
+                                            >
+                                                {pwLoading ? (
+                                                    <><div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" /> Updating...</>
+                                                ) : (
+                                                    <><Lock size={14} /> Commit New Password</>
+                                                )}
+                                            </button>
+                                        </div>
+                                    </Motion.div>
+                                )}
+                            </AnimatePresence>
                         </div>
                     </div>
                 </div>

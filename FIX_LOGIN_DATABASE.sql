@@ -1,16 +1,11 @@
--- RUN THIS IN SUPABASE SQL EDITOR TO FIX LOGIN
+-- RUN THIS IN SUPABASE SQL EDITOR TO FIX RESUME AND LOGIN
 
--- 1. Add email column to students if missing
+-- 1. Add missing columns to students table
 DO $$ 
 BEGIN 
     IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='students' AND column_name='email') THEN
         ALTER TABLE students ADD COLUMN email text UNIQUE;
     END IF;
-END $$;
-
--- 2. Add other missing columns for the dashboard
-DO $$ 
-BEGIN 
     IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='students' AND column_name='photo') THEN
         ALTER TABLE students ADD COLUMN photo text;
     END IF;
@@ -20,9 +15,12 @@ BEGIN
     IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='students' AND column_name='bio') THEN
         ALTER TABLE students ADD COLUMN bio text;
     END IF;
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='students' AND column_name='resume_url') THEN
+        ALTER TABLE students ADD COLUMN resume_url text;
+    END IF;
 END $$;
 
--- 3. Create secretaries table
+-- 2. Create secretaries table
 create table if not exists secretaries (
   id serial primary key,
   name text not null,
@@ -33,13 +31,13 @@ create table if not exists secretaries (
   created_at timestamptz not null default now()
 );
 
--- 4. Enable RLS and Policies
+-- 3. Enable RLS and Policies for secretaries
 alter table secretaries enable row level security;
 drop policy if exists "public read secretaries" on secretaries;
 create policy "public read secretaries" on secretaries for select using (true);
 
--- 5. UPGRADE STUDENT DATA WITH EMAILS
--- This matches the names in your current DB with their Kalvium emails
+-- 4. RE-SYNC STUDENT DATA WITH EMAILS
+-- This ensures all students have their Kalvium emails linked for login
 INSERT INTO students (id, name, email, term) VALUES
   (1, 'hariz', 'mohamed.hariz.s.139@kalvium.community', 'Term 1'),
   (2, 'sham', 'cheekaramelli.shyam.s.139@kalvium.community', 'Term 1'),

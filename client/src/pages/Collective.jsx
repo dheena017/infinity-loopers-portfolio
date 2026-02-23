@@ -8,6 +8,7 @@ const EditModal = ({ student, onClose, onSave }) => {
         name: student.name || '',
         linkedin: student.linkedin || '',
         github: student.github || '',
+        resume_url: student.resume_url || '',
     });
     const [saving, setSaving] = useState(false);
     const [saveMsg, setSaveMsg] = useState('');
@@ -96,6 +97,18 @@ const EditModal = ({ student, onClose, onSave }) => {
                                 onChange={(e) => setForm(f => ({ ...f, github: e.target.value }))}
                                 className="w-full bg-slate-800/50 border border-white/5 rounded-lg p-4 pl-12 text-sm text-white focus:border-red-500 outline-none transition-all"
                                 placeholder="https://github.com/..."
+                            />
+                        </div>
+                    </div>
+                    <div className="space-y-2">
+                        <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Resume URL</label>
+                        <div className="relative">
+                            <ExternalLink className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-600" size={16} />
+                            <input
+                                value={form.resume_url}
+                                onChange={(e) => setForm(f => ({ ...f, resume_url: e.target.value }))}
+                                className="w-full bg-slate-800/50 border border-white/5 rounded-lg p-4 pl-12 text-sm text-white focus:border-red-500 outline-none transition-all"
+                                placeholder="https://drive.google.com/..."
                             />
                         </div>
                     </div>
@@ -209,9 +222,15 @@ const ProfileModal = ({ student, onClose, user, onEdit }) => (
                         </button>
                     )}
 
-                    <button className="flex-1 min-w-[140px] px-8 py-4 bg-white text-slate-950 font-bold uppercase tracking-widest text-xs hover:bg-red-500 hover:text-white rounded-xl transition-colors flex items-center justify-center gap-3">
-                        View Resume <ExternalLink size={16} />
-                    </button>
+
+                    <a
+                        href={student.resume_url || '#'}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={`flex-1 min-w-[140px] px-8 py-4 font-bold uppercase tracking-widest text-xs rounded-xl transition-colors flex items-center justify-center gap-3 ${student.resume_url ? 'bg-white text-slate-950 hover:bg-red-500 hover:text-white' : 'bg-slate-800 text-slate-500 cursor-not-allowed'}`}
+                    >
+                        {student.resume_url ? 'View Resume' : 'No Resume'} <ExternalLink size={16} />
+                    </a>
                 </div>
             </div>
         </motion.div>

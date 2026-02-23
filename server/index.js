@@ -49,15 +49,16 @@ app.post('/api/login', async (req, res) => {
     if (role === 'teacher' && username === 'admin' && password === 'password123') {
         return res.json({ success: true, user: { username: 'admin', role: 'teacher' } });
     } else if (role === 'student') {
-        // Check for specific student identities with common password
-        if (password === 'kalvium@123') {
-            try {
-                const emailMatch = username.trim().toLowerCase();
-                console.log(`Attempting student login for: ${emailMatch}`);
-                const student = await getStudentByEmail(emailMatch);
+        // Lookup student by email and verify their stored password
+        try {
+            const emailMatch = username.trim().toLowerCase();
+            console.log(`Attempting student login for: ${emailMatch}`);
+            const student = await getStudentByEmail(emailMatch);
 
-                if (student) {
-                    console.log(`Student found: ${student.name}`);
+            if (student) {
+                const storedPassword = student.password || 'kalvium@123';
+                if (password === storedPassword) {
+                    console.log(`Student authenticated: ${student.name}`);
                     return res.json({
                         success: true,
                         user: {
@@ -67,10 +68,12 @@ app.post('/api/login', async (req, res) => {
                             email: student.email
                         }
                     });
+                } else {
+                    return res.status(401).json({ success: false, message: 'Invalid credentials' });
                 }
-            } catch (error) {
-                console.error('Login error:', error);
             }
+        } catch (error) {
+            console.error('Login error:', error);
         }
 
         // Fallback for legacy student login

@@ -309,6 +309,29 @@ export async function updateStudent(id, updates) {
   return data;
 }
 
+export async function getStudentPasswordById(id) {
+  const supabase = getSupabase();
+  const { data, error } = await supabase
+    .from('students')
+    .select('password')
+    .eq('id', id)
+    .single();
+
+  if (error && error.code !== 'PGRST116') throw error;
+  return data?.password ?? null;
+}
+
+export async function updateStudentPassword(id, newPassword) {
+  const supabase = getSupabase();
+  const { error } = await supabase
+    .from('students')
+    .update({ password: newPassword })
+    .eq('id', id);
+
+  if (error) throw new Error(`Failed to update password: ${error.message}`);
+}
+
+
 // ==================== SECRETARIES ====================
 
 export async function getAllSecretaries() {

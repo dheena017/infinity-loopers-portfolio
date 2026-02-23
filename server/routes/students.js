@@ -1,5 +1,5 @@
 import express from 'express';
-import { getAllStudents, getStudentById, getStudentsByTerm, updateStudent } from '../queries.js';
+import { getAllStudents, getStudentById, getStudentsByTerm, updateStudent, getStudentPasswordById, updateStudentPassword } from '../queries.js';
 import { handleSupabaseError } from '../supabaseClient.js';
 
 const router = express.Router();
@@ -37,8 +37,38 @@ router.get('/term/:term', async (req, res) => {
 
 router.put('/:id', async (req, res) => {
     try {
-        const data = await updateStudent(parseInt(req.params.id), req.body);
+        // Never allow password to be updated through the general update route
+        const { password, ...safeUpdates } = req.body;
+        const data = await updateStudent(parseInt(req.params.id), safeUpdates);
         res.json({ success: true, data });
+    } catch (error) {
+        const err = handleSupabaseError(error);
+        res.status(500).json({ success: false, error: err.message });
+    }
+});
+
+// Change password route — requires current password verification
+router.post('/:id/change-password', async (req, res) => {
+    const { currentPassword, newPassword } = req.body;
+    const studentId = parseInt(req.params.id);
+
+    if (!currentPassword || !newPassword) {
+        return res.status(400).json({ success: false, message: 'Both current and new password are required.' });
+    }
+    if (newPassword.length < 6) {
+        return res.status(400).json({ success: false, message: 'New password must be at least 6 characters.' });
+    }
+
+    try {
+        const storedPassword = await getStudentPasswordById(studentId);
+        if (storedPassword === null) {
+            return res.status(404).json({ success: false, message: 'Student not found.' });
+        }
+        if (storedPassword !== currentPassword) {
+            return res.status(401).json({ success: false, message: 'Current password is incorrect.' });
+        }
+        await updateStudentPassword(studentId, newPassword);
+        res.json({ success: true, message: 'Password updated successfully.' });
     } catch (error) {
         const err = handleSupabaseError(error);
         res.status(500).json({ success: false, error: err.message });
