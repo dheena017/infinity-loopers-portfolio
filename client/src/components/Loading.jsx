@@ -2,162 +2,188 @@ import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 
 const Loading = () => {
-  const [loadingText, setLoadingText] = useState('INITIALIZING SYSTEMS');
-  const [dots, setDots] = useState('');
+  const [progress, setProgress] = useState(0);
 
   useEffect(() => {
-    const messages = [
-      'INITIALIZING SYSTEMS',
-      'CONNECTING TO MISSION CONTROL',
-      'LOADING OPERATIVE DATA',
-      'PREPARING LAUNCH SEQUENCE',
-      'SYSTEMS READY'
-    ];
-    
-    let index = 0;
-    const messageInterval = setInterval(() => {
-      index = (index + 1) % messages.length;
-      setLoadingText(messages[index]);
-    }, 1500);
+    const interval = setInterval(() => {
+      setProgress(prev => {
+        if (prev >= 100) return 100;
+        return prev + Math.random() * 15;
+      });
+    }, 200);
 
-    const dotsInterval = setInterval(() => {
-      setDots(prev => prev.length >= 3 ? '' : prev + '.');
-    }, 400);
-
-    return () => {
-      clearInterval(messageInterval);
-      clearInterval(dotsInterval);
-    };
+    return () => clearInterval(interval);
   }, []);
 
   return (
-    <div className="fixed inset-0 bg-[#0f172a] flex items-center justify-center z-[200] overflow-hidden">
-      {/* Animated Background Grid */}
-      <div className="absolute inset-0 opacity-20">
-        <div className="absolute inset-0" 
-          style={{
-            backgroundImage: `
-              linear-gradient(rgba(239, 68, 68, 0.1) 1px, transparent 1px),
-              linear-gradient(90deg, rgba(239, 68, 68, 0.1) 1px, transparent 1px)
-            `,
-            backgroundSize: '50px 50px',
-            animation: 'gridPulse 3s ease-in-out infinite'
-          }}
-        />
+    <div className="fixed inset-0 bg-[#030305] flex items-center justify-center z-[200] overflow-hidden">
+      {/* Subtle Star Field */}
+      <div className="absolute inset-0">
+        {[...Array(100)].map((_, i) => (
+          <div
+            key={`star-${i}`}
+            className="absolute bg-white rounded-full"
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+              width: `${Math.random() * 2}px`,
+              height: `${Math.random() * 2}px`,
+              opacity: Math.random() * 0.5 + 0.2,
+              animation: `twinkle ${2 + Math.random() * 3}s ease-in-out infinite`,
+              animationDelay: `${Math.random() * 2}s`
+            }}
+          />
+        ))}
       </div>
 
-      {/* Scanning Lines */}
-      <motion.div
-        className="absolute inset-0 pointer-events-none"
-        initial={{ y: '-100%' }}
-        animate={{ y: '100%' }}
-        transition={{
-          duration: 2,
-          repeat: Infinity,
-          ease: 'linear'
-        }}
-      >
-        <div className="h-32 bg-gradient-to-b from-transparent via-[#ef4444]/10 to-transparent blur-sm" />
-      </motion.div>
+      {/* Professional Meteor Effect - Fewer, Smoother */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        {[...Array(5)].map((_, i) => (
+          <motion.div
+            key={`meteor-${i}`}
+            className="absolute w-px h-24 bg-gradient-to-b from-transparent via-white to-transparent"
+            style={{
+              left: `${20 + Math.random() * 60}%`,
+              top: '-10%',
+              opacity: 0.6,
+              filter: 'blur(0.5px)'
+            }}
+            animate={{
+              x: [-100, -250],
+              y: [0, '120vh'],
+              opacity: [0, 0.8, 0.8, 0]
+            }}
+            transition={{
+              duration: 3 + Math.random() * 2,
+              repeat: Infinity,
+              delay: i * 1.5,
+              ease: 'linear'
+            }}
+          />
+        ))}
+      </div>
+
+      {/* Radial Gradient Overlay */}
+      <div className="absolute inset-0 bg-gradient-radial from-transparent via-[#030305]/50 to-[#030305]" />
 
       {/* Main Content */}
-      <div className="relative z-10 flex flex-col items-center gap-8 px-4">
-        {/* Logo/Brand */}
+      <div className="relative z-10 flex flex-col items-center gap-12 px-4 max-w-md">
+        {/* Logo */}
         <motion.div
-          initial={{ scale: 0.5, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ duration: 0.5 }}
-          className="text-center"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          className="text-center space-y-3"
         >
-          <div className="text-6xl md:text-8xl font-bold tracking-tighter mb-4">
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#ef4444] via-[#f87171] to-[#f59e0b]">
+          <h1 className="text-7xl md:text-8xl font-bold tracking-tighter">
+            <span className="text-transparent bg-clip-text bg-gradient-to-br from-white via-slate-200 to-slate-400">
               SQUAD
             </span>
-          </div>
-          <div className="text-sm md:text-base text-slate-400 uppercase tracking-[0.3em] font-medium">
-            Portfolio System v3.0
+          </h1>
+          <div className="flex items-center justify-center gap-3">
+            <div className="h-px w-8 bg-gradient-to-r from-transparent to-red-600" />
+            <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-slate-500">
+              Portfolio System
+            </p>
+            <div className="h-px w-8 bg-gradient-to-l from-transparent to-red-600" />
           </div>
         </motion.div>
 
-        {/* Hexagon Spinner */}
-        <div className="relative w-32 h-32">
+        {/* Loading Spinner */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="relative w-32 h-32"
+        >
           {/* Outer Ring */}
           <motion.div
-            className="absolute inset-0 border-2 border-[#ef4444]/30 rounded-full"
+            className="absolute inset-0 rounded-full border border-slate-800/50"
             animate={{ rotate: 360 }}
             transition={{
-              duration: 3,
+              duration: 8,
               repeat: Infinity,
               ease: 'linear'
             }}
           >
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3 h-3 bg-[#ef4444] rounded-full shadow-[0_0_10px_#ef4444]" />
+            <div className="absolute -top-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-red-600 rounded-full shadow-[0_0_10px_rgba(220,38,38,0.8)]" />
           </motion.div>
 
           {/* Middle Ring */}
           <motion.div
-            className="absolute inset-4 border-2 border-[#f87171]/40"
-            style={{ clipPath: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)' }}
+            className="absolute inset-4 rounded-full border border-slate-700/30"
             animate={{ rotate: -360 }}
             transition={{
-              duration: 2,
+              duration: 4,
               repeat: Infinity,
               ease: 'linear'
             }}
           />
 
-          {/* Inner Core */}
+          {/* Inner Glow */}
           <motion.div
-            className="absolute inset-8 bg-gradient-to-br from-[#ef4444] to-[#f59e0b] rounded-full"
+            className="absolute inset-8 rounded-full bg-gradient-to-br from-red-600/20 to-transparent"
             animate={{
-              scale: [1, 1.2, 1],
-              opacity: [0.5, 0.8, 0.5]
+              opacity: [0.3, 0.6, 0.3],
+              scale: [0.95, 1.05, 0.95]
             }}
             transition={{
-              duration: 1.5,
+              duration: 2,
               repeat: Infinity,
               ease: 'easeInOut'
             }}
           />
-        </div>
+        </motion.div>
 
-        {/* Loading Text */}
+        {/* Progress Bar */}
         <motion.div
-          key={loadingText}
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-center"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.4 }}
+          className="w-full space-y-3"
         >
-          <div className="text-sm md:text-base font-medium text-[#ef4444] uppercase tracking-widest">
-            {loadingText}<span className="inline-block w-8 text-left">{dots}</span>
+          <div className="h-1 bg-slate-900 rounded-full overflow-hidden shadow-inner">
+            <motion.div
+              className="h-full bg-gradient-to-r from-red-600 via-red-500 to-red-600 rounded-full relative overflow-hidden"
+              initial={{ width: '0%' }}
+              animate={{ width: `${Math.min(progress, 100)}%` }}
+              transition={{ duration: 0.3 }}
+            >
+              <motion.div
+                className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent"
+                animate={{ x: ['-100%', '200%'] }}
+                transition={{
+                  duration: 1.5,
+                  repeat: Infinity,
+                  ease: 'linear'
+                }}
+              />
+            </motion.div>
           </div>
           
-          {/* Progress Bar */}
-          <div className="mt-4 w-64 h-1 bg-slate-800 rounded-full overflow-hidden">
-            <motion.div
-              className="h-full bg-gradient-to-r from-[#ef4444] to-[#f59e0b]"
-              initial={{ width: '0%' }}
-              animate={{ width: '100%' }}
-              transition={{
-                duration: 3,
-                repeat: Infinity,
-                ease: 'linear'
-              }}
-            />
+          {/* Loading Text */}
+          <div className="flex items-center justify-between text-xs">
+            <span className="text-slate-600 uppercase tracking-wider font-medium">
+              Loading Resources
+            </span>
+            <span className="text-slate-500 font-mono">
+              {Math.min(Math.round(progress), 100)}%
+            </span>
           </div>
         </motion.div>
 
-        {/* Status Indicators */}
-        <div className="flex gap-2 mt-4">
-          {[0, 1, 2, 3].map((i) => (
+        {/* Status Dots */}
+        <div className="flex gap-2">
+          {[0, 1, 2].map((i) => (
             <motion.div
               key={i}
-              className="w-2 h-2 bg-[#ef4444]/30 rounded-full"
+              className="w-1.5 h-1.5 rounded-full bg-slate-700"
               animate={{
-                backgroundColor: ['rgba(239, 68, 68, 0.3)', 'rgba(239, 68, 68, 1)', 'rgba(239, 68, 68, 0.3)']
+                backgroundColor: ['#334155', '#dc2626', '#334155'],
+                scale: [1, 1.2, 1]
               }}
               transition={{
-                duration: 1.2,
+                duration: 1.5,
                 repeat: Infinity,
                 delay: i * 0.2,
                 ease: 'easeInOut'
@@ -167,16 +193,10 @@ const Loading = () => {
         </div>
       </div>
 
-      {/* Corner Accents */}
-      <div className="absolute top-8 left-8 w-8 h-8 border-t-2 border-l-2 border-[#ef4444]/30" />
-      <div className="absolute top-8 right-8 w-8 h-8 border-t-2 border-r-2 border-[#ef4444]/30" />
-      <div className="absolute bottom-8 left-8 w-8 h-8 border-b-2 border-l-2 border-[#ef4444]/30" />
-      <div className="absolute bottom-8 right-8 w-8 h-8 border-b-2 border-r-2 border-[#ef4444]/30" />
-
       <style>{`
-        @keyframes gridPulse {
-          0%, 100% { opacity: 0.1; }
-          50% { opacity: 0.2; }
+        @keyframes twinkle {
+          0%, 100% { opacity: 0.2; }
+          50% { opacity: 1; }
         }
       `}</style>
     </div>
