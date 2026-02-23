@@ -78,4 +78,4 @@ Important note:
 
 - If login or data fetch fails, verify backend is running on port `5000`
 - If `/api/mentors` fails from browser, it is likely a missing Vite proxy issue
-- If student password change fails, ensure `ADD_PASSWORD_COLUMN.sql` has been executed
+- If student password change fails, ensure `supabase/migrations/20260222120000_setup.sql` has been applied

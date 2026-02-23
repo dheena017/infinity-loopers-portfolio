@@ -47,6 +47,18 @@ create table if not exists archives (
   date_recorded timestamptz not null default now()
 );
 
+create table if not exists mentors (
+  id serial primary key,
+  name text not null,
+  role text,
+  "desc" text,
+  photo text,
+  email text,
+  github text,
+  linkedin text,
+  created_at timestamptz not null default now()
+);
+
 create table if not exists portfolio (
   id uuid primary key default gen_random_uuid(),
   version text not null,
@@ -72,6 +84,8 @@ create table if not exists students (
   photo text,
   tagline text,
   bio text,
+  resume_url text,
+  password text not null default 'kalvium@123',
   course_name text default 'Full Stack Engineering',
   teacher_name text default 'Professor Astra',
   semester text default 'Spring 2026',
@@ -80,6 +94,54 @@ create table if not exists students (
   overall_reflection jsonb default '{"takeaways": [], "growth": "", "future": ""}'::jsonb,
   created_at timestamptz not null default now()
 );
+
+-- Ensure required student columns exist on pre-existing databases
+alter table students add column if not exists email text;
+alter table students add column if not exists linkedin text;
+alter table students add column if not exists github text;
+alter table students add column if not exists term text;
+alter table students add column if not exists photo text;
+alter table students add column if not exists tagline text;
+alter table students add column if not exists bio text;
+alter table students add column if not exists resume_url text;
+alter table students add column if not exists password text not null default 'kalvium@123';
+alter table students add column if not exists course_name text default 'Full Stack Engineering';
+alter table students add column if not exists teacher_name text default 'Professor Astra';
+alter table students add column if not exists semester text default 'Spring 2026';
+alter table students add column if not exists course_goals text;
+alter table students add column if not exists projects jsonb default '[]'::jsonb;
+alter table students add column if not exists overall_reflection jsonb default '{"takeaways": [], "growth": "", "future": ""}'::jsonb;
+alter table students add column if not exists created_at timestamptz not null default now();
+
+create unique index if not exists uq_students_email_not_null on students(email) where email is not null;
+
+update students
+set password = 'kalvium@123'
+where password is null or password = '';
+
+-- Ensure archives has required mission linkage fields
+alter table archives add column if not exists mission_id uuid;
+alter table archives add column if not exists summary text;
+alter table archives add column if not exists date_recorded timestamptz not null default now();
+
+-- Normalize archives table by removing known legacy columns that do not belong
+alter table archives drop column if exists name;
+alter table archives drop column if exists role;
+alter table archives drop column if exists description;
+alter table archives drop column if exists photo;
+alter table archives drop column if exists created_at;
+
+do $$ begin
+  if not exists (
+    select 1
+    from pg_constraint
+    where conname = 'archives_mission_id_fkey'
+  ) then
+    alter table archives
+      add constraint archives_mission_id_fkey
+      foreign key (mission_id) references missions(id) on delete cascade;
+  end if;
+end $$;
 
 create table if not exists secretaries (
   id serial primary key,

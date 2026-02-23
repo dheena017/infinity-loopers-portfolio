@@ -6,10 +6,7 @@ Full-stack portfolio platform with a React + Vite frontend and an Express + Supa
 
 - `client/` — React UI (Vite)
 - `server/` — Express API with Supabase integration
-- `supabase_setup.sql` — primary schema + seed script
-- `supabase/migrations/20260222120000_setup.sql` — migration copy of setup
-- `ADD_PASSWORD_COLUMN.sql` — adds default `students.password`
-- `FIX_LOGIN_DATABASE.sql` — patch script for older databases
+- `supabase/migrations/20260222120000_setup.sql` — single database schema + seed source
 
 ## Tech Stack
 
@@ -58,10 +55,7 @@ VITE_SUPABASE_ANON_KEY=your-anon-key
 
 In Supabase SQL Editor, run:
 
-1. `supabase_setup.sql`
-2. `ADD_PASSWORD_COLUMN.sql` (ensures student login password column)
-
-If you already have an older schema, run `FIX_LOGIN_DATABASE.sql` instead of re-running everything.
+1. `supabase/migrations/20260222120000_setup.sql`
 
 ## Run
 
@@ -84,7 +78,7 @@ npm run client
 ## Authentication (Current Behavior)
 
 - **Teacher**: username `admin`, password `password123`
-- **Student**: username is student email; password is stored `students.password` (default `kalvium@123` when SQL patch applied)
+- **Student**: username is student email; password is stored `students.password` (default `kalvium@123` from base migration)
 - **Legacy student fallback**: `student` / `student123`
 - **Secretary**: `secretary` / `sec123`
 - **Visitor**: any username with role `visitor` succeeds
