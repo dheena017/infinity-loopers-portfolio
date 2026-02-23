@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion as Motion } from 'framer-motion';
-import { Shield, User, UserCheck, Eye, LogIn, AlertCircle, Loader2, ArrowRight } from 'lucide-react';
+import { Shield, User, UserCheck, Eye, LogIn, AlertCircle, Loader2, ArrowRight, Briefcase } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const Login = ({ onLogin }) => {
@@ -27,7 +27,15 @@ const Login = ({ onLogin }) => {
 
             if (data.success) {
                 onLogin(data.user);
-                navigate('/');
+                if (data.user.role === 'secretary') {
+                    navigate('/secretary');
+                } else if (data.user.role === 'student') {
+                    navigate('/student');
+                } else if (data.user.role === 'teacher') {
+                    navigate('/admin');
+                } else {
+                    navigate('/');
+                }
             } else {
                 setError(data.message || 'Authentication failed');
             }
@@ -56,6 +64,7 @@ const Login = ({ onLogin }) => {
                 <div className="flex gap-2 mb-10">
                     {[
                         { id: 'teacher', label: 'Admin', icon: Shield },
+                        { id: 'secretary', label: 'Secretary', icon: Briefcase },
                         { id: 'student', label: 'Member', icon: UserCheck },
                         { id: 'visitor', label: 'Guest', icon: Eye }
                     ].map((r) => (

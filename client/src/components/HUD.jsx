@@ -18,6 +18,12 @@ const HUD = ({ user, onLogout }) => {
         { path: '/transmissions', label: 'CONTACT', icon: Mail },
     ];
 
+    if (user) {
+        if (user.role === 'teacher') navLinks.push({ path: '/admin', label: 'DASHBOARD', icon: ShieldCheck });
+        if (user.role === 'student') navLinks.push({ path: '/student', label: 'DASHBOARD', icon: ShieldCheck });
+        if (user.role === 'secretary') navLinks.push({ path: '/secretary', label: 'DASHBOARD', icon: ShieldCheck });
+    }
+
     // Helper for active link styles
     const getLinkClass = (isActive) => `
         relative px-6 py-2.5 group flex flex-col items-center gap-1.5 transition-all duration-700

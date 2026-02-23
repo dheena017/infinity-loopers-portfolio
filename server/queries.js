@@ -225,7 +225,7 @@ export async function getAllPortfolios() {
 
 export async function getPortfolioWithMissions(portfolioId) {
   const supabase = getSupabase();
-  
+
   const { data: portfolioData, error: portError } = await supabase
     .from('portfolio')
     .select('*')
@@ -243,7 +243,7 @@ export async function getPortfolioWithMissions(portfolioId) {
   if (missError) throw missError;
 
   const missions = missionsData?.map((pm) => pm.missions).filter(Boolean) || [];
-  
+
   return { portfolio: portfolioData, missions };
 }
 
@@ -284,6 +284,18 @@ export async function getStudentsByTerm(term) {
   return data || [];
 }
 
+export async function getStudentByEmail(email) {
+  const supabase = getSupabase();
+  const { data, error } = await supabase
+    .from('students')
+    .select('*')
+    .eq('email', email)
+    .single();
+
+  if (error && error.code !== 'PGRST116') throw error;
+  return data || null;
+}
+
 export async function updateStudent(id, updates) {
   const supabase = getSupabase();
   const { data, error } = await supabase
@@ -294,5 +306,43 @@ export async function updateStudent(id, updates) {
     .single();
 
   if (error) throw new Error(`Failed to update student: ${error.message}`);
+  return data;
+}
+
+// ==================== SECRETARIES ====================
+
+export async function getAllSecretaries() {
+  const supabase = getSupabase();
+  const { data, error } = await supabase
+    .from('secretaries')
+    .select('*')
+    .order('name', { ascending: true });
+
+  if (error) throw new Error(`Failed to fetch secretaries: ${error.message}`);
+  return data || [];
+}
+
+export async function getSecretaryById(id) {
+  const supabase = getSupabase();
+  const { data, error } = await supabase
+    .from('secretaries')
+    .select('*')
+    .eq('id', id)
+    .single();
+
+  if (error && error.code !== 'PGRST116') throw error;
+  return data || null;
+}
+
+export async function updateSecretary(id, updates) {
+  const supabase = getSupabase();
+  const { data, error } = await supabase
+    .from('secretaries')
+    .update(updates)
+    .eq('id', id)
+    .select()
+    .single();
+
+  if (error) throw new Error(`Failed to update secretary: ${error.message}`);
   return data;
 }

@@ -9,6 +9,8 @@ import operativeRoutes from './routes/operatives.js';
 import missionRoutes from './routes/missions.js';
 import archiveRoutes from './routes/archives.js';
 import portfolioRoutes from './routes/portfolio.js';
+import secretaryRoutes from './routes/secretaries.js';
+import { getStudentByEmail } from './queries.js';
 
 dotenv.config();
 
@@ -38,15 +40,45 @@ app.use('/api/operatives', operativeRoutes);
 app.use('/api/missions', missionRoutes);
 app.use('/api/archives', archiveRoutes);
 app.use('/api/portfolio', portfolioRoutes);
+app.use('/api/secretaries', secretaryRoutes);
 
 // Auth Route (Keeping for now as it's simple)
-app.post('/api/login', (req, res) => {
+app.post('/api/login', async (req, res) => {
     const { username, password, role } = req.body;
 
     if (role === 'teacher' && username === 'admin' && password === 'password123') {
         return res.json({ success: true, user: { username: 'admin', role: 'teacher' } });
-    } else if (role === 'student' && username === 'student' && password === 'student123') {
-        return res.json({ success: true, user: { username: 'student', role: 'student', studentId: 1 } });
+    } else if (role === 'student') {
+        // Check for specific student identities with common password
+        if (password === 'kalvium@123') {
+            try {
+                const emailMatch = username.trim().toLowerCase();
+                console.log(`Attempting student login for: ${emailMatch}`);
+                const student = await getStudentByEmail(emailMatch);
+
+                if (student) {
+                    console.log(`Student found: ${student.name}`);
+                    return res.json({
+                        success: true,
+                        user: {
+                            username: student.name,
+                            role: 'student',
+                            studentId: student.id,
+                            email: student.email
+                        }
+                    });
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+            }
+        }
+
+        // Fallback for legacy student login
+        if (username === 'student' && password === 'student123') {
+            return res.json({ success: true, user: { username: 'student', role: 'student', studentId: 1 } });
+        }
+    } else if (role === 'secretary' && username === 'secretary' && password === 'sec123') {
+        return res.json({ success: true, user: { username: 'secretary', role: 'secretary' } });
     } else if (role === 'visitor') {
         return res.json({ success: true, user: { username: 'visitor', role: 'visitor' } });
     }

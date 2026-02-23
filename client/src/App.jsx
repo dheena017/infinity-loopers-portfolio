@@ -8,6 +8,9 @@ import Collective from './pages/Collective';
 import Expeditions from './pages/Expeditions';
 import Transmissions from './pages/Transmissions';
 import Login from './pages/Login';
+import SecretaryDashboard from './pages/SecretaryDashboard';
+import StudentDashboard from './pages/StudentDashboard';
+import TeacherDashboard from './pages/TeacherDashboard';
 import { motion as Motion, AnimatePresence } from 'framer-motion';
 
 function AppContent() {
@@ -81,6 +84,9 @@ function AppContent() {
               <Route path="/operatives" element={<Operatives />} />
               <Route path="/expeditions" element={<Expeditions />} />
               <Route path="/team" element={<Collective students={students} user={user} setStudents={setStudents} />} />
+              <Route path="/secretary" element={<SecretaryDashboard />} />
+              <Route path="/student" element={<StudentDashboard user={user} />} />
+              <Route path="/admin" element={<TeacherDashboard students={students} setStudents={setStudents} />} />
               <Route path="/transmissions" element={<Transmissions />} />
             </Routes>
           </Motion.div>

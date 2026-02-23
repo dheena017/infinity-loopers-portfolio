@@ -64,6 +64,7 @@ create table if not exists portfolio_missions (
 create table if not exists students (
   id serial primary key,
   name text not null,
+  email text unique,
   linkedin text,
   github text,
   term text not null,
@@ -79,6 +80,16 @@ create table if not exists students (
   created_at timestamptz not null default now()
 );
 
+create table if not exists secretaries (
+  id serial primary key,
+  name text not null,
+  employee_id text unique,
+  email text,
+  office_location text,
+  phone text,
+  created_at timestamptz not null default now()
+);
+
 create index if not exists idx_operatives_role on operatives(role);
 create index if not exists idx_operatives_status on operatives(status);
 create index if not exists idx_missions_status on missions(status);
@@ -87,6 +98,7 @@ create index if not exists idx_archives_mission_id on archives(mission_id);
 create index if not exists idx_mission_operatives_operative_id on mission_operatives(operative_id);
 create index if not exists idx_portfolio_missions_mission_id on portfolio_missions(mission_id);
 create index if not exists idx_students_term on students(term);
+create index if not exists idx_secretaries_employee_id on secretaries(employee_id);
 
 insert into operatives (id, name, role, skills, status) values
   ('11111111-1111-1111-1111-111111111111', 'Astra Voss', 'Systems Architect', '{Postgres, Supabase, Security}', 'active'),
@@ -122,32 +134,46 @@ insert into portfolio_missions (portfolio_id, mission_id) values
   ('88888888-8888-8888-8888-888888888888', 'cccccccc-cccc-cccc-cccc-cccccccccccc')
 on conflict (portfolio_id, mission_id) do nothing;
 
-insert into students (id, name, linkedin, github, term) values
-  (1, 'hariz', 'https://linkedin.com/in/hariz', 'https://github.com/hariz', 'Term 1', '/assets/student1.jpg', 'Architecting the Void', 'A passionate full-stack developer focused on creating immersive cosmic experiences.', 'Cosmic Web Architecture', 'Archon Astra', 'Semester Alpha (2026)', 'Mastering the integration of Three.js and Supabase for high-performance dashboards.', '[{"title": "Starlight Mesh UI", "prompt": "Create a futuristic telemetry dashboard.", "artifact": "/assets/project1.jpg", "process": ["Brainstorming neon palettes", "Implementing Framer Motion", "Integrating live data streams"], "reflection": "Successfully achieved smooth 60fps animations, but state management was complex."}, {"title": "Quantum Relay Backend", "prompt": "Architect a scalable Node.js bridge.", "artifact": "/assets/project2.jpg", "process": ["Designing PostgreSQL schema", "Writing Express controllers", "Optimizing DB queries"], "reflection": "Deepened my understanding of RLS and indexing."}]'::jsonb, '{"takeaways": ["Advanced CSS/JS synchronization", "Database architectural patterns", "Cinematic UI principles"], "growth": "Transitioned from basic HTML to complex modular full-stack systems.", "future": "Planning to lead major engineering expeditions in the digital space."}'::jsonb),
-  (2, 'sham', '', '', 'Term 1', '/assets/student2.jpg'),
-  (3, 'amarnath', 'https://www.linkedin.com/in/amarnath-p-s-942782322/', 'https://github.com/amarnath-cdr', 'Term 1', '/assets/student3.jpg'),
-  (4, 'arulananthan', '', '', 'Term 1', '/assets/student4.jpg'),
-  (5, 'kamala kiruthi', 'https://www.linkedin.com/in/kamala-kiruthi/', 'https://github.com/kamalakiruthi8', 'Term 1', '/assets/student5.jpg'),
-  (6, 'lohith', 'https://www.linkedin.com/in/chinthalapalli-lohith-126447384/', 'https://github.com/lohithchinthalalpalli', 'Term 1', '/assets/student6.jpg'),
-  (7, 'hari', 'https://www.linkedin.com/in/hari-r-bb3181370/', 'https://github.com/harirs139-ui', 'Term 1', '/assets/student7.jpg'),
-  (8, 'jayseelan', 'https://www.linkedin.com/in/jayaseelan-d-1951952a6', 'https://www.linkedin.com/in/jayaseelan-d-1951952a6', 'Term 1', '/assets/student8.jpg'),
-  (9, 'durga saranya', 'https://www.linkedin.com/feed/', 'https://github.com/durgasaranyas139-lgtm', 'Term 1', '/assets/student9.jpg'),
-  (10, 'gokul', 'http://www.linkedin.com/in/gokul-raj95', 'https://www.linkedin.com/in/gokul-raj95', 'Term 1', '/assets/student10.jpg'),
-  (11, 'joy arnold', 'https://www.linkedin.com/in/joyarnold21?utm_source=share_via&utm_content=profile&utm_medium=member_android', '', 'Term 1', '/assets/student11.jpg'),
-  (12, 'kathiravan', 'https://www.linkedin.com/in/kathiravan-e-56688a39b?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app', 'https://github.com/ekathiravanelumalai71-a11y', 'Term 1', '/assets/student12.jpg'),
-  (13, 'mosses', 'https://www.linkedin.com/in/moses-acknal-7957973a4/', 'https://github.com/mosesacknals139', 'Term 2', '/assets/student13.jpg'),
-  (14, 'priyadharsan', 'http://www.linkedin.com/in/priyadharsan-s2007', 'https://github.com/Priyadharsan2911', 'Term 2', '/assets/student14.jpg'),
-  (15, 'abinay', 'https://www.linkedin.com/feed/?trk=guest_homepage-basic_google-one-tap-submit', '', 'Term 2', '/assets/student15.jpg'),
-  (16, 'suriya', '', '', 'Term 2', '/assets/student16.jpg'),
-  (17, 'yakesh', 'https://www.linkedin.com/in/yakesh-r-92648a383?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app', 'https://github.com/yakpranu-design', 'Term 2', '/assets/student17.jpg'),
-  (18, 'nanthakumar', 'http://www.linkedin.com/in/nandhakumar-pm-8276b7381', 'https://github.com/nandhakumar1980', 'Term 2', '/assets/student18.jpg'),
-  (19, 'srinithi', 'https://www.linkedin.com/in/srinithi-vijayakumar-981785344/', 'https://github.com/srinithivijayakumars139-wq', 'Term 2', '/assets/student19.jpg'),
-  (20, 'srimathi', 'https://www.linkedin.com/in/srimathi-vijayakumar-10518a383/', 'https://github.com/srimajaya123-blip', 'Term 2', '/assets/student20.jpg'),
-  (21, 'srinidthi', 'https://www.linkedin.com/in/srinidhi-v-123193384/', 'https://github.com/srinidhivs139-ai', 'Term 2', '/assets/student21.jpg'),
-  (22, 'mohan', 'http://www.linkedin.com/in/mohan-e-b7945b2b2', 'https://github.com/mohanes139-cell', 'Term 3', '/assets/student22.jpg'),
-  (23, 'nabi rasool', 'http://www.linkedin.com/in/nabi-rasool-129494393', '', 'Term 3', '/assets/student23.jpg'),
-  (24, 'keerthana', 'https://www.linkedin.com/feed/', 'https://github.com/krishnakeerthanamitte-tech', 'Term 3', '/assets/student24.jpg')
-on conflict (id) do update set photo = excluded.photo;
+insert into students (id, name, email, linkedin, github, term) values
+  (1, 'hariz', 'mohamed.hariz.s.139@kalvium.community', 'https://linkedin.com/in/hariz', 'https://github.com/hariz', 'Term 1'),
+  (2, 'sham', 'cheekaramelli.shyam.s.139@kalvium.community', '', '', 'Term 1'),
+  (3, 'amarnath', 'amarnath.p.s.139@kalvium.community', 'https://www.linkedin.com/in/amarnath-p-s-942782322/', 'https://github.com/amarnath-cdr', 'Term 1'),
+  (4, 'arulananthan', 'arulananthan.m.s.139@kalvium.community', '', '', 'Term 1'),
+  (5, 'kamala kiruthi', 'kamala.kiruthi.s.139@kalvium.community', 'https://www.linkedin.com/in/kamala-kiruthi/', 'https://github.com/kamalakiruthi8', 'Term 1'),
+  (6, 'lohith', 'lohith.chinthalapalli.s.139@kalvium.community', 'https://www.linkedin.com/in/chinthalapalli-lohith-126447384/', 'https://github.com/lohithchinthalalpalli', 'Term 1'),
+  (7, 'hari', 'hari.r.s.139@kalvium.community', 'https://www.linkedin.com/in/hari-r-bb3181370/', 'https://github.com/harirs139-ui', 'Term 1'),
+  (8, 'jayseelan', 'jayaseelan.d.s.139@kalvium.community', 'https://www.linkedin.com/in/jayaseelan-d-1951952a6', 'https://www.linkedin.com/in/jayaseelan-d-1951952a6', 'Term 1'),
+  (9, 'durga saranya', 'durga.saranya.s.139@kalvium.community', 'https://www.linkedin.com/feed/', 'https://github.com/durgasaranyas139-lgtm', 'Term 1'),
+  (10, 'gokul', 'gokul.raj.s.139@kalvium.community', 'http://www.linkedin.com/in/gokul-raj95', 'https://www.linkedin.com/in/gokul-raj95', 'Term 1'),
+  (11, 'joy arnold', 'joy.arnold.s.139@kalvium.community', 'https://www.linkedin.com/in/joyarnold21?utm_source=share_via&utm_content=profile&utm_medium=member_android', '', 'Term 1'),
+  (12, 'kathiravan', 'kathiravan.e.s.139@kalvium.community', 'https://www.linkedin.com/in/kathiravan-e-56688a39b?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app', 'https://github.com/ekathiravanelumalai71-a11y', 'Term 1'),
+  (13, 'mosses', 'moses.acknal.s.139@kalvium.community', 'https://www.linkedin.com/in/moses-acknal-7957973a4/', 'https://github.com/mosesacknals139', 'Term 2'),
+  (14, 'priyadharsan', 'priyadharsan.s.s.139@kalvium.community', 'http://www.linkedin.com/in/priyadharsan-s2007', 'https://github.com/Priyadharsan2911', 'Term 2'),
+  (15, 'abinay', 'abhinay.m.s.139@kalvium.community', 'https://www.linkedin.com/feed/?trk=guest_homepage-basic_google-one-tap-submit', '', 'Term 2'),
+  (16, 'suriya', 'suriya.r.s.139@kalvium.community', '', '', 'Term 2'),
+  (17, 'yakesh', 'yakesh.r.s.139@kalvium.community', 'https://www.linkedin.com/in/yakesh-r-92648a383?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app', 'https://github.com/yakpranu-design', 'Term 2'),
+  (18, 'nanthakumar', 'nandhakumar.p.s.139@kalvium.community', 'http://www.linkedin.com/in/nandhakumar-pm-8276b7381', 'https://github.com/nandhakumar1980', 'Term 2'),
+  (19, 'srinithi', 'srinithi.vijayakumar.s.139@kalvium.community', 'https://www.linkedin.com/in/srinithi-vijayakumar-981785344/', 'https://github.com/srinithivijayakumars139-wq', 'Term 2'),
+  (20, 'srimathi', 'srimathi.vijayakumar.s.139@kalvium.community', 'https://www.linkedin.com/in/srimathi-vijayakumar-10518a383/', 'https://github.com/srimajaya123-blip', 'Term 2'),
+  (21, 'srinidthi', 'srinidhi.v.s.139@kalvium.community', 'https://www.linkedin.com/in/srinidhi-v-123193384/', 'https://github.com/srinidhivs139-ai', 'Term 2'),
+  (22, 'mohan', 'mohan.e.s.139@kalvium.community', 'http://www.linkedin.com/in/mohan-e-b7945b2b2', 'https://github.com/mohanes139-cell', 'Term 3'),
+  (23, 'nabi rasool', 'nabi.rasool.s.139@kalvium.community', 'http://www.linkedin.com/in/nabi-rasool-129494393', '', 'Term 3'),
+  (24, 'keerthana', 'krishna.keerthana.s.139@kalvium.community', 'https://www.linkedin.com/feed/', 'https://github.com/krishnakeerthanamitte-tech', 'Term 3'),
+  (25, 'ragul', 'ragul.as.s.139@kalvium.community', '', '', 'Term 1'),
+  (26, 'nayeem', 'nayeem.sajjath.s.139@kalvium.community', '', '', 'Term 1'),
+  (27, 'muthuvel', 'muthuvel.jason.s.139@kalvium.community', '', '', 'Term 1'),
+  (28, 'sharaf', 'mohamed.sharaf.s.139@kalvium.community', '', '', 'Term 1'),
+  (29, 'kishore', 'kishore.g.s.139@kalvium.community', '', '', 'Term 1'),
+  (30, 'jushwanth', 'jushwanth.s.139@kalvium.community', '', '', 'Term 1'),
+  (31, 'chandana', 'chandana.e.s.139@kalvium.community', '', '', 'Term 1'),
+  (32, 'yashwant', 'yashwant.k.s.139@kalvium.community', '', '', 'Term 1'),
+  (33, 'arvind', 'arvind.m.s.139@kalvium.community', '', '', 'Term 1'),
+  (34, 'yugesh', 'yugesh.s.s.139@kalvium.community', '', '', 'Term 1'),
+  (35, 'varun', 'varun.raj.s.139@kalvium.community', '', '', 'Term 1'),
+  (36, 'dheena', 'dheenadayalan.r.s.139@kalvium.community', '', '', 'Term 1'),
+  (37, 'imran', 'imran.s.s.139@kalvium.community', '', '', 'Term 1'),
+  (38, 'prasanna', 'prasanna.a.s.138@kalvium.community', '', '', 'Term 1')
+on conflict (id) do update set email = excluded.email;
 
 alter table operatives enable row level security;
 alter table missions enable row level security;
@@ -156,6 +182,7 @@ alter table archives enable row level security;
 alter table portfolio enable row level security;
 alter table portfolio_missions enable row level security;
 alter table students enable row level security;
+alter table secretaries enable row level security;
 
 -- Drop existing policies to avoid "already exists" errors
 drop policy if exists "public read operatives" on operatives;
@@ -165,6 +192,7 @@ drop policy if exists "public read archives" on archives;
 drop policy if exists "public read portfolio" on portfolio;
 drop policy if exists "public read portfolio missions" on portfolio_missions;
 drop policy if exists "public read students" on students;
+drop policy if exists "public read secretaries" on secretaries;
 
 drop policy if exists "auth write operatives" on operatives;
 drop policy if exists "auth update operatives" on operatives;
@@ -193,6 +221,9 @@ drop policy if exists "auth delete portfolio missions" on portfolio_missions;
 drop policy if exists "auth write students" on students;
 drop policy if exists "auth update students" on students;
 drop policy if exists "auth delete students" on students;
+drop policy if exists "auth write secretaries" on secretaries;
+drop policy if exists "auth update secretaries" on secretaries;
+drop policy if exists "auth delete secretaries" on secretaries;
 
 create policy "public read operatives" on operatives
   for select using (true);
@@ -207,6 +238,8 @@ create policy "public read portfolio" on portfolio
 create policy "public read portfolio missions" on portfolio_missions
   for select using (true);
 create policy "public read students" on students
+  for select using (true);
+create policy "public read secretaries" on secretaries
   for select using (true);
 
 create policy "auth write operatives" on operatives
@@ -256,4 +289,11 @@ create policy "auth write students" on students
 create policy "auth update students" on students
   for update using (((select auth.role()) = 'authenticated'));
 create policy "auth delete students" on students
+  for delete using (((select auth.role()) = 'authenticated'));
+
+create policy "auth write secretaries" on secretaries
+  for insert with check (((select auth.role()) = 'authenticated'));
+create policy "auth update secretaries" on secretaries
+  for update using (((select auth.role()) = 'authenticated'));
+create policy "auth delete secretaries" on secretaries
   for delete using (((select auth.role()) = 'authenticated'));
