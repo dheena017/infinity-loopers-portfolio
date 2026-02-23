@@ -12,10 +12,11 @@ const HUD = ({ user, onLogout }) => {
     const location = useLocation();
     const navLinks = [
         { path: '/', label: 'HOME', icon: LayoutDashboard },
-        { path: '/operatives', label: 'ADVISORS', icon: UserCircle },
-        { path: '/team', label: 'TEAM', icon: Users },
+        { path: '/operatives', label: 'LEADERSHIP', icon: UserCircle },
+        { path: '/mentors', label: 'MENTORS', icon: Users },
+        { path: '/team', label: 'FORK', icon: Users },
         { path: '/expeditions', label: 'PROJECTS', icon: Globe },
-        { path: '/transmissions', label: 'CONTACT', icon: Mail },
+        { path: '/transmissions', label: 'ABOUT US', icon: Mail },
     ];
 
     if (user) {

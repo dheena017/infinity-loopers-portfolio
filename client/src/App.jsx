@@ -4,6 +4,7 @@ import ThreeScene from './components/ThreeScene';
 import HUD from './components/HUD';
 import Home from './pages/Home';
 import Operatives from './pages/Operatives';
+import Mentors from './pages/Mentors';
 import Collective from './pages/Collective';
 import Expeditions from './pages/Expeditions';
 import Transmissions from './pages/Transmissions';
@@ -109,6 +110,7 @@ function AppContent() {
               <Route path="/" element={<Home />} />
               <Route path="/login" element={<Login onLogin={handleLogin} />} />
               <Route path="/operatives" element={<Operatives />} />
+              <Route path="/mentors" element={<Mentors />} />
               <Route path="/expeditions" element={<Expeditions />} />
               <Route path="/team" element={<Collective students={students} user={user} setStudents={setStudents} />} />
               <Route path="/secretary" element={<SecretaryDashboard />} />
