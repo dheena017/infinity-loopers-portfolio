@@ -1,16 +1,81 @@
-# React + Vite
+# Client App (React + Vite)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Frontend for the Cosmic Frontier portfolio platform.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Animated React UI with Framer Motion
+- Route-based pages for home, operatives, mentors, expeditions, collective, transmissions
+- Login flow with role-based redirects (`student`, `teacher`, etc.)
+- Student dashboard profile editing + password change flow
+- Fallback behavior when backend is offline (for selected views)
 
-## React Compiler
+## Routes
 
-The React Compiler is currently not compatible with SWC. See [this issue](https://github.com/vitejs/vite-plugin-react/issues/428) for tracking the progress.
+- `/` — Home
+- `/login` — Login
+- `/forgot-password` — Forgot password
+- `/reset-password` — Reset password UI
+- `/operatives`
+- `/mentors`
+- `/expeditions`
+- `/team`
+- `/secretary`
+- `/student`
+- `/admin`
+- `/transmissions`
 
-## Expanding the ESLint configuration
+## Development
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+From repository root:
+
+```bash
+npm run client
+```
+
+From `client/` directly:
+
+```bash
+npm install
+npm run dev
+```
+
+Build and preview:
+
+```bash
+npm run build
+npm run preview
+```
+
+## Environment Variables
+
+Optional `client/.env`:
+
+```env
+VITE_SUPABASE_URL=https://your-project-ref.supabase.co
+VITE_SUPABASE_ANON_KEY=your-anon-key
+```
+
+The frontend still primarily consumes backend REST endpoints on `http://localhost:5000`.
+
+## Backend Dependency
+
+Most pages rely on the server running at `http://localhost:5000`.
+
+Important note:
+
+- Some pages call absolute URLs (`http://localhost:5000/api/...`)
+- `Mentors.jsx` currently calls relative `/api/...` URLs
+- `vite.config.js` currently has no proxy, so relative `/api` calls can fail unless you add a proxy or serve behind one origin
+
+## Login Notes (Current API behavior)
+
+- Student login expects email + password
+- Teacher login currently accepts hardcoded credentials on backend (`admin` / `password123`)
+- Student default password is `kalvium@123` when DB patch has been applied
+
+## Troubleshooting
+
+- If login or data fetch fails, verify backend is running on port `5000`
+- If `/api/mentors` fails from browser, it is likely a missing Vite proxy issue
+- If student password change fails, ensure `ADD_PASSWORD_COLUMN.sql` has been executed
