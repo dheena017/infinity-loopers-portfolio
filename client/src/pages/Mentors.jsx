@@ -3,8 +3,7 @@ import { motion as Motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import { mentorData as localMentors } from '../data/team';
 import ProfileCard from '../components/ProfileCard';
-import { Briefcase, Star, Users } from 'lucide-react';
-import { Users, ChevronRight, Briefcase } from 'lucide-react';
+import { Briefcase, Star } from 'lucide-react';
 import { useSearchParams } from 'react-router-dom';
 
 // Admin form component

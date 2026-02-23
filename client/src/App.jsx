@@ -118,7 +118,7 @@ function AppContent() {
               <Route path="/expeditions" element={<Expeditions />} />
               <Route path="/team" element={<Collective students={students} user={user} setStudents={setStudents} />} />
               <Route path="/secretary" element={<SecretaryDashboard />} />
-              <Route path="/student" element={<StudentDashboard user={user} onUpdate={handleUserUpdate} />} />
+              <Route path="/student" element={<StudentDashboard user={user} onUpdate={handleUserUpdate} onLogout={handleLogout} />} />
               <Route path="/admin" element={<TeacherDashboard students={students} setStudents={setStudents} user={user} onUpdate={handleUserUpdate}/>} />
               <Route path="/transmissions" element={<Transmissions />} />
             </Routes>

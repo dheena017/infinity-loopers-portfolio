@@ -2,21 +2,20 @@ import React from 'react';
 import { motion as Motion } from 'framer-motion';
 import { NavLink, useLocation } from 'react-router-dom';
 import {
-    LayoutDashboard, Users, UserCircle, Globe,
     Mail, LogOut, ShieldCheck,
-    Search
+    Search, Home, Crown, GraduationCap, GitFork, Briefcase
 } from 'lucide-react';
 import SquadLogo from './SquadLogo';
 
 const HUD = ({ user, onLogout }) => {
     const location = useLocation();
     const navLinks = [
-        { path: '/', label: 'HOME', icon: LayoutDashboard },
-        { path: '/operatives', label: 'LEADERSHIP', icon: UserCircle },
-        { path: '/mentors', label: 'MENTORS', icon: Users },
-        { path: '/team', label: 'FORK', icon: Users },
-        { path: '/expeditions', label: 'PROJECTS', icon: Globe },
-        { path: '/transmissions', label: 'ABOUT US', icon: Mail },
+        { path: '/', label: 'HOME', icon: Home },
+        { path: '/operatives', label: 'LEADERSHIP', icon: Crown },
+        { path: '/mentors', label: 'MENTORS', icon: GraduationCap },
+        { path: '/team', label: 'FORK', icon: GitFork },
+        { path: '/expeditions', label: 'PROJECTS', icon: Briefcase },
+        { path: '/transmissions', label: 'CONTACT', icon: Mail },
     ];
 
     if (user) {

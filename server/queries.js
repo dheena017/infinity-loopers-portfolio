@@ -176,6 +176,17 @@ export async function assignOperativeToMission(
 
 // ==================== ARCHIVES ====================
 
+export async function getAllArchives() {
+  const supabase = getSupabase();
+  const { data, error } = await supabase
+    .from('archives')
+    .select('*')
+    .order('date_recorded', { ascending: false });
+
+  if (error) throw new Error(`Failed to fetch archives: ${error.message}`);
+  return data || [];
+}
+
 export async function getArchivesByMission(missionId) {
   const supabase = getSupabase();
   const { data, error } = await supabase

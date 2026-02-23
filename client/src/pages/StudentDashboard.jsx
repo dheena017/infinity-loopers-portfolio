@@ -1,11 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { motion as Motion, AnimatePresence } from 'framer-motion';
-import { User, Edit3, Save, X, Github, Linkedin, MessageSquare, Shield, Cpu, Activity, Layout, Camera, Lock, Eye, EyeOff, CheckCircle2, AlertCircle } from 'lucide-react';
+import { 
+    User, Edit3, Save, X, Github, Linkedin, MessageSquare, 
+    Shield, Cpu, Activity, Layout, Camera, Lock, Eye, EyeOff, 
+    CheckCircle2, AlertCircle, Home, Crown, GraduationCap, 
+    Briefcase, LogOut, Menu, Grip, Globe 
+} from 'lucide-react';
+import { NavLink } from 'react-router-dom';
 
-const StudentDashboard = ({ user, onUpdate }) => {
+const StudentDashboard = ({ user, onUpdate, onLogout }) => {
     const [studentData, setStudentData] = useState(null);
     const [isEditing, setIsEditing] = useState(false);
     const [loading, setLoading] = useState(true);
+
     const [form, setForm] = useState({
         name: '',
         tagline: '',
@@ -16,11 +23,12 @@ const StudentDashboard = ({ user, onUpdate }) => {
         resume_url: ''
     });
     const [message, setMessage] = useState('');
+    const [archives, setArchives] = useState([]);
 
     // ── Change Password state ──────────────────────────────
     const [showPasswordPanel, setShowPasswordPanel] = useState(false);
     const [pwForm, setPwForm] = useState({ current: '', newPw: '', confirm: '' });
-    const [pwMessage, setPwMessage] = useState({ text: '', type: '' }); // type: 'success' | 'error'
+    const [pwMessage, setPwMessage] = useState({ text: '', type: '' });
     const [pwLoading, setPwLoading] = useState(false);
     const [showCurrent, setShowCurrent] = useState(false);
     const [showNew, setShowNew] = useState(false);
@@ -28,7 +36,10 @@ const StudentDashboard = ({ user, onUpdate }) => {
 
     useEffect(() => {
         const fetchStudent = async () => {
-            if (!user?.studentId) return;
+            if (!user?.studentId) {
+                setLoading(false);
+                return;
+            }
             try {
                 const response = await fetch(`http://localhost:5000/api/students/${user.studentId}`);
                 const data = await response.json();
@@ -49,7 +60,17 @@ const StudentDashboard = ({ user, onUpdate }) => {
             }
         };
 
+        const fetchArchives = async () => {
+            try {
+                const res = await fetch('http://localhost:5000/api/archives');
+                if (res.ok) setArchives(await res.json());
+            } catch (err) {
+                console.error('Archives error:', err);
+            }
+        };
+
         fetchStudent();
+        fetchArchives();
     }, [user]);
 
     const handleSave = async () => {
@@ -65,8 +86,6 @@ const StudentDashboard = ({ user, onUpdate }) => {
                 const saved = data.data || form;
                 setStudentData(prev => ({ ...prev, ...saved }));
 
-                // Build an updates object for every field that changed
-                // so the HUD, welcome line & Collective page all update instantly
                 if (onUpdate) {
                     const userUpdates = {};
                     if (form.name && form.name !== user.username) userUpdates.username = form.name;
@@ -74,27 +93,27 @@ const StudentDashboard = ({ user, onUpdate }) => {
                     if (Object.keys(userUpdates).length > 0) onUpdate(userUpdates);
                 }
 
-                setMessage('CORE UPDATED');
+                setMessage('UPDATED');
                 setIsEditing(false);
                 setTimeout(() => setMessage(''), 3000);
             } else {
-                setMessage('ERROR: SYNC FAILED');
+                setMessage('FAILED');
             }
-        } catch (error) {
-            setMessage('ERROR: SERVER OFFLINE');
+        } catch {
+            setMessage('OFFLINE');
         }
     };
 
     const handleChangePassword = async () => {
         setPwMessage({ text: '', type: '' });
         if (!pwForm.current || !pwForm.newPw || !pwForm.confirm) {
-            return setPwMessage({ text: 'Please fill in all fields.', type: 'error' });
+            return setPwMessage({ text: 'All fields required.', type: 'error' });
         }
         if (pwForm.newPw !== pwForm.confirm) {
-            return setPwMessage({ text: 'New passwords do not match.', type: 'error' });
+            return setPwMessage({ text: 'Passwords do not match.', type: 'error' });
         }
         if (pwForm.newPw.length < 6) {
-            return setPwMessage({ text: 'Password must be at least 6 characters.', type: 'error' });
+            return setPwMessage({ text: 'Min 6 characters.', type: 'error' });
         }
         setPwLoading(true);
         try {
@@ -105,364 +124,289 @@ const StudentDashboard = ({ user, onUpdate }) => {
             });
             const data = await res.json();
             if (data.success) {
-                setPwMessage({ text: 'Password updated successfully!', type: 'success' });
+                setPwMessage({ text: 'Password changed.', type: 'success' });
                 setPwForm({ current: '', newPw: '', confirm: '' });
                 setTimeout(() => { setShowPasswordPanel(false); setPwMessage({ text: '', type: '' }); }, 2500);
             } else {
-                setPwMessage({ text: data.message || 'Failed to update password.', type: 'error' });
+                setPwMessage({ text: data.message || 'Failed.', type: 'error' });
             }
         } catch {
-            setPwMessage({ text: 'Server offline. Please try again.', type: 'error' });
+            setPwMessage({ text: 'Server error.', type: 'error' });
         } finally {
             setPwLoading(false);
         }
     };
 
     if (loading) return (
-        <div className="min-h-screen flex items-center justify-center bg-[#030305]">
-            <div className="w-12 h-12 border-4 border-red-600/20 border-t-red-600 rounded-full animate-spin"></div>
+        <div className="min-h-screen flex items-center justify-center bg-transparent">
+            <div className="w-10 h-10 border-4 border-slate-800 border-t-red-500 rounded-full animate-spin"></div>
         </div>
     );
 
     return (
-        <section className="section-shell px-6 py-12">
-            <div className="max-w-7xl mx-auto space-y-12">
-                {/* Header Section */}
-                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-8">
-                    <Motion.div
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                    >
-                        <div className="flex items-center gap-3 mb-2">
-                            <Cpu className="text-red-500 w-5 h-5" />
-                            <h2 className="text-sm font-black uppercase tracking-[0.3em] text-red-500">Operative Neural Link</h2>
-                        </div>
-                        <h1 className="text-5xl font-black heading-display text-white italic">Student Dashboard</h1>
-                        <p className="text-xs text-slate-500 mt-2 uppercase tracking-widest font-bold">Welcome back, {user.username}</p>
-                    </Motion.div>
+        <div className="min-h-screen bg-transparent text-slate-100 font-sans selection:bg-red-500/30 pt-32 md:pt-40 lg:pt-48 xl:pt-56 relative z-0">
+            {/* Spacer for fixed header */}
+            <div className="h-20 lg:h-24 w-full"></div>
 
-                    <Motion.div
-                        initial={{ opacity: 0, x: 20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        className="flex gap-4"
-                    >
-                        {isEditing ? (
-                            <>
-                                <button onClick={() => setIsEditing(false)} className="flex items-center gap-2 px-6 py-3 border border-white/10 hover:bg-white/5 text-slate-400 rounded-xl font-bold text-xs uppercase tracking-widest transition-all">
-                                    <X size={16} /> Discard
-                                </button>
-                                <button onClick={handleSave} className="flex items-center gap-2 px-6 py-3 bg-red-600 hover:bg-red-500 text-white rounded-xl font-bold text-xs uppercase tracking-widest transition-all shadow-lg shadow-red-900/40">
-                                    <Save size={16} /> Commit Changes
-                                </button>
-                            </>
-                        ) : (
-                            <button onClick={() => setIsEditing(true)} className="flex items-center gap-2 px-6 py-3 bg-white/5 border border-white/10 hover:border-red-500/50 text-white rounded-xl font-bold text-xs uppercase tracking-widest transition-all">
-                                <Edit3 size={16} className="text-red-500" /> Modify Interface
-                            </button>
-                        )}
-                    </Motion.div>
-                </div>
-
-                {message && (
-                    <Motion.div
-                        initial={{ opacity: 0, y: -10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        className="p-4 bg-red-600/10 border border-red-500/20 text-red-500 text-[10px] font-black uppercase tracking-[0.3em] text-center rounded-xl"
-                    >
-                        {message}
-                    </Motion.div>
-                )}
-
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
-                    {/* Sidebar / Profile Card */}
-                    <div className="lg:col-span-4 space-y-6">
-                        <Motion.div
-                            initial={{ opacity: 0, scale: 0.95 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            className="panel-card overflow-hidden bg-slate-950/50 border border-white/5"
-                        >
-                            <div className="aspect-square relative group">
-                                <img
-                                    src={isEditing ? form.photo : studentData?.photo}
-                                    alt="Profile"
-                                    className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity"
-                                    onError={(e) => { e.target.src = `https://ui-avatars.com/api/?name=${user.username}&background=1e293b&color=fff&size=512`; }}
-                                />
-                                <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent"></div>
-                                {isEditing && (
-                                    <div className="absolute inset-0 flex items-center justify-center bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity">
-                                        <div className="text-center p-6 space-y-4">
-                                            <Camera className="mx-auto text-red-500 mb-2" />
-                                            <input
-                                                type="text"
-                                                placeholder="Image URL"
-                                                value={form.photo}
-                                                onChange={(e) => setForm({ ...form, photo: e.target.value })}
-                                                className="w-full bg-slate-900 border border-white/10 rounded-lg p-2 text-[10px] text-white outline-none focus:border-red-500"
-                                            />
-                                        </div>
-                                    </div>
-                                )}
-                            </div>
-                            <div className="p-8 space-y-4">
-                                <div>
-                                    <h3 className="text-2xl font-black text-white uppercase italic">{studentData?.name}</h3>
-                                    <p className="text-xs text-red-500 font-bold uppercase tracking-widest">{studentData?.tagline || 'System Operative'}</p>
+            <div className="flex max-w-[1600px] mx-auto">
+                
+                {/* ── Main Content ── */}
+                <main className="flex-1 p-6 lg:p-10 min-w-0">
+                    <div className="max-w-5xl mx-auto space-y-8">
+                        
+                        {/* Header Banner */}
+                        <div className="relative rounded-3xl bg-slate-900 overflow-hidden shadow-2xl shadow-black/20">
+                            <div className="absolute inset-0 bg-gradient-to-r from-red-900/40 to-slate-900/40"></div>
+                            <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20"></div>
+                            
+                            <div className="relative p-8 md:p-10 flex flex-col md:flex-row gap-8 items-start md:items-center justify-between">
+                                <div className="space-y-4 max-w-xl">
+                                    <h1 className="text-4xl md:text-5xl font-bold text-white tracking-tight">
+                                        {studentData?.name || user.username}
+                                    </h1>
+                                    <p className="text-slate-300 text-lg font-medium">
+                                        "{studentData?.tagline || 'Ready for your next mission, Operative?'}"
+                                    </p>
                                 </div>
-                                <div className="flex gap-3 pt-4 border-t border-white/5">
-                                    <Activity className="text-slate-500" size={16} />
-                                    <span className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Status: Active Interface</span>
-                                </div>
-                            </div>
-                        </Motion.div>
 
-                        <div className="grid grid-cols-2 gap-4">
-                            <div className="panel-card p-4 bg-slate-950/50 border border-white/5 text-center">
-                                <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mb-1">ID Code</p>
-                                <p className="text-sm font-black text-white">S139_{user.studentId}</p>
-                            </div>
-                            <div className="panel-card p-4 bg-slate-950/50 border border-white/5 text-center">
-                                <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mb-1">Rank</p>
-                                <p className="text-sm font-black text-white">Elite</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Main Content Area / Form */}
-                    <div className="lg:col-span-8 space-y-8">
-                        <div className="panel-card p-10 bg-slate-950/50 border border-white/5 space-y-10">
-                            <div className="flex items-center gap-4 border-b border-white/5 pb-6">
-                                <Layout className="text-red-500" size={20} />
-                                <h3 className="text-lg font-black text-white uppercase tracking-tighter italic">Identity Management</h3>
-                            </div>
-
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                <div className="space-y-4">
-                                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] ml-1">Codename</label>
-                                    <input
-                                        type="text"
-                                        disabled={!isEditing}
-                                        value={form.name}
-                                        onChange={(e) => setForm({ ...form, name: e.target.value })}
-                                        className={`w-full p-4 rounded-xl text-sm font-bold bg-slate-900 border transition-all outline-none ${isEditing ? 'border-red-500/50 text-white focus:bg-slate-800' : 'border-white/5 text-slate-500'}`}
-                                    />
-                                </div>
-                                <div className="space-y-4">
-                                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] ml-1">Mission Tagline</label>
-                                    <input
-                                        type="text"
-                                        disabled={!isEditing}
-                                        value={form.tagline}
-                                        onChange={(e) => setForm({ ...form, tagline: e.target.value })}
-                                        className={`w-full p-4 rounded-xl text-sm font-bold bg-slate-900 border transition-all outline-none ${isEditing ? 'border-red-500/50 text-white focus:bg-slate-800' : 'border-white/5 text-slate-500'}`}
-                                        placeholder="e.g. Architecting the Void"
-                                    />
-                                </div>
-                            </div>
-
-                            <div className="space-y-4">
-                                <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] ml-1">Neural Core (Bio)</label>
-                                <textarea
-                                    rows="5"
-                                    disabled={!isEditing}
-                                    value={form.bio}
-                                    onChange={(e) => setForm({ ...form, bio: e.target.value })}
-                                    className={`w-full p-6 rounded-xl text-sm font-medium leading-relaxed bg-slate-900 border transition-all outline-none resize-none ${isEditing ? 'border-red-500/50 text-white focus:bg-slate-800' : 'border-white/5 text-slate-500'}`}
-                                    placeholder="Enter your professional brief..."
-                                ></textarea>
-                            </div>
-
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-6 border-t border-white/5">
-                                <div className="space-y-4">
-                                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] ml-1 flex items-center gap-2">
-                                        <Linkedin size={12} /> Communication Link (LinkedIn)
-                                    </label>
-                                    <input
-                                        type="text"
-                                        disabled={!isEditing}
-                                        value={form.linkedin}
-                                        onChange={(e) => setForm({ ...form, linkedin: e.target.value })}
-                                        className={`w-full p-4 rounded-xl text-sm font-bold bg-slate-900 border transition-all outline-none ${isEditing ? 'border-red-500/50 text-white focus:bg-slate-800' : 'border-white/5 text-slate-500'}`}
-                                        placeholder="https://linkedin.com/in/..."
-                                    />
-                                </div>
-                                <div className="space-y-4">
-                                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] ml-1 flex items-center gap-2">
-                                        <Github size={12} /> Repository Access (GitHub)
-                                    </label>
-                                    <input
-                                        type="text"
-                                        disabled={!isEditing}
-                                        value={form.github}
-                                        onChange={(e) => setForm({ ...form, github: e.target.value })}
-                                        className={`w-full p-4 rounded-xl text-sm font-bold bg-slate-900 border transition-all outline-none ${isEditing ? 'border-red-500/50 text-white focus:bg-slate-800' : 'border-white/5 text-slate-500'}`}
-                                        placeholder="https://github.com/..."
-                                    />
-                                </div>
-                            </div>
-
-                            <div className="space-y-4">
-                                <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] ml-1 flex items-center gap-2">
-                                    Professional Resume (G-Drive/PDF Link)
-                                </label>
-                                <input
-                                    type="text"
-                                    disabled={!isEditing}
-                                    value={form.resume_url}
-                                    onChange={(e) => setForm({ ...form, resume_url: e.target.value })}
-                                    className={`w-full p-4 rounded-xl text-sm font-bold bg-slate-900 border transition-all outline-none ${isEditing ? 'border-red-500/50 text-white focus:bg-slate-800' : 'border-white/5 text-slate-500'}`}
-                                    placeholder="https://drive.google.com/your-resume-link"
-                                />
-                            </div>
-                        </div>
-
-                        {/* Recent Activity Mockup */}
-                        <div className="panel-card p-8 bg-slate-950/20 border border-white/5">
-                            <h4 className="text-[10px] font-black text-slate-600 uppercase tracking-[0.4em] mb-6">System Logs</h4>
-                            <div className="space-y-4">
-                                {[
-                                    { msg: 'Profile metadata updated', time: '2h ago', icon: Shield },
-                                    { msg: 'Project "Cosmic UI" synced', time: '1d ago', icon: Activity },
-                                    { msg: 'New message from Archon Astra', time: '3d ago', icon: MessageSquare }
-                                ].map((log, i) => (
-                                    <div key={i} className="flex justify-between items-center py-3 border-b border-white/5 last:border-0">
-                                        <div className="flex items-center gap-4">
-                                            <log.icon className="text-red-500/50" size={14} />
-                                            <span className="text-xs text-slate-400">{log.msg}</span>
-                                        </div>
-                                        <span className="text-[9px] text-slate-600 font-bold uppercase">{log.time}</span>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-
-                        {/* ── Change Password Panel ── */}
-                        <div className="panel-card bg-slate-950/50 border border-white/5 overflow-hidden">
-                            <button
-                                onClick={() => { setShowPasswordPanel(v => !v); setPwMessage({ text: '', type: '' }); }}
-                                className="w-full flex items-center justify-between p-8 hover:bg-white/[0.02] transition-colors group"
-                            >
-                                <div className="flex items-center gap-4">
-                                    <div className="w-9 h-9 rounded-lg bg-red-600/10 border border-red-500/20 flex items-center justify-center group-hover:bg-red-600/20 transition-colors">
-                                        <Lock size={15} className="text-red-500" />
-                                    </div>
-                                    <div className="text-left">
-                                        <p className="text-sm font-black text-white uppercase tracking-tight">Change Password</p>
-                                        <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mt-0.5">Update your access credentials</p>
-                                    </div>
-                                </div>
-                                <Motion.div animate={{ rotate: showPasswordPanel ? 180 : 0 }} transition={{ duration: 0.2 }}>
-                                    <X size={14} className={`transition-colors ${showPasswordPanel ? 'text-red-500' : 'text-slate-600'}`} />
-                                </Motion.div>
-                            </button>
-
-                            <AnimatePresence>
-                                {showPasswordPanel && (
-                                    <Motion.div
-                                        initial={{ height: 0, opacity: 0 }}
-                                        animate={{ height: 'auto', opacity: 1 }}
-                                        exit={{ height: 0, opacity: 0 }}
-                                        transition={{ duration: 0.25, ease: 'easeInOut' }}
-                                        className="overflow-hidden"
-                                    >
-                                        <div className="px-8 pb-8 space-y-5 border-t border-white/5 pt-6">
-
-                                            {/* Current Password */}
-                                            <div className="space-y-2">
-                                                <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] ml-1">Current Password</label>
-                                                <div className="relative">
-                                                    <input
-                                                        id="pw-current"
-                                                        type={showCurrent ? 'text' : 'password'}
-                                                        value={pwForm.current}
-                                                        onChange={e => setPwForm({ ...pwForm, current: e.target.value })}
-                                                        placeholder="Enter current password"
-                                                        className="w-full p-4 pr-12 rounded-xl text-sm font-bold bg-slate-900 border border-white/10 text-white outline-none focus:border-red-500/60 transition-all placeholder:text-slate-700"
-                                                    />
-                                                    <button type="button" onClick={() => setShowCurrent(v => !v)} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 transition-colors">
-                                                        {showCurrent ? <EyeOff size={15} /> : <Eye size={15} />}
-                                                    </button>
-                                                </div>
-                                            </div>
-
-                                            {/* New Password */}
-                                            <div className="space-y-2">
-                                                <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] ml-1">New Password</label>
-                                                <div className="relative">
-                                                    <input
-                                                        id="pw-new"
-                                                        type={showNew ? 'text' : 'password'}
-                                                        value={pwForm.newPw}
-                                                        onChange={e => setPwForm({ ...pwForm, newPw: e.target.value })}
-                                                        placeholder="Min. 6 characters"
-                                                        className="w-full p-4 pr-12 rounded-xl text-sm font-bold bg-slate-900 border border-white/10 text-white outline-none focus:border-red-500/60 transition-all placeholder:text-slate-700"
-                                                    />
-                                                    <button type="button" onClick={() => setShowNew(v => !v)} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 transition-colors">
-                                                        {showNew ? <EyeOff size={15} /> : <Eye size={15} />}
-                                                    </button>
-                                                </div>
-                                            </div>
-
-                                            {/* Confirm Password */}
-                                            <div className="space-y-2">
-                                                <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] ml-1">Confirm New Password</label>
-                                                <div className="relative">
-                                                    <input
-                                                        id="pw-confirm"
-                                                        type={showConfirm ? 'text' : 'password'}
-                                                        value={pwForm.confirm}
-                                                        onChange={e => setPwForm({ ...pwForm, confirm: e.target.value })}
-                                                        placeholder="Repeat new password"
-                                                        className="w-full p-4 pr-12 rounded-xl text-sm font-bold bg-slate-900 border border-white/10 text-white outline-none focus:border-red-500/60 transition-all placeholder:text-slate-700"
-                                                    />
-                                                    <button type="button" onClick={() => setShowConfirm(v => !v)} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 transition-colors">
-                                                        {showConfirm ? <EyeOff size={15} /> : <Eye size={15} />}
-                                                    </button>
-                                                </div>
-                                            </div>
-
-                                            {/* Feedback Message */}
-                                            <AnimatePresence>
-                                                {pwMessage.text && (
-                                                    <Motion.div
-                                                        initial={{ opacity: 0, y: -6 }}
-                                                        animate={{ opacity: 1, y: 0 }}
-                                                        exit={{ opacity: 0, y: -6 }}
-                                                        className={`flex items-center gap-3 p-4 rounded-xl border text-xs font-bold ${pwMessage.type === 'success'
-                                                            ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400'
-                                                            : 'bg-red-600/10 border-red-500/20 text-red-400'
-                                                            }`}
-                                                    >
-                                                        {pwMessage.type === 'success'
-                                                            ? <CheckCircle2 size={14} />
-                                                            : <AlertCircle size={14} />}
-                                                        {pwMessage.text}
-                                                    </Motion.div>
-                                                )}
-                                            </AnimatePresence>
-
-                                            {/* Submit Button */}
-                                            <button
-                                                id="btn-change-password"
-                                                onClick={handleChangePassword}
-                                                disabled={pwLoading}
-                                                className="w-full flex items-center justify-center gap-2 px-6 py-4 bg-red-600 hover:bg-red-500 disabled:bg-red-900/40 disabled:text-red-700 text-white rounded-xl font-black text-xs uppercase tracking-widest transition-all shadow-lg shadow-red-900/30"
-                                            >
-                                                {pwLoading ? (
-                                                    <><div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" /> Updating...</>
-                                                ) : (
-                                                    <><Lock size={14} /> Commit New Password</>
-                                                )}
+                                <div className="flex gap-3">
+                                    {isEditing ? (
+                                        <>
+                                            <button onClick={() => setIsEditing(false)} className="px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-sm font-semibold transition-all">Cancel</button>
+                                            <button onClick={handleSave} className="px-5 py-2.5 rounded-xl bg-red-600 hover:bg-red-500 text-white text-sm font-bold shadow-lg shadow-red-900/20 transition-all flex items-center gap-2">
+                                                Save Changes
                                             </button>
+                                        </>
+                                    ) : (
+                                        <button onClick={() => setIsEditing(true)} className="px-5 py-2.5 rounded-xl bg-white text-slate-900 hover:bg-red-50 font-bold text-sm shadow-xl transition-all flex items-center gap-2 group">
+                                            Modify Interface
+                                        </button>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+
+                        {message && (
+                            <Motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="p-4 bg-red-500/10 border border-red-500/20 rounded-xl text-center text-red-400 font-bold text-sm">
+                                {message}
+                            </Motion.div>
+                        )}
+
+                        {/* Content Grid */}
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                            
+                            {/* Left Column: Profile & Stats */}
+                            <div className="space-y-8">
+                                <div className="bg-slate-900/60 border border-slate-700/50 rounded-2xl p-6 shadow-xl relative overflow-hidden group backdrop-blur-md">
+                                    <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-red-600 via-orange-600 to-red-800"></div>
+                                    <div className="flex flex-col items-center text-center">
+                                        <div className="relative w-28 h-28 mb-4">
+                                            <div className="absolute inset-0 bg-red-500 blur-2xl opacity-20 rounded-full"></div>
+                                            <img
+                                                src={isEditing ? form.photo : studentData?.photo}
+                                                alt="Profile"
+                                                className="relative w-full h-full rounded-2xl object-cover border-4 border-slate-700/50 shadow-xl"
+                                                onError={(e) => { e.target.src = `https://ui-avatars.com/api/?name=${user.username}&background=0f172a&color=fff`; }}
+                                            />
+                                            {isEditing && (
+                                                <div className="absolute -bottom-2 -right-2 bg-red-600 p-2 rounded-lg shadow-lg hover:bg-red-500 transition-colors cursor-pointer">
+                                                    <Camera size={16} className="text-white" />
+                                                </div>
+                                            )}
                                         </div>
-                                    </Motion.div>
+                                        
+                                        <h3 className="text-xl font-bold text-white mb-1">{user.username}</h3>
+                                        <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-slate-800 border border-slate-700 text-xs font-semibold text-slate-300">
+                                            Active Operative
+                                        </div>
+
+                                        <div className="grid grid-cols-2 gap-3 w-full mt-6">
+                                            <div className="p-3 bg-slate-900/50 rounded-xl border border-slate-700/50">
+                                            </div>
+                                        </div>
+
+                                        <div className="flex gap-2 w-full mt-6">
+                                            {[
+                                                { icon: Linkedin, color: 'text-red-400', bg: 'hover:bg-red-400/10', link: studentData?.linkedin },
+                                                { icon: Github, color: 'text-white', bg: 'hover:bg-slate-700', link: studentData?.github },
+                                                { icon: Briefcase, color: 'text-red-400', bg: 'hover:bg-red-400/10', link: studentData?.resume_url }
+                                            ].map((btn, i) => (
+                                                <a key={i} href={btn.link || '#'} target="_blank" rel="noopener noreferrer" 
+                                                   className={`flex-1 py-2.5 rounded-xl border border-slate-700 bg-slate-900/50 flex items-center justify-center transition-all ${btn.bg}`}>
+                                                    <btn.icon size={18} className={btn.color} />
+                                                </a>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="bg-slate-900/60 border border-slate-700/50 rounded-2xl p-6 shadow-xl backdrop-blur-md">
+                                    <h3 className="text-sm font-bold text-slate-400 uppercase tracking-widest mb-4">Quick Actions</h3>
+                                    <div className="space-y-2">
+                                        <button 
+                                            onClick={() => setShowPasswordPanel(!showPasswordPanel)}
+                                            className="w-full flex items-center justify-between p-3.5 rounded-xl bg-slate-800/40 text-slate-300 hover:bg-slate-800 hover:text-white transition-all font-medium text-sm border border-slate-700/60 hover:border-red-500/60"
+                                        >
+                                            <span className="flex items-center gap-3">
+                                                <span className="w-8 h-8 rounded-lg bg-red-500/10 border border-red-500/30 text-red-300 flex items-center justify-center">
+                                                    <Shield size={16} />
+                                                </span>
+                                                Security Settings
+                                            </span>
+                                            <span className="text-[10px] font-bold uppercase tracking-wider text-red-300/80">Manage</span>
+                                        </button>
+                                        <button className="w-full flex items-center justify-between p-3.5 rounded-xl bg-slate-800/40 text-slate-300 hover:bg-slate-800 hover:text-white transition-all font-medium text-sm border border-slate-700/60 hover:border-red-500/60">
+                                            <span className="flex items-center gap-3">
+                                                <span className="w-8 h-8 rounded-lg bg-red-500/10 border border-red-500/30 text-red-300 flex items-center justify-center">
+                                                    <Globe size={16} />
+                                                </span>
+                                                Public Profile
+                                            </span>
+                                            <span className="text-[10px] font-bold uppercase tracking-wider text-red-300/80">Open</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Right Column: Main Content / Editing */}
+                            <div className="md:col-span-2 space-y-8">
+                                {isEditing ? (
+                                    <div className="bg-slate-900/60 border border-slate-700/50 rounded-2xl p-8 shadow-xl animate-in fade-in slide-in-from-bottom-4 duration-500 backdrop-blur-md">
+                                        <h3 className="text-lg font-bold text-white mb-6 flex items-center gap-2">
+                                            Edit Profile Details
+                                        </h3>
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                                            <div className="space-y-2">
+                                                <label className="text-xs font-bold text-slate-400 uppercase">Display Name</label>
+                                                <input type="text" value={form.name} onChange={e => setForm({...form, name: e.target.value})} className="w-full p-3 bg-slate-800/50 border border-slate-700 rounded-xl text-white outline-none focus:border-red-500 transition-colors" />
+                                            </div>
+                                            <div className="space-y-2">
+                                                <label className="text-xs font-bold text-slate-400 uppercase">Tagline</label>
+                                                <input type="text" value={form.tagline} onChange={e => setForm({...form, tagline: e.target.value})} className="w-full p-3 bg-slate-800/50 border border-slate-700 rounded-xl text-white outline-none focus:border-red-500 transition-colors" />
+                                            </div>
+                                        </div>
+                                        <div className="space-y-2 mb-6">
+                                            <label className="text-xs font-bold text-slate-400 uppercase">Bio / Overview</label>
+                                            <textarea rows="4" value={form.bio} onChange={e => setForm({...form, bio: e.target.value})} className="w-full p-3 bg-slate-800/50 border border-slate-700 rounded-xl text-white outline-none focus:border-red-500 transition-colors resize-none"></textarea>
+                                        </div>
+                                        <div className="grid grid-cols-1 gap-8 mb-6">
+                                            <h4 className="text-xs font-bold text-slate-400 uppercase mt-4 border-t border-slate-700/50 pt-6">Social Links</h4>
+                                            <div className="space-y-2">
+                                                <label className="text-xs font-bold text-slate-500 uppercase">LinkedIn Profile</label>
+                                                <div className="relative">
+                                                    <input type="text" value={form.linkedin} onChange={e => setForm({...form, linkedin: e.target.value})} 
+                                                    className="w-full p-3 bg-slate-800/50 border border-slate-700 rounded-xl text-white text-sm outline-none focus:border-red-500" 
+                                                    placeholder=" https://linkedin.com/in/..." />
+                                                </div>
+                                            </div>
+                                            <div className="space-y-2">
+                                                <label className="text-xs font-bold text-slate-500 uppercase">GitHub Profile</label>
+                                                <div className="relative">
+                                                    <input type="text" value={form.github} onChange={e => setForm({...form, github: e.target.value})} 
+                                                    className="w-full p-3 bg-slate-800/50 border border-slate-700 rounded-xl text-white text-sm outline-none focus:border-red-500" placeholder=" https://github.com/..." />
+                                                    </div>
+                                            </div>
+                                            <div className="space-y-2">
+                                                <label className="text-xs font-bold text-slate-500 uppercase">Resume / Portfolio</label>
+                                                <div className="relative">
+                                                    <input type="text" value={form.resume_url} onChange={e => setForm({...form, resume_url: e.target.value})} 
+                                                    className="w-full p-3 bg-slate-800/50 border border-slate-700 rounded-xl text-white text-sm outline-none focus:border-red-500" 
+                                                    placeholder=" https://..." />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <>
+                                        {/* Activity Feed */}
+                                        <div className="bg-slate-900/60 border border-slate-700/50 rounded-2xl p-6 shadow-xl backdrop-blur-md">
+                                            <div className="flex items-center justify-between mb-6">
+                                                <h3 className="text-lg font-bold text-white">Activity Feed</h3>
+                                                <button className="text-xs font-bold text-red-400 hover:text-red-300">View All</button>
+                                            </div>
+                                            <div className="space-y-0">
+                                                {archives.length === 0 ? (
+                                                    <div className="p-8 text-center text-slate-500 text-sm border-2 border-dashed border-slate-700/50 rounded-xl m-4">
+                                                        No mission logs available.
+                                                    </div>
+                                                ) : (
+                                                    archives.map((log) => (
+                                                        <div key={log.id} className="flex gap-4 p-4 hover:bg-slate-800/50 rounded-xl transition-colors group cursor-default border-b border-slate-700/50 last:border-0">
+                                                            <div className="flex-1">
+                                                                <div className="flex justify-between items-start">
+                                                                    <h4 className="text-sm font-bold text-slate-200 group-hover:text-white transition-colors">
+                                                                        MISSION LOG #{log.id}
+                                                                    </h4>
+                                                                    <span className="text-xs text-slate-500 font-mono">
+                                                                        {new Date(log.created_at).toLocaleDateString()}
+                                                                    </span>
+                                                                </div>
+                                                                <p className="text-sm text-slate-400 mt-1 leading-relaxed">{log.content}</p>
+                                                            </div>
+                                                        </div>
+                                                    ))
+                                                )}
+                                            </div>
+                                        </div>
+
+                                        {/* Security Panel (Popup in Flow) */}
+                                        <AnimatePresence>
+                                            {showPasswordPanel && (
+                                                <Motion.div 
+                                                    initial={{ opacity: 0, height: 0 }} 
+                                                    animate={{ opacity: 1, height: 'auto' }} 
+                                                    exit={{ opacity: 0, height: 0 }}
+                                                    className="bg-slate-900/60 border border-slate-700/50 rounded-2xl p-6 shadow-xl overflow-hidden backdrop-blur-md"
+                                                >
+                                                    <div className="flex items-center justify-between mb-6">
+                                                        <h3 className="text-lg font-bold text-white flex items-center gap-2"><Lock size={18} className="text-red-500"/> Update Credentials</h3>
+                                                        <button onClick={() => setShowPasswordPanel(false)} className="text-slate-500 hover:text-white"><X size={18}/></button>
+                                                    </div>
+                                                    
+                                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                                                        <div className="relative">
+                                                            <input type={showCurrent ? "text" : "password"} placeholder="Current Password" value={pwForm.current} onChange={e=>setPwForm({...pwForm, current: e.target.value})} 
+                                                            className="w-full p-3 bg-slate-800/50 border border-slate-700 rounded-xl text-white text-sm outline-none focus:border-red-500" />
+                                                            <button onClick={() => setShowCurrent(!showCurrent)} className="absolute right-3 top-3.5 text-slate-500 hover:text-white"><Eye size={16}/></button>
+                                                        </div>
+                                                        <div className="relative">
+                                                            <input type={showNew ? "text" : "password"} placeholder="New Password" value={pwForm.newPw} onChange={e=>setPwForm({...pwForm, newPw: e.target.value})} 
+                                                            className="w-full p-3 bg-slate-800/50 border border-slate-700 rounded-xl text-white text-sm outline-none focus:border-red-500" />
+                                                            <button onClick={() => setShowNew(!showNew)} className="absolute right-3 top-3.5 text-slate-500 hover:text-white"><Eye size={16}/></button>
+                                                        </div>
+                                                        <div className="relative">
+                                                            <input type={showConfirm ? "text" : "password"} placeholder="Confirm Password" value={pwForm.confirm} onChange={e=>setPwForm({...pwForm, confirm: e.target.value})} 
+                                                            className="w-full p-3 bg-slate-800/50 border border-slate-700 rounded-xl text-white text-sm outline-none focus:border-red-500" />
+                                                            <button onClick={() => setShowConfirm(!showConfirm)} className="absolute right-3 top-3.5 text-slate-500 hover:text-white"><Eye size={16}/></button>
+                                                        </div>
+                                                    </div>
+
+                                                    <div className="flex items-center justify-between">
+                                                        <div className={`text-xs font-bold ${pwMessage.type==='error'?'text-red-400':'text-emerald-400'}`}>{pwMessage.text}</div>
+                                                        <button onClick={handleChangePassword} disabled={pwLoading} className="px-5 py-2.5 bg-red-600 hover:bg-red-500 text-white rounded-xl text-sm font-bold shadow-lg shadow-red-900/20 transition-all flex items-center gap-2">
+                                                            {pwLoading ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div> : <CheckCircle2 size={16} />}
+                                                            Update Password
+                                                        </button>
+                                                    </div>
+                                                </Motion.div>
+                                            )}
+                                        </AnimatePresence>
+                                        
+                                        {/* Bio Read-Only */}
+                                        <div className="bg-slate-900/60 border border-slate-700/50 rounded-2xl p-6 shadow-xl backdrop-blur-md">
+                                             <h3 className="text-sm font-bold text-slate-400 uppercase tracking-widest mb-4">Neural Core (Bio)</h3>
+                                             <p className="text-slate-300 leading-relaxed text-sm">
+                                                {studentData?.bio || "No biography data detected in the neural link. Click 'Modify Interface' to update your profile metadata."}
+                                             </p>
+                                        </div>
+                                    </>
                                 )}
-                            </AnimatePresence>
+                            </div>
                         </div>
                     </div>
-                </div>
+                </main>
             </div>
-        </section>
+        </div>
     );
 };
 
