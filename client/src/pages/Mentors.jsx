@@ -5,10 +5,76 @@ import { mentorData as localMentors } from '../data/team';
 import ProfileCard from '../components/ProfileCard';
 import { Briefcase, Star, Users } from 'lucide-react';
 import { Users, ChevronRight, Briefcase } from 'lucide-react';
+import { useSearchParams } from 'react-router-dom';
+
+// Admin form component
+const AdminForm = ({ onCreate }) => {
+    const [type, setType] = useState('mentor');
+    const [name, setName] = useState('');
+    const [role, setRole] = useState('Advisor');
+    const [email, setEmail] = useState('');
+    const [photo, setPhoto] = useState('');
+    const [desc, setDesc] = useState('');
+    const [term, setTerm] = useState('');
+    const [busy, setBusy] = useState(false);
+
+    const submit = async (e) => {
+        e.preventDefault();
+        if (!name) return alert('Name required');
+        setBusy(true);
+        try {
+            if (type === 'mentor') {
+                const res = await fetch('/api/mentors', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name, role, desc, photo, email }) });
+                const payload = await res.json();
+                onCreate(payload.data);
+            } else if (type === 'student') {
+                const res = await fetch('/api/students', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name, role, email, photo, bio: desc, term }) });
+                const payload = await res.json();
+                onCreate(payload.data);
+            } else if (type === 'teacher') {
+                // Reuse secretaries endpoint as teacher placeholder
+                const res = await fetch('/api/secretaries', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name, role, email, photo, bio: desc }) });
+                const payload = await res.json();
+                onCreate(payload.data);
+            }
+            // reset
+            setName(''); setRole('Advisor'); setEmail(''); setPhoto(''); setDesc(''); setTerm('');
+        } catch (err) {
+            console.error(err);
+            alert('Create failed');
+        } finally { setBusy(false); }
+    };
+
+    return (
+        <form onSubmit={submit} className="panel-card p-6 mb-8">
+            <div className="flex gap-4 mb-4">
+                <select value={type} onChange={e=>setType(e.target.value)} className="p-2 border rounded">
+                    <option value="mentor">Mentor</option>
+                    <option value="student">Student</option>
+                    <option value="teacher">Teacher</option>
+                </select>
+                <input value={name} onChange={e=>setName(e.target.value)} placeholder="Name" className="flex-1 p-2 border rounded" />
+                <input value={role} onChange={e=>setRole(e.target.value)} placeholder="Role" className="w-56 p-2 border rounded" />
+            </div>
+            <div className="flex gap-4 mb-4">
+                <input value={email} onChange={e=>setEmail(e.target.value)} placeholder="Email" className="flex-1 p-2 border rounded" />
+                <input value={photo} onChange={e=>setPhoto(e.target.value)} placeholder="Photo URL" className="flex-1 p-2 border rounded" />
+                <input value={term} onChange={e=>setTerm(e.target.value)} placeholder="Term (students)" className="w-56 p-2 border rounded" />
+            </div>
+            <textarea value={desc} onChange={e=>setDesc(e.target.value)} placeholder="Bio / Desc" className="w-full p-2 border rounded mb-4"></textarea>
+            <div className="flex justify-end">
+                <button type="submit" disabled={busy} className="px-4 py-2 bg-red-600 text-white rounded">{busy? 'Creating...' : 'Create'}</button>
+            </div>
+        </form>
+    );
+};
 
 const Mentors = () => {
     const [mentors, setMentors] = useState(localMentors);
     const [loading, setLoading] = useState(false);
+
+    const [searchParams] = useSearchParams();
+    const isAdmin = searchParams.get('admin') === 'true';
 
     useEffect(() => {
         let cancelled = false;
@@ -69,6 +135,9 @@ const Mentors = () => {
                         </div>
                     </Motion.div>
                 </div>
+
+                {/* Admin Form (only visible when ?admin=true) */}
+                {isAdmin && <AdminForm onCreate={(newItem) => setMentors(prev => [newItem, ...prev])} />}
 
                 {/* Mentors List (ProfileCard style) */}
                 <div className="grid grid-cols-1 gap-12">

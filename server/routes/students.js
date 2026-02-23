@@ -1,5 +1,5 @@
 import express from 'express';
-import { getAllStudents, getStudentById, getStudentsByTerm, updateStudent, getStudentPasswordById, updateStudentPassword } from '../queries.js';
+import { getAllStudents, getStudentById, getStudentsByTerm, updateStudent, getStudentPasswordById, updateStudentPassword, createStudent } from '../queries.js';
 import { handleSupabaseError } from '../supabaseClient.js';
 
 const router = express.Router();
@@ -76,3 +76,15 @@ router.post('/:id/change-password', async (req, res) => {
 });
 
 export default router;
+
+// POST /api/students - create new student
+router.post('/', async (req, res) => {
+    try {
+        const payload = req.body || {};
+        const created = await createStudent(payload);
+        res.status(201).json({ success: true, data: created });
+    } catch (error) {
+        const err = handleSupabaseError(error);
+        res.status(500).json({ success: false, error: err.message });
+    }
+});
