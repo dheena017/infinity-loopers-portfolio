@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "concurrently \"npm run dev --prefix client\" \"npm run dev --prefix server\"",
+    "dev:clean": "powershell -NoProfile -ExecutionPolicy Bypass -Command \"foreach ($p in 5000,5173,5174,5175) { $conns = Get-NetTCPConnection -LocalPort $p -State Listen -ErrorAction SilentlyContinue; if ($conns) { $conns | Select-Object -ExpandProperty OwningProcess -Unique | ForEach-Object { Stop-Process -Id $_ -Force -ErrorAction SilentlyContinue } } }; npm run dev\"",
     "install:all": "npm install && npm install --prefix client && npm install --prefix server",
     "client": "npm run dev --prefix client",
     "server": "npm run dev --prefix server"
