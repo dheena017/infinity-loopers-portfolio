@@ -60,7 +60,7 @@ const HUD = ({ user, onLogout }) => {
                                 <Motion.div
                                     animate={{ rotate: -360 }}
                                     transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
-                                    className="absolute -inset-2 border-[1px] border-white/10 rounded-full"
+                                    className="absolute -inset-2 border-[1px] border-red-500/10 rounded-full"
                                 ></Motion.div>
 
                                 <div className="relative w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 bg-black border border-white/20 rounded-2xl flex items-center justify-center shadow-2xl group-hover/logo:border-red-500/50 transition-all duration-500 overflow-hidden">

@@ -23,7 +23,7 @@ const ThreeScene = () => {
             canvas.width = 64; canvas.height = 64; // Smaller texture
             const ctx = canvas.getContext('2d');
             const grad = ctx.createRadialGradient(32, 32, 0, 32, 32, 32);
-            grad.addColorStop(0, 'rgba(255,255,255,1)');
+            grad.addColorStop(0, 'rgba(239, 68, 68, 1)'); // Use Red instead of White center
             grad.addColorStop(1, 'rgba(0,0,0,0)');
             ctx.fillStyle = grad;
             ctx.fillRect(0, 0, 64, 64);
@@ -71,7 +71,8 @@ const ThreeScene = () => {
                 blending: THREE.AdditiveBlending,
                 vertexColors: true,
                 map: glowTex,
-                transparent: true
+                transparent: true,
+                opacity: 0.8
             });
 
             const points = new THREE.Points(geometry, material);
@@ -101,7 +102,7 @@ const ThreeScene = () => {
 
         const createNebulae = () => {
             const group = new THREE.Group();
-            const colors = ['#1d4ed8', '#3730a3', '#7c3aed', '#0ea5e9', '#a78bfa'];
+            const colors = ['#450a0a', '#7f1d1d', '#991b1b', '#b91c1c', '#dc2626'];
             for (let i = 0; i < 10; i++) { // Reduced count for performance
                 const count = 50;
                 const geo = new THREE.BufferGeometry();
@@ -120,46 +121,208 @@ const ThreeScene = () => {
                 }
                 geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
                 geo.setAttribute('color', new THREE.BufferAttribute(col, 3));
-                const mat = new THREE.PointsMaterial({ size: 4200, map: glowTex, vertexColors: true, transparent: true, opacity: 0.035, blending: THREE.AdditiveBlending, depthWrite: false });
+                const mat = new THREE.PointsMaterial({ size: 4200, map: glowTex, vertexColors: true, transparent: true, opacity: 0.06, blending: THREE.AdditiveBlending, depthWrite: false });
                 group.add(new THREE.Points(geo, mat));
             }
             scene.add(group);
             return group;
         };
 
+        const createTendrils = () => {
+            const group = new THREE.Group();
+            const count = 30; // Number of main tendril branches
+            for (let i = 0; i < count; i++) {
+                const points = [];
+                const isLeft = i % 2 === 0;
+                let x = isLeft ? -15 : 15;
+                let y = (Math.random() - 0.5) * 20;
+                let z = -Math.random() * 10 - 5;
+
+                const segments = 20;
+                for (let j = 0; j < segments; j++) {
+                    points.push(new THREE.Vector3(x, y, z));
+                    // Creep inward but mostly stay on sides
+                    x += isLeft ? (Math.random() * 0.8) : -(Math.random() * 0.8);
+                    y += (Math.random() - 0.5) * 2.5;
+                    z += (Math.random() - 0.5) * 1.5;
+                }
+
+                const geometry = new THREE.BufferGeometry().setFromPoints(points);
+                const material = new THREE.LineBasicMaterial({
+                    color: i % 3 === 0 ? '#450a0a' : '#2d0101',
+                    transparent: true,
+                    opacity: 0.15,
+                    blending: THREE.AdditiveBlending
+                });
+                const line = new THREE.Line(geometry, material);
+                group.add(line);
+            }
+            scene.add(group);
+            return group;
+        };
+
+        const createAtmosphere = () => {
+            const group = new THREE.Group();
+            const innerColors = ['#7f1d1d', '#991b1b', '#b91c1c']; // Redder inner edge
+            const outerColors = ['#2d0101', '#1a0000', '#050000']; // Darker outer edge
+
+            for (let i = 0; i < 25; i++) { // Increased density
+                const count = 60;
+                const geo = new THREE.BufferGeometry();
+                const pos = new Float32Array(count * 3);
+                const col = new Float32Array(count * 3);
+
+                const isLeft = i % 2 === 0;
+                const cX = isLeft ? -12000 - Math.random() * 8000 : 12000 + Math.random() * 8000;
+                const cY = (Math.random() - 0.5) * 8000;
+                const cZ = -Math.random() * 8000 - 2000;
+
+                const baseColorInner = new THREE.Color(innerColors[i % innerColors.length]);
+                const baseColorOuter = new THREE.Color(outerColors[i % outerColors.length]);
+
+                for (let j = 0; j < count; j++) {
+                    const pX = cX + (Math.random() - 0.5) * 6000;
+                    const pY = cY + (Math.random() - 0.5) * 6000;
+                    const pZ = cZ + (Math.random() - 0.5) * 4000;
+
+                    pos[j * 3] = pX;
+                    pos[j * 3 + 1] = pY;
+                    pos[j * 3 + 2] = pZ;
+
+                    // Directional lighting logic: brighter if closer to center X=0
+                    const distanceFactor = Math.abs(pX) / 20000;
+                    const mixedCol = baseColorInner.clone().lerp(baseColorOuter, distanceFactor);
+                    col[j * 3] = mixedCol.r; col[j * 3 + 1] = mixedCol.g; col[j * 3 + 2] = mixedCol.b;
+                }
+                geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+                geo.setAttribute('color', new THREE.BufferAttribute(col, 3));
+                const mat = new THREE.PointsMaterial({
+                    size: 8000,
+                    map: glowTex,
+                    vertexColors: true,
+                    transparent: true,
+                    opacity: 0.05,
+                    blending: THREE.AdditiveBlending,
+                    depthWrite: false
+                });
+                group.add(new THREE.Points(geo, mat));
+            }
+            scene.add(group);
+            return group;
+        };
+
+        const createEerieParticles = () => {
+            const geo = new THREE.BufferGeometry();
+            const count = 1500;
+            const pos = new Float32Array(count * 3);
+            for (let i = 0; i < count; i++) {
+                pos[i * 3] = (Math.random() - 0.5) * 60;
+                pos[i * 3 + 1] = (Math.random() - 0.5) * 40;
+                pos[i * 3 + 2] = (Math.random() - 0.5) * 30;
+            }
+            geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+            const mat = new THREE.PointsMaterial({
+                size: 0.06,
+                color: '#450a0a',
+                transparent: true,
+                opacity: 0.25,
+                blending: THREE.AdditiveBlending,
+                depthWrite: false
+            });
+            const p = new THREE.Points(geo, mat);
+            scene.add(p);
+            return p;
+        };
+
         // --- Init ---
         const mainGalaxy = createGalaxy({
-            count: 35000, // Balanced count
-            size: 0.1,
-            radius: 10,
-            branches: 5,
-            spin: 0.82,
-            randomness: 0.25,
-            randomnessPower: 3,
-            insideColor: '#e2e8f0',
-            outsideColor: '#312e81'
+            count: 45000,
+            size: 0.08,
+            radius: 18,
+            branches: 6,
+            spin: 0.9,
+            randomness: 0.28,
+            randomnessPower: 3.5,
+            insideColor: '#dc2626',
+            outsideColor: '#000000'
         });
-        const nearStars = createStarfield(9500, 15, 0.032, '#f8fafc');
-        const deepStars = createStarfield(15000, 20, 0.016, '#bfdbfe');
+
+        const coreEmber = createGalaxy({
+            count: 3000,
+            size: 0.15,
+            radius: 2.2,
+            branches: 3,
+            spin: 0.1,
+            randomness: 0.4,
+            randomnessPower: 2,
+            insideColor: '#ff4444',
+            outsideColor: '#7f1d1d'
+        });
+        const nearStars = createStarfield(9500, 15, 0.032, '#a51c1c'); // Sharp Red
+        const deepStars = createStarfield(15000, 20, 0.016, '#450a0a'); // Deep Crimson
         const nebulae = createNebulae();
+        const atmosphericSides = createAtmosphere();
+        const eerieDust = createEerieParticles();
+        const tendrils = createTendrils();
 
         camera.position.z = 14;
         camera.position.y = 5;
         camera.lookAt(0, 0, 0);
 
+        // --- Mouse Interaction ---
+        let mouseX = 0, mouseY = 0;
+        let targetX = 0, targetY = 0;
+        const onMouseMove = (e) => {
+            mouseX = (e.clientX - window.innerWidth / 2) * 0.0005;
+            mouseY = (e.clientY - window.innerHeight / 2) * 0.0005;
+        };
+        window.addEventListener('mousemove', onMouseMove);
+
         const clock = new THREE.Clock();
         const animate = () => {
             const time = clock.getElapsedTime();
-            mainGalaxy.rotation.y = time * 0.045;
-            nearStars.rotation.y = time * 0.008;
-            deepStars.rotation.y = -time * 0.003;
-            nearStars.material.opacity = 0.44 + Math.sin(time * 0.35) * 0.04;
-            deepStars.material.opacity = 0.3 + Math.cos(time * 0.28) * 0.03;
 
+            // Smooth Parallax
+            targetX += (mouseX - targetX) * 0.05;
+            targetY += (mouseY - targetY) * 0.05;
+            camera.position.x = Math.sin(time * 0.1) * 0.2 + targetX * 15;
+            camera.position.y = 5 + Math.cos(time * 0.15) * 0.1 + targetY * 10;
+            camera.lookAt(0, 0, 0);
+
+            // Galaxy Motion
+            mainGalaxy.rotation.y = time * 0.035;
+            coreEmber.rotation.y = time * 0.05;
+            nearStars.rotation.y = time * 0.005;
+            deepStars.rotation.y = -time * 0.002;
+
+            // Pulsing Logic (Enhanced for core intensity)
+            const pulse = (1 + Math.sin(time * 0.6)) * 0.5;
+            coreEmber.material.size = 0.12 + pulse * 0.06;
+            coreEmber.material.opacity = 0.6 + pulse * 0.4;
+
+            mainGalaxy.material.size = 0.08 + pulse * 0.015;
+
+            nearStars.material.opacity = 0.35 + Math.sin(time * 0.8) * 0.25;
+            deepStars.material.opacity = 0.25 + Math.cos(time * 0.6) * 0.15;
 
             nebulae.children.forEach((n, i) => {
-                n.rotation.y = time * (0.004 + i * 0.0005);
+                n.rotation.y = time * (0.003 + i * 0.0004);
+                n.material.opacity = 0.03 + (Math.sin(time * 0.3 + i) * 0.025);
             });
+
+            atmosphericSides.children.forEach((a, i) => {
+                a.position.x += Math.sin(time * 0.1 + i) * 1.5; // Slow dimensional drift
+                a.material.opacity = 0.03 + Math.sin(time * 0.3 + i) * 0.02;
+            });
+
+            tendrils.children.forEach((t, i) => {
+                t.rotation.z = Math.sin(time * 0.1 + i) * 0.05; // Slow organic sway
+                t.material.opacity = 0.1 + Math.sin(time * 0.2 + i) * 0.05;
+            });
+
+            eerieDust.rotation.x = time * 0.005;
+            eerieDust.rotation.y = time * 0.005;
+            eerieDust.position.y = Math.sin(time * 0.1) * 0.3;
 
             renderer.render(scene, camera);
             requestAnimationFrame(animate);
@@ -174,6 +337,7 @@ const ThreeScene = () => {
         window.addEventListener('resize', onResize);
 
         return () => {
+            window.removeEventListener('mousemove', onMouseMove);
             window.removeEventListener('resize', onResize);
             if (container) container.removeChild(renderer.domElement);
             scene.traverse(o => {
@@ -189,7 +353,7 @@ const ThreeScene = () => {
             ref={containerRef}
             className="fixed inset-0 -z-20 pointer-events-none"
             style={{
-                background: 'radial-gradient(1200px 700px at 50% 40%, rgba(59, 130, 246, 0.10), rgba(10, 10, 28, 0.9) 45%, #02030a 100%)'
+                background: 'radial-gradient(1200px 700px at 50% 40%, rgba(127, 29, 29, 0.12), rgba(5, 0, 0, 0.95) 50%, #020000 100%)'
             }}
         />
     );
