@@ -9,6 +9,8 @@ import Collective from './pages/Collective';
 import Expeditions from './pages/Expeditions';
 import Transmissions from './pages/Transmissions';
 import Login from './pages/Login';
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
 import SecretaryDashboard from './pages/SecretaryDashboard';
 import StudentDashboard from './pages/StudentDashboard';
 import TeacherDashboard from './pages/TeacherDashboard';
@@ -109,13 +111,15 @@ function AppContent() {
             <Routes location={location}>
               <Route path="/" element={<Home />} />
               <Route path="/login" element={<Login onLogin={handleLogin} />} />
+              <Route path="/forgot-password" element={<ForgotPassword />} />
+              <Route path="/reset-password" element={<ResetPassword />} />
               <Route path="/operatives" element={<Operatives />} />
               <Route path="/mentors" element={<Mentors />} />
               <Route path="/expeditions" element={<Expeditions />} />
               <Route path="/team" element={<Collective students={students} user={user} setStudents={setStudents} />} />
               <Route path="/secretary" element={<SecretaryDashboard />} />
               <Route path="/student" element={<StudentDashboard user={user} onUpdate={handleUserUpdate} />} />
-              <Route path="/admin" element={<TeacherDashboard students={students} setStudents={setStudents} />} />
+              <Route path="/admin" element={<TeacherDashboard students={students} setStudents={setStudents} user={user} onUpdate={handleUserUpdate}/>} />
               <Route path="/transmissions" element={<Transmissions />} />
             </Routes>
           </Motion.div>

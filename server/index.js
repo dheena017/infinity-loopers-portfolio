@@ -89,6 +89,25 @@ app.post('/api/login', async (req, res) => {
     res.status(401).json({ success: false, message: 'Invalid credentials' });
 });
 
+app.post('/api/forgot-password', async (req, res) => {
+    const { email } = req.body;
+    
+    // Check if user exists
+    try {
+        const student = await getStudentByEmail(email);
+        if (student) {
+            console.log(`Password reset requested for: ${email}`);
+            // In a real application, send email with reset link here
+            return res.json({ success: true, message: 'Recovery email sent' });
+        }
+    } catch (error) {
+        console.error('Error checking email:', error);
+    }
+    
+    // For security, always return success even if email not found
+    return res.json({ success: true, message: 'Recovery email sent' }); 
+});
+
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
