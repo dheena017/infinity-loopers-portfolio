@@ -77,14 +77,16 @@ const Operatives = () => {
                                 transition={{ delay: idx * 0.1 }}
                                 className="panel-card p-6 lg:p-8 flex items-center gap-6 lg:gap-8 group"
                             >
-                                <div className="w-20 h-20 rounded-2xl overflow-hidden border border-white/5 relative">
-                                    <img src={mentor.photo} alt={mentor.name} className="w-full h-full object-cover transition-transform group-hover:scale-110" />
+                                <div className="w-20 h-20 rounded-2xl overflow-hidden border border-white/5 relative flex-shrink-0">
+                                    <img src={mentor.photo} alt="" className="w-full h-full object-cover transition-transform group-hover:scale-110" />
                                     <div className="absolute inset-0 bg-red-500/10 group-hover:bg-transparent transition-colors"></div>
                                 </div>
-                                <div className="space-y-1">
-                                    <div className="text-[10px] font-black text-red-500 uppercase tracking-widest">Advisory Board</div>
-                                    <h4 className="text-xl font-bold heading-display text-white">{mentor.name}</h4>
-                                    <p className="text-xs text-slate-500 font-bold uppercase tracking-wider">{mentor.role}</p>
+                                <div className="space-y-4 flex-1">
+                                    <div className="space-y-1">
+                                        <div className="text-[10px] font-black text-red-500 uppercase tracking-[0.2em] opacity-80 group-hover:opacity-100 transition-opacity">Advisory Board</div>
+                                        <h4 className="text-xl sm:text-2xl font-black heading-display text-white group-hover:text-red-50 transition-colors leading-tight">{mentor.name}</h4>
+                                        <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest italic">{mentor.role}</p>
+                                    </div>
                                 </div>
                                 <div className="ml-auto opacity-0 group-hover:opacity-100 transition-opacity">
                                     <ChevronRight size={20} className="text-slate-600" />

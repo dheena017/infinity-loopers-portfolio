@@ -77,41 +77,54 @@ const Expeditions = () => {
                             initial={{ opacity: 0, y: 20 }}
                             whileInView={{ opacity: 1, y: 0 }}
                             transition={{ delay: idx * 0.1 }}
-                            className="group relative panel-card p-8 lg:p-10 flex flex-col gap-8"
+                            className="group relative flex flex-col aspect-[2/1] min-h-[200px] w-full"
                         >
-                            <div className="flex justify-between items-start">
-                                <div className={`p-4 rounded-xl bg-slate-950 border border-white/5`}>
-                                    <project.icon size={28} className="text-red-500" />
+                            {/* Visual Layer - Premium Glass Box */}
+                            <div className="absolute inset-0 panel-card transition-all duration-500 group-hover:border-red-500/30 group-hover:shadow-[0_0_50px_rgba(239,68,68,0.15)] z-0"></div>
+
+                            {/* Content Layer (Structured Box Layout) */}
+                            <div className="relative z-10 p-[16px] flex flex-col h-full w-full">
+                                {/* Inner Content Wrapper (Physical Offset) */}
+                                <div className="ml-[18px] flex flex-col items-start text-left h-full w-full">
+                                    {/* 1. Header Row */}
+                                    <div className="w-full flex justify-between items-start mb-6">
+                                        <div className="p-4 rounded-2xl bg-slate-950/50 border border-white/5 shadow-inner">
+                                            <project.icon size={28} className="text-red-500" />
+                                        </div>
+                                        <div className="flex gap-3">
+                                            <a href={project.github} target="_blank" rel="noopener noreferrer" className="p-3 bg-slate-950/50 rounded-xl border border-white/5 hover:border-red-500/50 hover:bg-red-500/10 transition-all duration-300">
+                                                <Github size={18} className="text-slate-500 group-hover:text-white" />
+                                            </a>
+                                            <a href={project.demo} target="_blank" rel="noopener noreferrer" className="p-3 bg-slate-950/50 rounded-xl border border-white/5 hover:border-red-500/50 hover:bg-red-500/10 transition-all duration-300">
+                                                <ExternalLink size={18} className="text-slate-500 group-hover:text-white" />
+                                            </a>
+                                        </div>
+                                    </div>
+
+                                    {/* 2. Main Body (Expands to fill space) */}
+                                    <div className="flex-1 space-y-4">
+                                        <h3 className="text-2xl sm:text-3xl lg:text-4xl font-black heading-display text-white group-hover:text-red-500 transition-colors leading-[1.2]">
+                                            {project.title}
+                                        </h3>
+                                        <p className="text-slate-400 font-medium leading-relaxed max-w-sm text-sm sm:text-base opacity-80">
+                                            {project.desc}
+                                        </p>
+                                    </div>
+
+                                    {/* 3. Footer Tags (Pinned to safe area bottom) */}
+                                    <div className="w-full mt-auto pt-6 border-t border-white/5 flex flex-wrap gap-2">
+                                        {project.tags.map(tag => (
+                                            <span key={tag} className="px-4 py-1.5 bg-slate-900/80 border border-white/5 rounded-lg text-[10px] font-bold text-slate-400 uppercase tracking-widest group-hover:border-red-500/20 transition-colors">
+                                                {tag}
+                                            </span>
+                                        ))}
+                                    </div>
                                 </div>
-                                <div className="flex gap-3">
-                                    <a href={project.github} target="_blank" rel="noopener noreferrer" className="p-3 bg-slate-950 rounded-xl border border-white/5 hover:border-red-500/50 transition-colors">
-                                        <Github size={18} className="text-slate-500 group-hover:text-white" />
-                                    </a>
-                                    <a href={project.demo} target="_blank" rel="noopener noreferrer" className="p-3 bg-slate-950 rounded-xl border border-white/5 hover:border-red-500/50 transition-colors">
-                                        <ExternalLink size={18} className="text-slate-500 group-hover:text-white" />
-                                    </a>
+
+                                {/* Hover Locator */}
+                                <div className="absolute top-8 right-8 opacity-0 group-hover:opacity-100 transition-all duration-500 transform translate-x-2 -translate-y-2 group-hover:translate-x-0 group-hover:translate-y-0">
+                                    <ArrowUpRight size={24} className="text-red-500/40" />
                                 </div>
-                            </div>
-
-                            <div className="space-y-4">
-                                <h3 className="text-4xl font-black heading-display text-white group-hover:text-red-500 transition-colors">
-                                    {project.title}
-                                </h3>
-                                <p className="text-slate-400 font-medium leading-relaxed max-w-md">
-                                    {project.desc}
-                                </p>
-                            </div>
-
-                            <div className="flex flex-wrap gap-2 mt-auto pt-8 border-t border-white/5">
-                                {project.tags.map(tag => (
-                                    <span key={tag} className="px-4 py-1.5 bg-slate-800 border border-white/5 rounded-lg text-[10px] font-bold text-slate-400 uppercase tracking-widest group-hover:border-red-500/20 transition-colors">
-                                        {tag}
-                                    </span>
-                                ))}
-                            </div>
-
-                            <div className="absolute top-6 right-6 opacity-0 group-hover:opacity-100 transition-all group-hover:translate-x-1 group-hover:-translate-y-1">
-                                <ArrowUpRight size={24} className="text-red-500/40" />
                             </div>
                         </Motion.div>
                     ))}

@@ -97,25 +97,51 @@ const Home = () => {
                         >
                             <NavLink
                                 to={card.path}
-                                className="group block panel-card p-6 sm:p-8 lg:p-10 hover:border-red-500/40 transition-all duration-500 h-full overflow-hidden"
+                                className="group block panel-card p-14 sm:p-16 lg:p-24 hover:border-red-500/40 transition-all duration-700 h-full overflow-hidden relative"
                             >
-                                <div className="flex justify-between items-start mb-8 sm:mb-12">
-                                    <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center group-hover:bg-red-600/10 group-hover:border-red-500/50 transition-all">
-                                        <card.icon size={24} className="text-slate-500 group-hover:text-red-500 transition-colors" />
+                                <div className="relative z-10 flex flex-col items-center text-center space-y-6">
+                                    <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-3xl bg-white/5 border border-white/10 flex items-center justify-center group-hover:bg-red-600 group-hover:border-red-500 group-hover:shadow-[0_0_30px_rgba(239,68,68,0.3)] transition-all duration-500">
+                                        <card.icon size={32} className="text-slate-400 group-hover:text-white transition-colors" />
                                     </div>
-                                    <span className="text-[9px] font-black text-slate-600 tracking-[0.3em] uppercase">{card.tag}</span>
+
+                                    <div className="space-y-4">
+                                        <div className="flex flex-col items-center gap-2">
+                                            <span className="text-[10px] font-black text-red-500 tracking-[0.4em] uppercase opacity-70 group-hover:opacity-100 transition-opacity">
+                                                {card.tag}
+                                            </span>
+                                            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold heading-display group-hover:text-white transition-colors">
+                                                {card.title}
+                                            </h2>
+                                        </div>
+
+                                        <p className="text-sm sm:text-[15px] text-slate-400 font-medium leading-relaxed max-w-[240px]">
+                                            {card.desc}
+                                        </p>
+                                    </div>
+
+                                    <div className="pt-4 flex items-center gap-3 text-red-500 text-[10px] font-black tracking-[0.3em] opacity-40 group-hover:opacity-100 group-hover:translate-y-[-4px] transition-all duration-500">
+                                        SYSTEM ACCESS <ArrowRight size={14} />
+                                    </div>
                                 </div>
 
-                                <div className="space-y-4">
-                                    <h2 className="text-4xl font-black heading-display group-hover:text-white transition-colors">{card.title}</h2>
-                                    <p className="text-[15px] text-slate-500 font-medium leading-relaxed">
-                                        {card.desc}
-                                    </p>
+                                {/* Animated Data Grid Background */}
+                                <div className="absolute inset-0 z-0 opacity-[0.03] group-hover:opacity-[0.07] transition-opacity duration-700 pointer-events-none">
+                                    <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.05)_1px,transparent_1px)] bg-[size:30px_30px]"></div>
                                 </div>
 
-                                <div className="mt-8 flex items-center gap-2 text-red-500 text-[10px] font-black tracking-widest opacity-0 group-hover:opacity-100 transition-all -translate-x-2 group-hover:translate-x-0">
-                                    EXPLORE <ArrowRight size={12} />
+                                {/* Premium Border Sweep */}
+                                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none">
+                                    <Motion.div
+                                        animate={{
+                                            rotate: [0, 360],
+                                        }}
+                                        transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
+                                        className="absolute -inset-[100%] bg-[conic-gradient(from_0deg,transparent_0deg,transparent_280deg,rgba(239,68,68,0.2)_320deg,transparent_360deg)]"
+                                    />
                                 </div>
+
+                                {/* Decorative Background Element */}
+                                <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/2 w-32 h-32 bg-red-600/5 rounded-full blur-3xl group-hover:bg-red-600/10 transition-colors"></div>
                             </NavLink>
                         </Motion.div>
                     ))}

@@ -279,28 +279,40 @@ const Collective = ({ students, user, setStudents }) => {
                         <Motion.button
                             key={student.id}
                             type="button"
-                            initial={{ opacity: 0, scale: 0.95 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            transition={{ delay: idx * 0.03 }}
+                            initial={{ opacity: 0, scale: 0.98 }}
+                            whileInView={{ opacity: 1, scale: 1 }}
+                            viewport={{ once: true }}
+                            whileHover={{ scale: 1.02, y: -2 }}
+                            transition={{ duration: 0.3, ease: "easeInOut" }}
                             onClick={() => setSelectedStudent(student)}
-                            className="group relative cursor-pointer premium-card overflow-hidden aspect-[4/5] text-left"
+                            className="group relative cursor-pointer aspect-[3/4] w-full text-left"
                         >
-                            <img
-                                src={student.photo}
-                                alt={student.name}
-                                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-80 group-hover:opacity-100"
-                                onError={(e) => { e.target.src = `https://ui-avatars.com/api/?name=${student.name}&background=1e293b&color=fff&size=512`; }}
-                            />
-                            <div className="absolute inset-x-0 bottom-0 p-3 sm:p-5 bg-gradient-to-t from-slate-950 via-slate-950/60 to-transparent">
-                                <span className="text-[10px] font-bold text-red-500 uppercase tracking-widest mb-1 block opacity-0 group-hover:opacity-100 transition-opacity">ID_{student.id}</span>
-                                <div className="text-xs sm:text-sm font-bold text-white heading-display truncate">{student.name}</div>
+                            {/* Layer 1: Visual Shell (Rounded, Clipped Effects) */}
+                            <div className="absolute inset-0 rounded-2xl overflow-hidden border border-white/10 bg-slate-900/40 hover:border-red-500/40 hover:shadow-[0_0_30px_rgba(239,68,68,0.15)] transition-all duration-300 z-0">
+                                <img
+                                    src={student.photo}
+                                    alt=""
+                                    className="w-full h-full object-cover opacity-60 group-hover:opacity-90 transition-opacity duration-500"
+                                    onError={(e) => { e.target.src = `https://ui-avatars.com/api/?name=${student.name}&background=1e293b&color=fff&size=512`; }}
+                                />
+                                <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent"></div>
+
+                                {/* Premium Light Sweep (Clipped inside Shell) */}
+                                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none">
+                                    <Motion.div
+                                        animate={{ x: ["-150%", "150%"] }}
+                                        transition={{ duration: 2, repeat: Infinity, ease: "linear", repeatDelay: 1 }}
+                                        className="absolute inset-y-0 w-1/3 bg-gradient-to-r from-transparent via-white/10 to-transparent skew-x-[-25deg]"
+                                    />
+                                </div>
                             </div>
 
-                            {user?.role === 'teacher' && (
-                                <div className="absolute top-4 right-4 p-2 bg-red-600 rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity">
-                                    <Edit3 size={14} className="text-white" />
-                                </div>
-                            )}
+                            {/* Layer 2: Safe Content Layer (Bottom Center) */}
+                            <div className="absolute inset-x-0 bottom-0 z-30 p-8 flex flex-col items-center text-center pointer-events-none">
+                                <h3 className="text-xl sm:text-2xl font-bold text-white font-tech leading-tight truncate max-w-[95%] drop-shadow-2xl transition-transform duration-500 group-hover:scale-110">
+                                    {student.name}
+                                </h3>
+                            </div>
                         </Motion.button>
                     ))}
                 </div>
