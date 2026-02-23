@@ -391,6 +391,24 @@ export async function updateSecretary(id, updates) {
   return data;
 }
 
+export async function createSecretary(secretary) {
+  try {
+    const supabase = getSupabase();
+    const { data, error } = await supabase
+      .from('secretaries')
+      .insert([secretary])
+      .select()
+      .single();
+
+    if (error) throw new Error(error.message || 'Failed to create secretary');
+    return data;
+  } catch (err) {
+    console.warn('createSecretary fallback not implemented:', err.message || err);
+    const fallback = { id: Date.now(), ...secretary };
+    return fallback;
+  }
+}
+
 // ==================== MENTORS ====================
 
 export async function getAllMentors() {

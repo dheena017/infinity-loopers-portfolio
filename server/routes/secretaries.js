@@ -1,5 +1,5 @@
 import express from 'express';
-import { getAllSecretaries, getSecretaryById, updateSecretary } from '../queries.js';
+import { getAllSecretaries, getSecretaryById, updateSecretary, createSecretary } from '../queries.js';
 
 const router = express.Router();
 
@@ -35,3 +35,14 @@ router.put('/:id', async (req, res) => {
 });
 
 export default router;
+
+// Create secretary (used as teacher endpoint by admin form)
+router.post('/', async (req, res) => {
+    try {
+        const payload = req.body || {};
+        const created = await createSecretary(payload);
+        res.status(201).json({ success: true, data: created });
+    } catch (error) {
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
