@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
 import { Users, X, Github, Linkedin, ExternalLink, Activity, LayoutGrid, Cpu, UserCheck, Edit3, Save, XCircle, ShieldCheck } from 'lucide-react';
 
 // ─── Edit Modal (Admin/Teacher only) ───────────────────────────────────────────────
@@ -223,6 +223,11 @@ const Collective = ({ students, user, setStudents }) => {
     const [selectedStudent, setSelectedStudent] = useState(null);
     const [editingStudent, setEditingStudent] = useState(null);
 
+    const { scrollY } = useScroll();
+    const headerOpacity = useTransform(scrollY, [0, 400], [1, 0]);
+    const headerScale = useTransform(scrollY, [0, 400], [1, 0.98]);
+    const headerY = useTransform(scrollY, [0, 400], [0, -30]);
+
     const handleSave = (updated) => {
         setStudents(prev => prev.map(s => s.id === updated.id ? { ...s, ...updated } : s));
         setSelectedStudent({ ...selectedStudent, ...updated });
@@ -230,10 +235,11 @@ const Collective = ({ students, user, setStudents }) => {
     };
 
     return (
-        <section className="pt-64 pb-24 min-h-screen">
+        <section className="section-shell min-h-screen">
             <div className="container-premium space-y-24">
                 {/* Header */}
                 <motion.div
+                    style={{ opacity: headerOpacity, scale: headerScale, y: headerY }}
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     className="flex flex-col md:flex-row md:items-end justify-between gap-12"

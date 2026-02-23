@@ -1,5 +1,5 @@
 import React from 'react';
-import { motion as Motion } from 'framer-motion';
+import { motion as Motion, useScroll, useTransform } from 'framer-motion';
 import { Briefcase, Shield, Zap, ArrowUpRight, Github, ExternalLink, Globe2, Compass } from 'lucide-react';
 
 const projects = [
@@ -46,12 +46,17 @@ const projects = [
 ];
 
 const Expeditions = () => {
+    const { scrollY } = useScroll();
+    const opacity = useTransform(scrollY, [0, 400], [1, 0]);
+    const y = useTransform(scrollY, [0, 400], [0, -30]);
+
     return (
         <section className="section-shell">
             <div className="section-stack md:space-y-28">
 
                 {/* Header Section */}
                 <Motion.div
+                    style={{ opacity, y }}
                     initial={{ opacity: 0, y: 10 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     className="flex flex-col md:flex-row md:items-end justify-between gap-12"

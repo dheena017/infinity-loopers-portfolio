@@ -1,9 +1,13 @@
 import React from 'react';
-import { motion as Motion } from 'framer-motion';
+import { motion as Motion, useScroll, useTransform } from 'framer-motion';
 import { ArrowRight, Users, Globe2, Briefcase } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
 
 const Home = () => {
+    const { scrollY } = useScroll();
+    const heroOpacity = useTransform(scrollY, [0, 500], [1, 0]);
+    const heroScale = useTransform(scrollY, [0, 500], [1, 0.9]);
+    const heroY = useTransform(scrollY, [0, 500], [0, -50]);
     const pillars = [
         {
             title: 'Collective',
@@ -35,6 +39,7 @@ const Home = () => {
                 {/* ─── Elegant Hero (Centered) ─── */}
                 <div className="max-w-5xl mx-auto text-center space-y-9 md:space-y-12">
                     <Motion.div
+                        style={{ opacity: heroOpacity, scale: heroScale, y: heroY }}
                         initial={{ opacity: 0, y: 30 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
