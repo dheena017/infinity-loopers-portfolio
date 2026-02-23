@@ -13,6 +13,11 @@ const ThreeScene = () => {
             alpha: true,
             powerPreference: 'high-performance'
         });
+        // Add subtle environmental fog for depth and set up parameters
+        const fogBase = 0.0012; // increased base density for a visibly denser fog
+        const fogColor = new THREE.Color(0x020000);
+        const fogPulseColor = new THREE.Color(0x2a0505);
+        scene.fog = new THREE.FogExp2(fogColor.clone(), fogBase);
         renderer.setSize(window.innerWidth, window.innerHeight);
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5)); // Lower pixel ratio for smoother frames
         container.appendChild(renderer.domElement);
@@ -20,10 +25,12 @@ const ThreeScene = () => {
         // --- Optimized Textures (Memoized) ---
         const createGlowTexture = () => {
             const canvas = document.createElement('canvas');
-            canvas.width = 64; canvas.height = 64; // Smaller texture
+            canvas.width = 128; canvas.height = 128; // larger for smoother glow
             const ctx = canvas.getContext('2d');
-            const grad = ctx.createRadialGradient(32, 32, 0, 32, 32, 32);
-            grad.addColorStop(0, 'rgba(239, 68, 68, 1)'); // Use Red instead of White center
+            const grad = ctx.createRadialGradient(64, 64, 0, 64, 64, 64);
+            grad.addColorStop(0, 'rgba(255, 140, 98, 1)');
+            grad.addColorStop(0.35, 'rgba(255, 75, 75, 0.9)');
+            grad.addColorStop(0.75, 'rgba(180, 30, 30, 0.45)');
             grad.addColorStop(1, 'rgba(0,0,0,0)');
             ctx.fillStyle = grad;
             ctx.fillRect(0, 0, 64, 64);
@@ -121,7 +128,7 @@ const ThreeScene = () => {
                 }
                 geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
                 geo.setAttribute('color', new THREE.BufferAttribute(col, 3));
-                const mat = new THREE.PointsMaterial({ size: 4200, map: glowTex, vertexColors: true, transparent: true, opacity: 0.06, blending: THREE.AdditiveBlending, depthWrite: false });
+                const mat = new THREE.PointsMaterial({ size: 5200, map: glowTex, vertexColors: true, transparent: true, opacity: 0.12, blending: THREE.AdditiveBlending, depthWrite: false });
                 group.add(new THREE.Points(geo, mat));
             }
             scene.add(group);
@@ -201,7 +208,7 @@ const ThreeScene = () => {
                     map: glowTex,
                     vertexColors: true,
                     transparent: true,
-                    opacity: 0.05,
+                    opacity: 0.08,
                     blending: THREE.AdditiveBlending,
                     depthWrite: false
                 });
@@ -230,7 +237,6 @@ const ThreeScene = () => {
                 depthWrite: false
             });
             const p = new THREE.Points(geo, mat);
-            scene.add(p);
             return p;
         };
 
@@ -269,6 +275,12 @@ const ThreeScene = () => {
         camera.position.y = 5;
         camera.lookAt(0, 0, 0);
 
+        // Place the small "eerie" dust in the scene and allow subtle
+        // parallax movement tied to mouse movement (targetX/targetY).
+        scene.add(eerieDust);
+        eerieDust.position.set(0, 5, 6);
+        eerieDust.frustumCulled = false;
+
         // --- Mouse Interaction ---
         let mouseX = 0, mouseY = 0;
         let targetX = 0, targetY = 0;
@@ -282,11 +294,12 @@ const ThreeScene = () => {
         const animate = () => {
             const time = clock.getElapsedTime();
 
-            // Smooth Parallax
+            // Smooth Parallax (mouse values still tracked for other UI usage),
+            // but do NOT move the background with the mouse — keep camera fixed.
             targetX += (mouseX - targetX) * 0.05;
             targetY += (mouseY - targetY) * 0.05;
-            camera.position.x = Math.sin(time * 0.1) * 0.2 + targetX * 15;
-            camera.position.y = 5 + Math.cos(time * 0.15) * 0.1 + targetY * 10;
+            camera.position.x = Math.sin(time * 0.1) * 0.2; // subtle breathing only
+            camera.position.y = 5 + Math.cos(time * 0.15) * 0.1; // fixed base height
             camera.lookAt(0, 0, 0);
 
             // Galaxy Motion
@@ -322,7 +335,26 @@ const ThreeScene = () => {
 
             eerieDust.rotation.x = time * 0.005;
             eerieDust.rotation.y = time * 0.005;
-            eerieDust.position.y = Math.sin(time * 0.1) * 0.3;
+            // Keep dust stationary relative to viewport (no mouse parallax).
+            eerieDust.position.x = 0;
+            eerieDust.position.y = 5 + Math.sin(time * 0.1) * 0.3;
+            eerieDust.position.z = camera.position.z - 8;
+
+            // Animate fog: subtle density oscillation and gentle color drift,
+            // with added responsiveness to the smoothed mouse targets so the
+            // fog appears to drift with user movement.
+            if (scene.fog) {
+                const mouseDensity = targetY * 0.0025; // up/down affects density
+                scene.fog.density = fogBase + Math.sin(time * 0.07) * 0.0006 + mouseDensity;
+                let fogT = (Math.sin(time * 0.08) + 1) / 2 * 0.12; // base pulse
+                fogT += targetX * 0.06; // left/right subtly shifts color mix
+                fogT = THREE.MathUtils.clamp(fogT, 0, 0.4);
+                scene.fog.color.lerpColors(fogColor, fogPulseColor, fogT);
+
+                // Nudge large background groups for a perception of wind/drift
+                if (nebulae) nebulae.position.x = targetX * 1200;
+                if (atmosphericSides) atmosphericSides.position.x = targetX * 1500;
+            }
 
             renderer.render(scene, camera);
             requestAnimationFrame(animate);
@@ -344,16 +376,19 @@ const ThreeScene = () => {
                 if (o.geometry) o.geometry.dispose();
                 if (o.material) (Array.isArray(o.material) ? o.material : [o.material]).forEach(m => m.dispose());
             });
+            // Remove and dispose the eerie dust we added to the scene.
+            try { scene.remove(eerieDust); } catch (e) { /* ignore */ }
             glowTex.dispose();
         };
     }, []);
 
-    return (
+        return (
         <div
             ref={containerRef}
             className="fixed inset-0 -z-20 pointer-events-none"
             style={{
-                background: 'radial-gradient(1200px 700px at 50% 40%, rgba(127, 29, 29, 0.12), rgba(5, 0, 0, 0.95) 50%, #020000 100%)'
+                background: 'radial-gradient(1200px 700px at 50% 40%, rgba(255,120,100,0.10) 0%, rgba(127,29,29,0.12) 20%, rgba(5,0,0,0.92) 60%, #020000 100%), linear-gradient(180deg, rgba(0,0,0,0.06), rgba(0,0,0,0.3))',
+                filter: 'contrast(1.02) saturate(1.05)'
             }}
         />
     );
