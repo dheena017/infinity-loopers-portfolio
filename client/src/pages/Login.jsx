@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { motion as Motion } from 'framer-motion';
 import { Shield, User, LogIn, AlertCircle, Loader2, ArrowRight, NotebookText, Pencil } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { supabase } from '../lib/supabase';
 
 const Login = ({ onLogin }) => {
     const [role, setRole] = useState('student');
@@ -16,33 +17,59 @@ const Login = ({ onLogin }) => {
         setLoading(true);
         setError('');
 
-        try {
-            const response = await fetch('http://localhost:5000/api/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username, password, role }),
-            });
+    try {
+      if (!supabase) {
+        throw new Error('Database connection unavailable');
+      }
 
-            const data = await response.json();
+      // Query based on role
+      let query;
+      if (role === 'student') {
+        query = supabase.from('students').select('*').eq('email', username).single();
+      } else if (role === 'teacher') {
+        query = supabase.from('mentors').select('*').eq('email', username).single();
+      } else {
+        query = supabase.from('secretaries').select('*').eq('email', username).single();
+      }
 
-            if (data.success) {
-                onLogin(data.user);
-                if (data.user.role === 'student') {
-                    navigate('/student');
-                } else if (data.user.role === 'teacher') {
-                    navigate('/admin');
-                } else {
-                    navigate('/');
-                }
-            } else {
-                setError(data.message || 'Authentication failed');
-            }
-        } catch {
-            setError('Server connection error');
-        } finally {
-            setLoading(false);
-        }
-    };
+      const { data: userData, error } = await query;
+
+      if (error || !userData) {
+        setError('Invalid credentials');
+        return;
+      }
+
+      // Simple password check (for demo - use proper auth in production)
+      if (userData.password !== password) {
+        setError('Invalid credentials');
+        return;
+      }
+
+      // Successful login
+      const user = {
+        id: userData.id,
+        studentId: userData.id,
+        username: userData.name,
+        email: userData.email,
+        photo: userData.photo,
+        role: role
+      };
+
+      onLogin(user);
+      
+      if (role === 'student') {
+        navigate('/student');
+      } else if (role === 'teacher') {
+        navigate('/admin');
+      } else {
+        navigate('/');
+      }
+    } catch (err) {
+      setError(err.message || 'Authentication failed');
+    } finally {
+      setLoading(false);
+    }
+  };
 
     return (
         <section className="min-h-screen flex items-center justify-center p-6 bg-black">

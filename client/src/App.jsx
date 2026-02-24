@@ -16,6 +16,7 @@ import SecretaryDashboard from './pages/SecretaryDashboard';
 import StudentDashboard from './pages/StudentDashboard';
 import TeacherDashboard from './pages/TeacherDashboard';
 import { motion as Motion, AnimatePresence } from 'framer-motion';
+import { supabase } from './lib/supabase';
 
 function AppContent() {
   const [loading, setLoading] = useState(true);
@@ -69,12 +70,18 @@ function AppContent() {
     const fetchData = async () => {
       const startTime = Date.now();
       try {
-        const response = await fetch('http://localhost:5000/api/students');
-        if (!response.ok) throw new Error('Network response was not ok');
-        const result = await response.json();
-        setStudents(result.data || result);
+        if (!supabase) {
+          throw new Error('Supabase client not initialized');
+        }
+        const { data, error } = await supabase
+          .from('students')
+          .select('*')
+          .order('created_at', { ascending: false });
+        
+        if (error) throw error;
+        setStudents(data || []);
       } catch (err) {
-        console.warn('Backend offline, using fallback:', err.message);
+        console.warn('Database offline, using fallback:', err.message);
         const fallback = Array.from({ length: 24 }, (_, i) => ({
           id: i + 1,
           name: `User_${i + 1}`,

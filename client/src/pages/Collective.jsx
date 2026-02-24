@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
 import { Users, X, Github, Linkedin, ExternalLink, Activity, LayoutGrid, Cpu, UserCheck, Edit3, Save, XCircle, ShieldCheck } from 'lucide-react';
+import { supabase } from '../lib/supabase';
 
 // ─── Edit Modal (Admin/Teacher only) ───────────────────────────────────────────────
 const EditModal = ({ student, onClose, onSave }) => {
@@ -17,21 +18,20 @@ const EditModal = ({ student, onClose, onSave }) => {
         setSaving(true);
         setSaveMsg('');
         try {
-            const res = await fetch(`http://localhost:5000/api/students/${student.id}`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(form),
-            });
-            const data = await res.json();
-            if (data.success) {
-                onSave({ ...student, ...form });
-                setSaveMsg('✓ Saved successfully');
-                setTimeout(onClose, 800);
-            } else {
-                setSaveMsg('✗ Save failed');
-            }
-        } catch {
-            setSaveMsg('✗ Server error');
+            if (!supabase) throw new Error('Database unavailable');
+            const { data, error } = await supabase
+                .from('students')
+                .update(form)
+                .eq('id', student.id)
+                .select();
+            
+            if (error) throw error;
+            
+            onSave({ ...student, ...form });
+            setSaveMsg('✓ Saved successfully');
+            setTimeout(onClose, 800);
+        } catch (err) {
+            setSaveMsg('✗ ' + (err.message || 'Save failed'));
         } finally {
             setSaving(false);
         }

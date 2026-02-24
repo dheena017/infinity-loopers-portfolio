@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { motion as Motion } from 'framer-motion';
 import { Shield, Mail, Loader2, ArrowRight, AlertCircle, CheckCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { supabase } from '../lib/supabase';
 
 const ForgotPassword = () => {
     const [email, setEmail] = useState('');
@@ -16,21 +17,22 @@ const ForgotPassword = () => {
         setError('');
 
         try {
-            const response = await fetch('http://localhost:5000/api/forgot-password', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email }),
+            if (!supabase) {
+                throw new Error('Database connection unavailable');
+            }
+
+            // Use Supabase's built-in password reset
+            const { error: resetError } = await supabase.auth.resetPasswordForEmail(email, {
+                redirectTo: `${window.location.origin}/reset-password`,
             });
 
-            const data = await response.json();
-
-            if (data.success) {
-                setSuccess(true);
-            } else {
-                setError(data.message || 'Failed to process request.');
+            if (resetError) {
+                throw resetError;
             }
+
+            setSuccess(true);
         } catch (err) {
-            setError('Server connection error. Please try again later.');
+            setError(err.message || 'Server connection error. Please try again later.');
         } finally {
             setLoading(false);
         }

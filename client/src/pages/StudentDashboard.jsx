@@ -7,6 +7,7 @@ import {
     Briefcase, LogOut, Menu, Grip, Globe 
 } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
+import { supabase } from '../lib/supabase';
 
 const StudentDashboard = ({ user, onUpdate, onLogout }) => {
     const [studentData, setStudentData] = useState(null);
@@ -41,8 +42,15 @@ const StudentDashboard = ({ user, onUpdate, onLogout }) => {
                 return;
             }
             try {
-                const response = await fetch(`http://localhost:5000/api/students/${user.studentId}`);
-                const data = await response.json();
+                if (!supabase) throw new Error('Database unavailable');
+                const { data, error } = await supabase
+                    .from('students')
+                    .select('*')
+                    .eq('id', user.studentId)
+                    .single();
+                
+                if (error) throw error;
+                
                 setStudentData(data);
                 setForm({
                     name: data.name || '',
@@ -62,8 +70,13 @@ const StudentDashboard = ({ user, onUpdate, onLogout }) => {
 
         const fetchArchives = async () => {
             try {
-                const res = await fetch('http://localhost:5000/api/archives');
-                if (res.ok) setArchives(await res.json());
+                if (!supabase) return;
+                const { data, error } = await supabase
+                    .from('archives')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+                
+                if (!error && data) setArchives(data);
             } catch (err) {
                 console.error('Archives error:', err);
             }
@@ -76,31 +89,30 @@ const StudentDashboard = ({ user, onUpdate, onLogout }) => {
     const handleSave = async () => {
         setMessage('SYNCING...');
         try {
-            const res = await fetch(`http://localhost:5000/api/students/${user.studentId}`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(form),
-            });
-            const data = await res.json();
-            if (data.success || data.id || data.data) {
-                const saved = data.data || form;
-                setStudentData(prev => ({ ...prev, ...saved }));
+            if (!supabase) throw new Error('Database unavailable');
+            const { data, error } = await supabase
+                .from('students')
+                .update(form)
+                .eq('id', user.studentId)
+                .select();
+            
+            if (error) throw error;
+            
+            const saved = data[0] || form;
+            setStudentData(prev => ({ ...prev, ...saved }));
 
-                if (onUpdate) {
-                    const userUpdates = {};
-                    if (form.name && form.name !== user.username) userUpdates.username = form.name;
-                    if (form.photo && form.photo !== user.photo) userUpdates.photo = form.photo;
-                    if (Object.keys(userUpdates).length > 0) onUpdate(userUpdates);
-                }
-
-                setMessage('UPDATED');
-                setIsEditing(false);
-                setTimeout(() => setMessage(''), 3000);
-            } else {
-                setMessage('FAILED');
+            if (onUpdate) {
+                const userUpdates = {};
+                if (form.name && form.name !== user.username) userUpdates.username = form.name;
+                if (form.photo && form.photo !== user.photo) userUpdates.photo = form.photo;
+                if (Object.keys(userUpdates).length > 0) onUpdate(userUpdates);
             }
-        } catch {
-            setMessage('OFFLINE');
+
+            setMessage('UPDATED');
+            setIsEditing(false);
+            setTimeout(() => setMessage(''), 3000);
+        } catch (err) {
+            setMessage(err.message || 'OFFLINE');
         }
     };
 
@@ -117,21 +129,34 @@ const StudentDashboard = ({ user, onUpdate, onLogout }) => {
         }
         setPwLoading(true);
         try {
-            const res = await fetch(`http://localhost:5000/api/students/${user.studentId}/change-password`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ currentPassword: pwForm.current, newPassword: pwForm.newPw }),
-            });
-            const data = await res.json();
-            if (data.success) {
-                setPwMessage({ text: 'Password changed.', type: 'success' });
-                setPwForm({ current: '', newPw: '', confirm: '' });
-                setTimeout(() => { setShowPasswordPanel(false); setPwMessage({ text: '', type: '' }); }, 2500);
-            } else {
-                setPwMessage({ text: data.message || 'Failed.', type: 'error' });
+            if (!supabase) throw new Error('Database unavailable');
+            
+            // First verify current password
+            const { data: student } = await supabase
+                .from('students')
+                .select('password')
+                .eq('id', user.studentId)
+                .single();
+            
+            if (student?.password !== pwForm.current) {
+                setPwMessage({ text: 'Current password incorrect.', type: 'error' });
+                setPwLoading(false);
+                return;
             }
-        } catch {
-            setPwMessage({ text: 'Server error.', type: 'error' });
+            
+            // Update password
+            const { error } = await supabase
+                .from('students')
+                .update({ password: pwForm.newPw })
+                .eq('id', user.studentId);
+            
+            if (error) throw error;
+            
+            setPwMessage({ text: 'Password changed.', type: 'success' });
+            setPwForm({ current: '', newPw: '', confirm: '' });
+            setTimeout(() => { setShowPasswordPanel(false); setPwMessage({ text: '', type: '' }); }, 2500);
+        } catch (err) {
+            setPwMessage({ text: err.message || 'Server error.', type: 'error' });
         } finally {
             setPwLoading(false);
         }
