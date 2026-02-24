@@ -48,14 +48,18 @@ export const mentorData = [
         role: "Senior Mentor",
         expertise: "FEWD, BOE",
         bio: "Guides learners through strong front-end foundations and practical engineering concepts with real-world clarity.",
+        email: "santushta.iyer@kalvium.com",
+        linkedin: "https://www.linkedin.com/in/santushta-iyer-a-99862a25b/",
         photo: "/assets/mentor1.jpg"
     },
     {
         id: 2,
-        name: "Anuram",
+        name: "Hanuram",
         role: "Technical Mentor",
         expertise: "FEWD, BOE",
         bio: "Focused on hands-on development skills, logical thinking, and applied engineering practices.",
+        email: "hanuram.t@kalvium.com",
+        linkedin: "https://www.linkedin.com/in/hanuram-t/",
         photo: "/assets/mentor2.jpg"
     },
     {
@@ -64,6 +68,8 @@ export const mentorData = [
         role: "Language & Thinking Mentor",
         expertise: "English LSRW, Critical Thinking",
         bio: "Helps learners build communication confidence, structured thinking, and professional language skills.",
+        email: "karunakaran.h@kalvium.com",
+        linkedin: "https://www.linkedin.com/in/h-karunakaran-3b1285376/",
         photo: "/assets/mentor3.jpg"
     },
     {
@@ -72,6 +78,8 @@ export const mentorData = [
         role: "Maths & Problem Solving Mentor",
         expertise: "PSUP, Engineering Maths",
         bio: "Specializes in mathematical foundations and problem-solving techniques for engineering clarity.",
+        email: "aravind.r@kalvium.com",
+        linkedin: "https://www.linkedin.com/in/aravind-r-812634245/",
         photo: "/assets/mentor4.jpg"
     }
 ];

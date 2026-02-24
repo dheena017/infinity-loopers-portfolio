@@ -4,6 +4,7 @@ import ProfileCard from '../components/ProfileCard';
 import { Briefcase, Star } from 'lucide-react';
 import { useSearchParams } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
+import { mentorData } from '../data/team';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
 
@@ -51,21 +52,75 @@ const AdminForm = ({ onCreate, onUpdate, editingMentor, onCancelEdit }) => {
                     : `${API_BASE_URL}/api/mentors`;
                 const method = isEditingMentor ? 'PUT' : 'POST';
 
-                const response = await fetch(endpoint, {
-                    method,
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ name, role, desc, photo, email })
-                });
-                const payload = await response.json();
-                if (!response.ok || !payload?.success) {
-                    throw new Error(payload?.message || `Failed to ${isEditingMentor ? 'update' : 'create'} mentor`);
+                let savedMentor = null;
+
+                try {
+                    const response = await fetch(endpoint, {
+                        method,
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ name, role, desc, description: desc, photo, email })
+                    });
+
+                    const payload = await response.json();
+                    if (!response.ok || !payload?.success) {
+                        throw new Error(payload?.message || `Failed to ${isEditingMentor ? 'update' : 'create'} mentor`);
+                    }
+
+                    savedMentor = payload.data;
+                } catch (apiError) {
+                    console.warn('Mentor API write failed, falling back to Supabase:', apiError?.message || apiError);
+
+                    if (!supabase) {
+                        throw new Error('Mentor save failed: API unavailable and Supabase not configured');
+                    }
+
+                    const basePayload = { name, role, description: desc, photo };
+
+                    let fallbackResult;
+                    if (isEditingMentor) {
+                        fallbackResult = await supabase
+                            .from('mentors')
+                            .update({ ...basePayload, email })
+                            .eq('id', editingMentor.id)
+                            .select()
+                            .single();
+
+                        if (fallbackResult.error?.message?.toLowerCase().includes('email')) {
+                            fallbackResult = await supabase
+                                .from('mentors')
+                                .update(basePayload)
+                                .eq('id', editingMentor.id)
+                                .select()
+                                .single();
+                        }
+                    } else {
+                        fallbackResult = await supabase
+                            .from('mentors')
+                            .insert([{ ...basePayload, email }])
+                            .select()
+                            .single();
+
+                        if (fallbackResult.error?.message?.toLowerCase().includes('email')) {
+                            fallbackResult = await supabase
+                                .from('mentors')
+                                .insert([basePayload])
+                                .select()
+                                .single();
+                        }
+                    }
+
+                    if (fallbackResult.error) {
+                        throw fallbackResult.error;
+                    }
+
+                    savedMentor = fallbackResult.data;
                 }
 
                 if (isEditingMentor) {
-                    onUpdate(payload.data);
+                    onUpdate(savedMentor);
                     onCancelEdit();
                 } else {
-                    onCreate(payload.data);
+                    onCreate(savedMentor);
                 }
             } else if (type === 'student') {
                 if (!supabase) throw new Error('Database unavailable');
@@ -130,24 +185,64 @@ const Mentors = () => {
     const [searchParams] = useSearchParams();
     const isAdmin = searchParams.get('admin') === 'true';
 
+    const mergeWithLocalMentors = (remoteMentors = []) => {
+        const safeRemote = Array.isArray(remoteMentors) ? remoteMentors : [];
+        const merged = [...safeRemote];
+        const seenNames = new Set(
+            safeRemote
+                .map((item) => (item?.name || '').trim().toLowerCase())
+                .filter(Boolean)
+        );
+
+        for (const localMentor of mentorData) {
+            const nameKey = (localMentor?.name || '').trim().toLowerCase();
+            if (nameKey && !seenNames.has(nameKey)) {
+                merged.push(localMentor);
+            }
+        }
+
+        return merged;
+    };
+
     useEffect(() => {
         const fetchMentors = async () => {
             try {
                 setError('');
-                const response = await fetch(`${API_BASE_URL}/api/mentors`);
-                const payload = await response.json();
+                try {
+                    const response = await fetch(`${API_BASE_URL}/api/mentors`);
+                    const payload = await response.json();
 
-                if (!response.ok || !payload?.success) {
-                    throw new Error(payload?.message || 'Failed to fetch mentors');
+                    if (!response.ok || !payload?.success) {
+                        throw new Error(payload?.message || 'Failed to fetch mentors from API');
+                    }
+
+                    if (Array.isArray(payload.data)) {
+                        setMentors(mergeWithLocalMentors(payload.data));
+                        return;
+                    }
+                } catch (apiError) {
+                    console.warn('Failed to load mentors from API, trying Supabase:', apiError?.message || apiError);
                 }
 
-                if (Array.isArray(payload.data)) {
-                    setMentors(payload.data);
+                if (!supabase) {
+                    throw new Error('Mentor data unavailable (API offline and Supabase not configured)');
                 }
-            } catch (error) {
-                console.warn('Failed to load mentors from API:', error?.message || error);
-                setMentors([]);
-                setError(error?.message || 'Failed to fetch mentors');
+
+                const { data, error: supabaseError } = await supabase
+                    .from('mentors')
+                    .select('*')
+                    .order('id', { ascending: true });
+
+                if (supabaseError) {
+                    throw new Error(supabaseError.message || 'Failed to fetch mentors from Supabase');
+                }
+
+                setMentors(mergeWithLocalMentors(data));
+                setError('');
+            } catch (fetchError) {
+                console.warn('Failed to load mentors:', fetchError?.message || fetchError);
+                setMentors(mergeWithLocalMentors([]));
+                setError('');
             } finally {
                 setLoading(false);
             }
@@ -219,7 +314,7 @@ const Mentors = () => {
                         <div className="panel-card p-6 text-center text-slate-400">No mentors found in database.</div>
                     )}
                     {mentors.map((mentor, idx) => (
-                        <div key={mentor.id}>
+                        <div key={`${mentor.id ?? 'mentor'}-${mentor.name ?? idx}`}>
                             {isAdmin && (
                                 <div className="flex justify-end mb-3">
                                     <button
@@ -235,11 +330,11 @@ const Mentors = () => {
                                     id: mentor.id,
                                     name: mentor.name,
                                     role: mentor.role || 'Mentor',
-                                    bio: mentor.bio || mentor.desc || '',
+                                    bio: mentor.bio || mentor.desc || mentor.description || '',
                                     expertise: mentor.expertise || '',
                                     github: mentor.github || '',
-                                    linkedin: mentor.linkedin || '',
-                                    email: mentor.email || '',
+                                    linkedin: mentor.linkedin || mentor.LinkedIn || mentor.LINKEDIN || '',
+                                    email: mentor.email || mentor.Email || mentor.EMAIL || '',
                                     photo: mentor.photo || '/assets/mentor1.jpg'
                                 }}
                                 alternate={idx % 2 !== 0}
