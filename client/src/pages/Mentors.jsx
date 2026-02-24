@@ -73,33 +73,11 @@ const AdminForm = ({ onCreate }) => {
 
 const Mentors = () => {
     const [mentors, setMentors] = useState(localMentors);
-    const [loading, setLoading] = useState(false);
 
     const [searchParams] = useSearchParams();
     const isAdmin = searchParams.get('admin') === 'true';
 
-    useEffect(() => {
-        let cancelled = false;
-        setLoading(true);
-        
-        const fetchMentors = async () => {
-            try {
-                if (!supabase) throw new Error('Database unavailable');
-                const { data, error } = await supabase.from('mentors').select('*').order('created_at', { ascending: false });
-                if (error) throw error;
-                if (!cancelled && data) {
-                    setMentors(data);
-                }
-            } catch (err) {
-                console.warn('Mentors fetch failed, using local data:', err);
-            } finally {
-                if (!cancelled) setLoading(false);
-            }
-        };
-        
-        fetchMentors();
-        return () => { cancelled = true; };
-    }, []);
+    // Intentionally using only local mentor data for display.
 
     return (
         <section className="section-shell">

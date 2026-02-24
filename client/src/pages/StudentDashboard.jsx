@@ -407,9 +407,23 @@ const StudentDashboard = ({ user, onUpdate, onLogout }) => {
                                                     </div>
 
                                                     <div className="flex items-center justify-between">
-                                                        <div className={`text-xs font-bold ${pwMessage.type==='error'?'text-red-400':'text-emerald-400'}`}>{pwMessage.text}</div>
-                                                        <button onClick={handleChangePassword} disabled={pwLoading} className="px-5 py-2.5 bg-red-600 hover:bg-red-500 text-white rounded-xl text-sm font-bold shadow-lg shadow-red-900/20 transition-all flex items-center gap-2">
-                                                            {pwLoading ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div> : <CheckCircle2 size={16} />}
+                                                        <div
+                                                            className={`text-xs font-bold ${
+                                                                pwMessage.type === 'error' ? 'text-red-400' : 'text-emerald-400'
+                                                            }`}
+                                                        >
+                                                            {pwMessage.text}
+                                                        </div>
+                                                        <button
+                                                            onClick={handleChangePassword}
+                                                            disabled={pwLoading}
+                                                            className="px-5 py-2.5 bg-red-600 hover:bg-red-500 text-white rounded-xl text-sm font-bold shadow-lg shadow-red-900/20 transition-all flex items-center gap-2"
+                                                        >
+                                                            {pwLoading ? (
+                                                                <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                                                            ) : (
+                                                                <CheckCircle2 size={16} />
+                                                            )}
                                                             Update Password
                                                         </button>
                                                     </div>
@@ -419,10 +433,13 @@ const StudentDashboard = ({ user, onUpdate, onLogout }) => {
                                         
                                         {/* Bio Read-Only */}
                                         <div className="bg-slate-900/60 border border-slate-700/50 rounded-2xl p-6 shadow-xl backdrop-blur-md">
-                                             <h3 className="text-sm font-bold text-slate-400 uppercase tracking-widest mb-4">Neural Core (Bio)</h3>
-                                             <p className="text-slate-300 leading-relaxed text-sm">
-                                                {studentData?.bio || "No biography data detected in the neural link. Click 'Modify Interface' to update your profile metadata."}
-                                             </p>
+                                            <h3 className="text-sm font-bold text-slate-400 uppercase tracking-widest mb-4">
+                                                Neural Core (Bio)
+                                            </h3>
+                                            <p className="text-slate-300 leading-relaxed text-sm">
+                                                {studentData?.bio ||
+                                                    "No biography data detected in the neural link. Click 'Modify Interface' to update your profile metadata."}
+                                            </p>
                                         </div>
                                     </>
                                 )}
