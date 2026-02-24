@@ -28,10 +28,10 @@ const Login = ({ onLogin }) => {
   const navigate = useNavigate();
 >>>>>>> 4a7430035c226265267bc58fbbba90f16e4fd322
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setError('');
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setLoading(true);
+        setError('');
 
         try {
             if (!supabase) {
