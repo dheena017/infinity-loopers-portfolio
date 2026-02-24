@@ -1,21 +1,22 @@
 import React, { useState } from 'react';
 import { motion as Motion } from 'framer-motion';
-import { Shield, User, LogIn, AlertCircle, Loader2, ArrowRight, NotebookText, Pencil } from 'lucide-react';
+import { Shield, User, Lock, Loader2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 
 const Login = ({ onLogin }) => {
-    const [role, setRole] = useState('student');
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
-    const [error, setError] = useState('');
-    const [loading, setLoading] = useState(false);
-    const navigate = useNavigate();
+  const [role, setRole] = useState('student');
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [rememberMe, setRememberMe] = useState(false);
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        setLoading(true);
-        setError('');
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError('');
 
     try {
       if (!supabase) {
@@ -71,93 +72,125 @@ const Login = ({ onLogin }) => {
     }
   };
 
-    return (
-        <section className="min-h-screen flex items-center justify-center p-6 bg-black">
-            <Motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.8 }}
-                className="w-full max-w-md aspect-square panel-card flex flex-col justify-center p-8 md:p-12 shadow-[0_0_50px_rgba(220,38,38,0.1)] border-white/5"
+  return (
+    <section className="section-shell flex items-center justify-center px-6 relative overflow-hidden min-h-screen py-20">
+      <Motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="w-full max-w-3xl panel-card p-24 shadow-2xl relative z-10"
+      >
+        {/* Header */}
+        <div className="text-center mb-20">
+          <div className="inline-flex items-center justify-center p-8 rounded-2xl bg-red-500/10 mb-10">
+            <Shield className="text-red-500 w-12 h-12" />
+          </div>
+          <h2 className="text-5xl font-black heading-display text-white">Platform Access</h2>
+          <p className="text-xs text-slate-500 mt-6 uppercase tracking-[0.3em] font-bold">
+            Secure Identity Authentication
+          </p>
+        </div>
+
+        {/* Form */}
+        <form onSubmit={handleSubmit} className="space-y-16">
+          {/* Role Selector */}
+          <div className="space-y-6">
+            <label className="text-xs font-bold uppercase tracking-widest text-slate-500 ml-2">
+              Select Role
+            </label>
+            <select
+              value={role}
+              onChange={(e) => setRole(e.target.value)}
+              className="w-full bg-slate-950 border border-white/5 p-4 text-base focus:border-red-500 rounded-2xl outline-none transition-all text-white font-medium"
             >
-                {/* Role Selectors */}
-                <div className="flex justify-center gap-8 mb-10">
-                    <button
-                        type="button"
-                        onClick={() => setRole('student')}
-                        className={`flex flex-col items-center gap-3 transition-all duration-300 ${role === 'student' ? 'text-red-500 scale-110' : 'text-slate-600 hover:text-slate-400'}`}
-                    >
-                        <div className={`w-14 h-14 rounded-full border-2 flex items-center justify-center transition-all ${role === 'student' ? 'border-red-500 bg-red-500/10' : 'border-white/5 bg-white/5'}`}>
-                            <div className="relative">
-                                <NotebookText size={20} className="absolute -top-1 -left-1" />
-                                <Pencil size={18} className="translate-x-1 translate-y-1" />
-                            </div>
-                        </div>
-                        <span className="text-[10px] font-black uppercase tracking-[0.2em]">Folks</span>
-                    </button>
+              <option value="student">Student</option>
+              <option value="teacher">Teacher</option>
+            </select>
+          </div>
 
-                    <button
-                        type="button"
-                        onClick={() => setRole('teacher')}
-                        className={`flex flex-col items-center gap-3 transition-all duration-300 ${role === 'teacher' ? 'text-red-500 scale-110' : 'text-slate-600 hover:text-slate-400'}`}
-                    >
-                        <div className={`w-14 h-14 rounded-full border-2 flex items-center justify-center transition-all ${role === 'teacher' ? 'border-red-500 bg-red-500/10' : 'border-white/5 bg-white/5'}`}>
-                            <div className="relative">
-                                <User size={20} className="absolute -top-1 -left-1" />
-                                <Shield size={18} className="translate-x-1 translate-y-1" />
-                            </div>
-                        </div>
-                        <span className="text-[10px] font-black uppercase tracking-[0.2em]">Mentors</span>
-                    </button>
-                </div>
+          {/* Username */}
+          <div className="space-y-6">
+            <label className="text-xs font-bold uppercase tracking-widest text-slate-500 ml-2">
+              {role === 'student' ? 'Student Email' : 'Teacher Email'}
+            </label>
+            <div className="relative">
+              <input
+                id="login-username"
+                type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                className="w-full bg-slate-950 border border-white/5 p-8 text-base focus:border-red-500 rounded-2xl outline-none transition-all text-white font-medium placeholder:text-slate-600"
+                placeholder={
+                  role === 'student'
+                    ? 'student@kalvium.community'
+                    : 'teacher@kalvium.community'
+                }
+              />
+            </div>
+          </div>
 
-                {/* Form */}
-                <form onSubmit={handleSubmit} className="space-y-6">
-                    <div className="space-y-2">
-                        <input
-                            type="text"
-                            value={username}
-                            onChange={(e) => setUsername(e.target.value)}
-                            className="w-full bg-slate-950 border border-white/5 p-4 text-sm focus:border-red-500 rounded-xl outline-none transition-all text-white font-medium placeholder:text-slate-700 text-center"
-                            placeholder={role === 'student' ? 'Email Address' : 'Username'}
-                            required
-                        />
-                    </div>
-                   
-<br></br>
-                    <div className="space-y-2">
-                        <input
-                            type="password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            className="w-full bg-slate-950 border border-white/5 p-4 text-sm focus:border-red-500 rounded-xl outline-none transition-all text-white font-medium placeholder:text-slate-700 text-center"
-                            placeholder="Password"
-                            required
-                        />
-                    </div>
+          {/* Password */}
+          <div className="space-y-6">
+            <label className="text-xs font-bold uppercase tracking-widest text-slate-500 ml-2">
+              Password
+            </label>
+            <div className="relative">
+              <input
+                id="login-password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full bg-slate-950 border border-white/5 p-8 text-base focus:border-red-500 rounded-2xl outline-none transition-all text-white font-medium placeholder:text-slate-600"
+                placeholder="Enter your password"
+              />
+            </div>
+          </div>
 
-                    {error && (
-                        <p className="text-[10px] text-center text-red-500 font-bold uppercase tracking-wider">{error}</p>
-                    )}
-<br></br>
-                    <div className="flex justify-center pt-2">
-                        <button
-                            type="submit"
-                            disabled={loading}
-                            className="w-32 py-3 bg-red-600 text-white font-black uppercase tracking-widest text-[11px] rounded-xl hover:bg-red-500 transition-all active:scale-95 disabled:opacity-50"
-                        >
-                            {loading ? <Loader2 size={16} className="animate-spin mx-auto" /> : 'Login'}
-                        </button>
-                    </div>
-                </form>
+          {/* Remember Me + Forgot Password */}
+          <div className="flex items-center justify-between text-slate-400 text-sm">
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={rememberMe}
+                onChange={(e) => setRememberMe(e.target.checked)}
+                className="accent-red-500"
+              />
+              Remember Me
+            </label>
+            <button
+              type="button"
+              onClick={() => navigate('/forgot-password')}
+              className="hover:text-red-500 transition-colors font-medium"
+            >
+              Forgot Password?
+            </button>
+          </div>
 
-                <div className="mt-8 text-center">
-                    <p className="text-[9px] text-slate-700 uppercase tracking-widest font-black leading-loose">
-                        Secure Access Portal
-                    </p>
-                </div>
-            </Motion.div>
-        </section>
-    );
+          {/* Error Message */}
+          {error && (
+            <div className="text-red-500 text-sm font-medium text-center">
+              {error}
+            </div>
+          )}
+
+          {/* Submit Button */}
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full flex items-center justify-center gap-4 bg-red-500 hover:bg-red-600 text-white font-bold py-6 rounded-2xl transition-all"
+          >
+            {loading ? (
+              <>
+                <Loader2 className="animate-spin" size={20} />
+                Authenticating...
+              </>
+            ) : (
+              'Login'
+            )}
+          </button>
+        </form>
+      </Motion.div>
+    </section>
+  );
 };
 
 export default Login;
