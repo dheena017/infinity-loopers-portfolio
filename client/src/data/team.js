@@ -44,34 +44,34 @@ export const teamData = [
 export const mentorData = [
     {
         id: 1,
-        name: "Director Alpha",
-        role: "Technical Architect",
-        desc: "Specialist in high-availability enterprise architectures and legacy systems integration.",
+        name: "Santusha Iyer",
+        role: "Senior Mentor",
+        expertise: "FEWD, BOE",
+        bio: "Guides learners through strong front-end foundations and practical engineering concepts with real-world clarity.",
         photo: "/assets/mentor1.jpg"
     },
     {
         id: 2,
-        name: "Director Beta",
-        role: "Creative Director",
-        desc: "Expert in user psychology, multi-platform brand strategy, and accessible interface design.",
+        name: "Anuram",
+        role: "Technical Mentor",
+        expertise: "FEWD, BOE",
+        bio: "Focused on hands-on development skills, logical thinking, and applied engineering practices.",
         photo: "/assets/mentor2.jpg"
-    }
-];
-
-// Additional mentors requested
-mentorData.push(
+    },
     {
         id: 3,
-        name: "Dr. Cassandra Voss",
-        role: "AI & ML Advisor",
-        desc: "Leads applied research in machine learning and interpretable AI for realtime systems.",
+        name: "Karunakaran",
+        role: "Language & Thinking Mentor",
+        expertise: "English LSRW, Critical Thinking",
+        bio: "Helps learners build communication confidence, structured thinking, and professional language skills.",
         photo: "/assets/mentor3.jpg"
     },
     {
         id: 4,
-        name: "Professor Imani Ruiz",
-        role: "Systems & Security",
-        desc: "Specializes in distributed systems security, threat modeling, and resilient architectures.",
+        name: "Arvind",
+        role: "Maths & Problem Solving Mentor",
+        expertise: "PSUP, Engineering Maths",
+        bio: "Specializes in mathematical foundations and problem-solving techniques for engineering clarity.",
         photo: "/assets/mentor4.jpg"
     }
-);
+];

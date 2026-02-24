@@ -265,10 +265,13 @@ const Collective = ({ students, user, setStudents }) => {
                 >
                     <div className="space-y-4">
                         <div className="flex items-center gap-3 text-red-500 font-bold uppercase tracking-[0.2em] text-[10px]">
-                            <LayoutGrid size={14} />
-                            Directory System v3
+                            <Users size={14} />
+                            Community Network
                         </div>
-                        <h2 className="text-5xl sm:text-6xl md:text-7xl font-black text-white heading-display break-words">Meet the <br /><span className="text-red-500">Professional</span> Team</h2>
+                        <h2 className="text-5xl sm:text-6xl md:text-7xl font-black text-white heading-display break-words">Meet the <span className="text-red-500">Folks</span></h2>
+                        <p className="text-slate-400 max-w-lg">
+                            The heart of our ecosystem. A diverse community of learners, builders, and alumni growing together.
+                        </p>
                     </div>
                 </motion.div>
 

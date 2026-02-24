@@ -10,12 +10,12 @@ import SquadLogo from './SquadLogo';
 const HUD = ({ user, onLogout }) => {
     const location = useLocation();
     const navLinks = [
-        { path: '/', label: 'HOME', icon: Home },
-        { path: '/operatives', label: 'LEADERSHIP', icon: Crown },
-        { path: '/mentors', label: 'MENTORS', icon: GraduationCap },
-        { path: '/team', label: 'FORK', icon: GitFork },
-        { path: '/expeditions', label: 'PROJECTS', icon: Briefcase },
-        { path: '/transmissions', label: 'CONTACT', icon: Mail },
+        { path: '/', label: 'OVERVIEW', icon: Home },
+        { path: '/operatives', label: 'CORE LEADERSHIP', icon: Crown },
+        { path: '/mentors', label: 'MENTOR NETWORK', icon: GraduationCap },
+        { path: '/team', label: 'FOLKS', icon: GitFork },
+        { path: '/expeditions', label: 'INITIATIVES', icon: Briefcase },
+        { path: '/transmissions', label: 'CONNECT', icon: Mail },
     ];
 
     if (user) {
@@ -147,7 +147,7 @@ const HUD = ({ user, onLogout }) => {
                                     <div className="relative w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-white/10 border border-white/20 flex items-center justify-center backdrop-blur-md group-hover:rotate-[360deg] transition-transform duration-1000">
                                         <ShieldCheck size={20} className="text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.5)]" />
                                     </div>
-                                    <span className="text-[10px] sm:text-[12px] font-black uppercase text-white tracking-[0.2em] sm:tracking-[0.25em]">LOGIN PORTAL</span>
+                                    <span className="text-[10px] sm:text-[12px] font-black uppercase text-white tracking-[0.2em] sm:tracking-[0.25em]">MEMBER LOGIN</span>
                                 </div>
                             </NavLink>
                         )}

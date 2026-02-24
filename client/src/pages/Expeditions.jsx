@@ -5,9 +5,9 @@ import { Briefcase, Shield, Zap, ArrowUpRight, Github, ExternalLink, Globe2, Com
 const projects = [
     {
         id: 1,
-        title: "Enterprise Sync",
-        desc: "A high-performance data synchronisation platform designed for large-scale enterprise architectures.",
-        tags: ["React", "TypeScript", "Redis"],
+        title: "Skill Sync",
+        desc: "A robust framework for synchronizing learning objectives with industry-standard engineering skills and real-world clarity.",
+        tags: ["Skill Growth", "Engineering", "Clarity"],
         icon: Zap,
         color: "blue",
         github: "https://github.com",
@@ -15,9 +15,9 @@ const projects = [
     },
     {
         id: 2,
-        title: "Global Registry",
-        desc: "Managing historical and real-time records through a secure, distributed database system.",
-        tags: ["PostgreSQL", "Node.js", "AWS"],
+        title: "Progress Tracker",
+        desc: "Maintaining a secure and transparent record of learning milestones, technical achievements, and personal growth.",
+        tags: ["Tracking", "Achievement", "Metrics"],
         icon: Globe2,
         color: "indigo",
         github: "https://github.com",
@@ -25,9 +25,9 @@ const projects = [
     },
     {
         id: 3,
-        title: "Secure Gateway",
-        desc: "Advanced security protocols and identity management for cross-border communications.",
-        tags: ["OAuth2", "Next.js", "Prisma"],
+        title: "Access System",
+        desc: "Safe and reliable system entry for mentors and learners to collaborate on technical projects and creative ideas.",
+        tags: ["Security", "Collaboration", "Gateway"],
         icon: Shield,
         color: "slate",
         github: "https://github.com",
@@ -35,9 +35,9 @@ const projects = [
     },
     {
         id: 4,
-        title: "Platform V3",
-        desc: "The latest evolution of our internal dashboard and performance tracking engine.",
-        tags: ["GraphQL", "Tailwind", "Framer"],
+        title: "Learning Platform",
+        desc: "Our advanced ecosystem designed for hands-on mentorship, deep skill acquisition, and career readiness.",
+        tags: ["Ecosystem", "Mentorship", "Growth"],
         icon: Briefcase,
         color: "blue",
         github: "https://github.com",
@@ -64,13 +64,13 @@ const Expeditions = () => {
                     <div className="space-y-6">
                         <div className="inline-flex items-center gap-2 px-3 py-1 bg-red-500/10 border border-red-500/20 rounded-full text-red-400 text-[10px] font-bold uppercase tracking-widest">
                             <Compass size={14} />
-                            Strategic Initiatives 2024
+                            Learning Roadmap
                         </div>
-                        <h2 className="section-heading">Global <br /><span className="text-red-500">Expeditions</span></h2>
+                        <h2 className="section-heading">Learning <br /><span className="text-red-500">Initiatives</span></h2>
                     </div>
 
                     <p className="section-copy max-w-sm border-l border-white/5 pl-8">
-                        A dedicated showcase of our most complex and impactful technical breakthroughs in global engineering.
+                        A dedicated showcase of our skill-driven projects designed to build real-world readiness through expert mentorship.
                     </p>
                 </Motion.div>
 

@@ -120,7 +120,7 @@ function AppContent() {
               <Route path="/team" element={<Collective students={students} user={user} setStudents={setStudents} />} />
               <Route path="/secretary" element={<SecretaryDashboard />} />
               <Route path="/student" element={<StudentDashboard user={user} onUpdate={handleUserUpdate} onLogout={handleLogout} />} />
-              <Route path="/admin" element={<TeacherDashboard students={students} setStudents={setStudents} user={user} onUpdate={handleUserUpdate}/>} />
+              <Route path="/admin" element={<TeacherDashboard students={students} setStudents={setStudents} user={user} onUpdate={handleUserUpdate} />} />
               <Route path="/transmissions" element={<Transmissions />} />
             </Routes>
           </Motion.div>
@@ -128,8 +128,8 @@ function AppContent() {
       </main>
 
       <footer className="py-20 border-t border-slate-800 text-center">
-        <div className="text-2xl font-bold tracking-tight text-white/10 uppercase">Portfolio System</div>
-        <div className="text-xs text-slate-500 mt-4 font-medium uppercase tracking-[0.2em]">Version 3.0.0 — Production Build</div>
+        <div className="text-2xl font-bold tracking-tight text-white/10 uppercase">Mentor-Driven Ecosystem</div>
+        <div className="text-xs text-slate-500 mt-4 font-medium uppercase tracking-[0.2em]">Building Skills. Shaping Careers.</div>
       </footer>
     </div>
   );

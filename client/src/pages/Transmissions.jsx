@@ -23,11 +23,11 @@ const Transmissions = () => {
                 >
                     <div className="inline-flex items-center gap-2 px-3 py-1 bg-red-500/10 border border-red-500/20 rounded-full text-red-400 text-[10px] font-bold uppercase tracking-widest">
                         <Mail size={14} />
-                        Communications Center
+                        Support Hub
                     </div>
-                    <h2 className="section-heading">Contact <br /><span className="text-red-500">The Team</span></h2>
+                    <h2 className="section-heading">Talk <br /><span className="text-red-500">to Us</span></h2>
                     <p className="section-copy max-w-lg mx-auto">
-                        Have a project in mind or just want to say hello? Our team is always open to discussing new opportunities and technical challenges.
+                        Have a question, idea, or need guidance? Our mentors are here to help.
                     </p>
                 </Motion.div>
 
@@ -56,7 +56,7 @@ const Transmissions = () => {
                                 <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest block ml-1">Email Address</label>
                                 <input
                                     type="email"
-                                    placeholder="your@company.com"
+                                    placeholder="your@email.com"
                                     className="w-full bg-slate-950 border border-white/5 p-5 focus:border-red-500 outline-none transition-all rounded-xl text-white placeholder-slate-700 font-medium"
                                     required
                                 />
@@ -64,10 +64,10 @@ const Transmissions = () => {
                         </div>
 
                         <div className="space-y-4">
-                            <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest block ml-1">Message Details</label>
+                            <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest block ml-1">How can we help?</label>
                             <textarea
                                 rows="6"
-                                placeholder="Describe your inquiry..."
+                                placeholder="Tell us what's on your mind..."
                                 className="w-full bg-slate-950 border border-white/5 p-5 focus:border-red-500 outline-none transition-all rounded-xl text-white placeholder-slate-700 font-medium resize-none"
                                 required
                             />
@@ -77,7 +77,7 @@ const Transmissions = () => {
                             <div className="flex items-center gap-4 group">
                                 <div className={`w-2.5 h-2.5 rounded-full transition-colors ${status === 'SENT' ? 'bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)]' : 'bg-red-500 shadow-[0_0_10px_rgba(239,68,68,0.5)] animate-pulse'}`}></div>
                                 <span className="text-[11px] font-bold uppercase tracking-widest text-slate-500 group-hover:text-slate-300 transition-colors">
-                                    {status === 'IDLE' ? 'System Ready' : status === 'SENDING' ? 'Encapsulating Data' : 'Relay Successful'}
+                                    {status === 'IDLE' ? 'Ready to Send' : status === 'SENDING' ? 'Sending Message...' : 'Message Delivered'}
                                 </span>
                             </div>
 
@@ -90,13 +90,13 @@ const Transmissions = () => {
                                     }`}
                             >
                                 {status === 'IDLE' && (
-                                    <>Transmit Message <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" /></>
+                                    <>Send Message <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" /></>
                                 )}
                                 {status === 'SENDING' && (
-                                    <>Transmitting <Loader2 size={16} className="animate-spin" /></>
+                                    <>Sending... <Loader2 size={16} className="animate-spin" /></>
                                 )}
                                 {status === 'SENT' && (
-                                    <>Success <CheckCircle2 size={16} /></>
+                                    <>Sent! <CheckCircle2 size={16} /></>
                                 )}
                             </button>
                         </div>
@@ -109,7 +109,7 @@ const Transmissions = () => {
                         <ShieldCheck size={24} className="text-red-500" />
                         <MessageSquare size={24} className="text-red-500" />
                     </div>
-                    <span className="text-[9px] font-bold uppercase tracking-[0.5em] text-slate-600">Enterprise Communication Node 01</span>
+                    <span className="text-[9px] font-bold uppercase tracking-[0.5em] text-slate-600">Mentor Support Node 01</span>
                 </div>
             </div>
         </section>

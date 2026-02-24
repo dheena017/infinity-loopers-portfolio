@@ -47,22 +47,22 @@ const AdminForm = ({ onCreate }) => {
     return (
         <form onSubmit={submit} className="panel-card p-6 mb-8">
             <div className="flex gap-4 mb-4">
-                <select value={type} onChange={e=>setType(e.target.value)} className="p-2 border rounded">
+                <select value={type} onChange={e => setType(e.target.value)} className="p-2 border rounded">
                     <option value="mentor">Mentor</option>
                     <option value="student">Student</option>
                     <option value="teacher">Teacher</option>
                 </select>
-                <input value={name} onChange={e=>setName(e.target.value)} placeholder="Name" className="flex-1 p-2 border rounded" />
-                <input value={role} onChange={e=>setRole(e.target.value)} placeholder="Role" className="w-56 p-2 border rounded" />
+                <input value={name} onChange={e => setName(e.target.value)} placeholder="Name" className="flex-1 p-2 border rounded" />
+                <input value={role} onChange={e => setRole(e.target.value)} placeholder="Role" className="w-56 p-2 border rounded" />
             </div>
             <div className="flex gap-4 mb-4">
-                <input value={email} onChange={e=>setEmail(e.target.value)} placeholder="Email" className="flex-1 p-2 border rounded" />
-                <input value={photo} onChange={e=>setPhoto(e.target.value)} placeholder="Photo URL" className="flex-1 p-2 border rounded" />
-                <input value={term} onChange={e=>setTerm(e.target.value)} placeholder="Term (students)" className="w-56 p-2 border rounded" />
+                <input value={email} onChange={e => setEmail(e.target.value)} placeholder="Email" className="flex-1 p-2 border rounded" />
+                <input value={photo} onChange={e => setPhoto(e.target.value)} placeholder="Photo URL" className="flex-1 p-2 border rounded" />
+                <input value={term} onChange={e => setTerm(e.target.value)} placeholder="Term (students)" className="w-56 p-2 border rounded" />
             </div>
-            <textarea value={desc} onChange={e=>setDesc(e.target.value)} placeholder="Bio / Desc" className="w-full p-2 border rounded mb-4"></textarea>
+            <textarea value={desc} onChange={e => setDesc(e.target.value)} placeholder="Bio / Desc" className="w-full p-2 border rounded mb-4"></textarea>
             <div className="flex justify-end">
-                <button type="submit" disabled={busy} className="px-4 py-2 bg-red-600 text-white rounded">{busy? 'Creating...' : 'Create'}</button>
+                <button type="submit" disabled={busy} className="px-4 py-2 bg-red-600 text-white rounded">{busy ? 'Creating...' : 'Create'}</button>
             </div>
         </form>
     );
@@ -107,11 +107,11 @@ const Mentors = () => {
                     >
                         <div className="inline-flex items-center gap-2 px-3 py-1 bg-red-500/10 border border-red-500/20 rounded-full text-red-400 text-[10px] font-bold uppercase tracking-widest">
                             <Briefcase size={14} />
-                            Advisory Leadership
+                            Professional Guidance
                         </div>
-                        <h2 className="section-heading">Board of <br /><span className="text-red-500">Advisors</span></h2>
+                        <h2 className="section-heading">Our <span className="text-red-500">Mentor</span> Network</h2>
                         <p className="section-copy max-w-lg">
-                            Experienced industry leaders providing strategic direction and technical architectural oversight.
+                            Dedicated professionals committed to shaping the next generation through clarity, technical expertise, and real-world wisdom.
                         </p>
                     </Motion.div>
 
@@ -122,15 +122,15 @@ const Mentors = () => {
                     >
                         <div className="flex items-center gap-4 text-slate-200">
                             <Star size={20} className="text-amber-500" />
-                            <span className="font-bold text-lg heading-display">Mentor Network</span>
+                            <span className="font-bold text-lg heading-display">Community-Driven Mentorship</span>
                         </div>
                         <p className="text-sm text-slate-400 leading-relaxed">
-                            Our mentors bring deep domain expertise across systems, security, and product strategy.
+                            Our mentors focus on hands-on development, structured thinking, and building communication confidence.
                         </p>
                         <div className="h-px bg-white/5"></div>
                         <div className="flex justify-between items-center text-xs font-bold uppercase tracking-widest text-slate-500">
-                            <span>Trusted Advisors</span>
-                            <span>Community Verified</span>
+                            <span>Human Centeric</span>
+                            <span>Growth Focused</span>
                         </div>
                     </Motion.div>
                 </div>
@@ -146,8 +146,9 @@ const Mentors = () => {
                             member={{
                                 id: mentor.id,
                                 name: mentor.name,
-                                role: mentor.role || 'Advisor',
-                                bio: mentor.desc || '',
+                                role: mentor.role || 'Mentor',
+                                bio: mentor.bio || mentor.desc || '',
+                                expertise: mentor.expertise || '',
                                 github: mentor.github || '',
                                 linkedin: mentor.linkedin || '',
                                 email: mentor.email || '',

@@ -38,13 +38,21 @@ const ProfileCard = ({ member, alternate }) => {
                 <div className="space-y-3">
                     <div className="flex items-center gap-2 text-red-500 font-bold text-[10px] tracking-[0.2em] uppercase">
                         <Briefcase size={14} />
-                        <span>Executive Profile</span>
+                        <span>Mentor Profile</span>
                     </div>
                     <h2 className="text-4xl sm:text-5xl font-black heading-display text-white transition-colors group-hover:text-red-50 break-words overflow-hidden">
                         {member.name}
                     </h2>
-                    <div className="inline-block px-4 py-1.5 bg-slate-800 border border-white/10 rounded-lg">
-                        <span className="text-slate-300 font-bold text-xs tracking-widest uppercase">{member.role}</span>
+                    <div className="flex flex-wrap gap-4 items-center">
+                        <div className="inline-block px-4 py-1.5 bg-slate-800 border border-white/10 rounded-lg">
+                            <span className="text-slate-300 font-bold text-xs tracking-widest uppercase">{member.role}</span>
+                        </div>
+                        {member.expertise && (
+                            <div className="flex items-center gap-3">
+                                <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Areas of Expertise:</span>
+                                <span className="text-red-400 font-bold text-xs uppercase tracking-wider">{member.expertise}</span>
+                            </div>
+                        )}
                     </div>
                 </div>
 
@@ -56,19 +64,25 @@ const ProfileCard = ({ member, alternate }) => {
 
                 <div className="flex flex-wrap items-center gap-4 pt-6">
                     <div className="flex gap-3">
-                        <a href={member.github} target="_blank" rel="noopener noreferrer" className="p-3 bg-slate-900 border border-white/5 hover:border-red-500/50 hover:bg-slate-800 rounded-xl transition-all group/link shadow-lg">
-                            <Github size={20} className="text-slate-500 group-hover/link:text-red-400 transition-colors" />
-                        </a>
-                        <a href={member.linkedin} target="_blank" rel="noopener noreferrer" className="p-3 bg-slate-900 border border-white/5 hover:border-red-500/50 hover:bg-slate-800 rounded-xl transition-all group/link shadow-lg">
-                            <Linkedin size={20} className="text-slate-500 group-hover/link:text-red-400 transition-colors" />
-                        </a>
-                        <a href={`mailto:${member.email}`} className="p-3 bg-slate-900 border border-white/5 hover:border-red-500/50 hover:bg-slate-800 rounded-xl transition-all group/link shadow-lg">
-                            <Mail size={20} className="text-slate-500 group-hover/link:text-red-400 transition-colors" />
-                        </a>
+                        {member.github && (
+                            <a href={member.github} target="_blank" rel="noopener noreferrer" className="p-3 bg-slate-900 border border-white/5 hover:border-red-500/50 hover:bg-slate-800 rounded-xl transition-all group/link shadow-lg">
+                                <Github size={20} className="text-slate-500 group-hover/link:text-red-400 transition-colors" />
+                            </a>
+                        )}
+                        {member.linkedin && (
+                            <a href={member.linkedin} target="_blank" rel="noopener noreferrer" className="p-3 bg-slate-900 border border-white/5 hover:border-red-500/50 hover:bg-slate-800 rounded-xl transition-all group/link shadow-lg">
+                                <Linkedin size={20} className="text-slate-500 group-hover/link:text-red-400 transition-colors" />
+                            </a>
+                        )}
+                        {member.email && (
+                            <a href={`mailto:${member.email}`} className="p-3 bg-slate-900 border border-white/5 hover:border-red-500/50 hover:bg-slate-800 rounded-xl transition-all group/link shadow-lg">
+                                <Mail size={20} className="text-slate-500 group-hover/link:text-red-400 transition-colors" />
+                            </a>
+                        )}
                     </div>
 
-                    <a href={member.linkedin} target="_blank" rel="noopener noreferrer" className="px-8 py-3 bg-red-600 text-white font-bold tracking-widest text-[10px] uppercase hover:bg-red-500 rounded-xl transition-all flex items-center gap-3 ml-auto shadow-xl shadow-red-900/20 active:scale-95">
-                        Executive Summary <ExternalLink size={16} />
+                    <a href={member.linkedin || '#'} target="_blank" rel="noopener noreferrer" className="px-8 py-3 bg-red-600 text-white font-bold tracking-widest text-[10px] uppercase hover:bg-red-500 rounded-xl transition-all flex items-center gap-3 ml-auto shadow-xl shadow-red-900/20 active:scale-95">
+                        Mentor Focus <ExternalLink size={16} />
                     </a>
                 </div>
             </div>

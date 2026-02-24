@@ -18,11 +18,11 @@ const Operatives = () => {
                     >
                         <div className="inline-flex items-center gap-2 px-3 py-1 bg-red-500/10 border border-red-500/20 rounded-full text-red-400 text-[10px] font-bold uppercase tracking-widest">
                             <Briefcase size={14} />
-                            Strategic Leadership
+                            Advisory Team
                         </div>
-                        <h2 className="section-heading">Core <br /><span className="text-red-500">Advisory</span> Team</h2>
+                        <h2 className="section-heading">Leadership <span className="text-red-500">Team</span></h2>
                         <p className="section-copy max-w-lg">
-                            A highly specialized unit of architects and engineers focused on delivering high-performance digital ecosystems.
+                            An experienced group of mentors and strategists dedicated to guiding learners through their technical and professional growth.
                         </p>
                     </Motion.div>
 
@@ -33,15 +33,15 @@ const Operatives = () => {
                     >
                         <div className="flex items-center gap-4 text-slate-200">
                             <Star size={20} className="text-amber-500" />
-                            <span className="font-bold text-lg heading-display">Industry Recognition</span>
+                            <span className="font-bold text-lg heading-display">Supportive Guidance</span>
                         </div>
                         <p className="text-sm text-slate-400 leading-relaxed">
-                            Our team members have been recognized for excellence in system architecture, UI/UX innovation, and performant cloud engineering.
+                            Our leadership focuses on creating a nurturing environment where skill growth and real-world readiness are the top priorities.
                         </p>
                         <div className="h-px bg-white/5"></div>
                         <div className="flex justify-between items-center text-xs font-bold uppercase tracking-widest text-slate-500">
-                            <span>Certified Experts</span>
-                            <span>2024 Verified</span>
+                            <span>Experience-Driven</span>
+                            <span>Community Focused</span>
                         </div>
                     </Motion.div>
                 </div>

@@ -10,22 +10,22 @@ const Home = () => {
     const heroY = useTransform(scrollY, [0, 500], [0, -50]);
     const pillars = [
         {
-            title: 'Collective',
-            desc: 'Internal personnel directory and operative profiles.',
+            title: 'Folks',
+            desc: 'The heart of our community. Connect with learners and alumni.',
             path: '/team',
             icon: Users,
             tag: 'Directory'
         },
         {
-            title: 'Expeditions',
-            desc: 'Comprehensive archive of global technical breakthroughs.',
+            title: 'Initiatives',
+            desc: 'Real-world projects and learning tracks designed for growth.',
             path: '/expeditions',
             icon: Globe2,
             tag: 'Archive'
         },
         {
-            title: 'Operatives',
-            desc: 'Strategic leadership and core project architects.',
+            title: 'Core Leadership',
+            desc: 'The strategic team guiding the ecosystem\'s vision and clarity.',
             path: '/operatives',
             icon: Briefcase,
             tag: 'Leadership'
@@ -52,18 +52,18 @@ const Home = () => {
                         </div>
 
                         <h1 className="text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-black heading-display leading-[0.9] tracking-tighter text-white">
-                            DESIGN MEETS <br />
-                            <span className="text-red-500 italic drop-shadow-[0_0_30px_rgba(239,68,68,0.3)]">ENGINEERING.</span>
+                            Building Skills. <br />
+                            <span className="text-red-500 italic drop-shadow-[0_0_30px_rgba(239,68,68,0.3)]">Shaping Careers.</span>
                         </h1>
 
                         <p className="section-copy md:text-xl font-medium max-w-2xl mx-auto opacity-80">
-                            Explore the cold expanse of code through a high-performance ecosystem designed for the next generation of digital infrastructure.
+                            A mentor-driven learning ecosystem focused on real-world skills, clarity, and growth.
                         </p>
 
                         <div className="w-full h-px bg-gradient-to-r from-transparent via-white/5 to-transparent my-12"></div>
 
                         <div className="flex justify-center w-full pt-4">
-                            <NavLink to="/team" className="group relative">
+                            <NavLink to="/mentors" className="group relative">
                                 {/* Deep Ambient Glow */}
                                 <div className="absolute -inset-8 bg-red-600 rounded-[4rem] blur-3xl opacity-5 group-hover:opacity-30 transition-opacity duration-1000"></div>
 
@@ -75,7 +75,7 @@ const Home = () => {
 
                                     {/* Centered Content */}
                                     <div className="flex items-center gap-4 relative z-10 translate-x-2">
-                                        <span className="text-[9px] sm:text-[10px] tracking-[0.3em] sm:tracking-[0.4em] font-black">Initialize Sequence</span>
+                                        <span className="text-[9px] sm:text-[10px] tracking-[0.3em] sm:tracking-[0.4em] font-black">Explore the Network</span>
                                         <ArrowRight size={18} className="group-hover:translate-x-2 transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]" />
                                     </div>
 
@@ -125,7 +125,7 @@ const Home = () => {
                                     </div>
 
                                     <div className="pt-4 flex items-center gap-3 text-red-500 text-[10px] font-black tracking-[0.3em] opacity-40 group-hover:opacity-100 group-hover:translate-y-[-4px] transition-all duration-500">
-                                        SYSTEM ACCESS <ArrowRight size={14} />
+                                        LEARN MORE <ArrowRight size={14} />
                                     </div>
                                 </div>
 
