@@ -27,7 +27,7 @@ const Login = ({ onLogin }) => {
             let query;
             if (role === 'student') {
                 query = supabase.from('students').select('*').eq('email', username).single();
-            } else if (role === 'teacher') {
+            } else if (role === 'mentor') {
                 query = supabase.from('mentors').select('*').eq('email', username).single();
             } else {
                 query = supabase.from('secretaries').select('*').eq('email', username).single();
@@ -60,8 +60,8 @@ const Login = ({ onLogin }) => {
 
             if (role === 'student') {
                 navigate('/student');
-            } else if (role === 'teacher') {
-                navigate('/admin');
+            } else if (role === 'mentor') {
+                navigate('/mentor');
             } else {
                 navigate('/');
             }
@@ -107,10 +107,10 @@ const Login = ({ onLogin }) => {
 
                     <button
                         type="button"
-                        onClick={() => setRole('teacher')}
-                        className={`flex flex-col items-center gap-3 transition-all duration-300 ${role === 'teacher' ? 'text-red-500 scale-110' : 'text-slate-600 hover:text-slate-400'}`}
+                        onClick={() => setRole('mentor')}
+                        className={`flex flex-col items-center gap-3 transition-all duration-300 ${role === 'mentor' ? 'text-red-500 scale-110' : 'text-slate-600 hover:text-slate-400'}`}
                     >
-                        <div className={`w-16 h-16 rounded-full border-2 flex items-center justify-center transition-all ${role === 'teacher' ? 'border-red-500 bg-red-500/10' : 'border-white/5 bg-white/5'}`}>
+                        <div className={`w-16 h-16 rounded-full border-2 flex items-center justify-center transition-all ${role === 'mentor' ? 'border-red-500 bg-red-500/10' : 'border-white/5 bg-white/5'}`}>
                             <div className="relative">
                                 <User size={22} className="absolute -top-1 -left-1" />
                                 <Shield size={20} className="translate-x-1 translate-y-1" />
@@ -124,10 +124,10 @@ const Login = ({ onLogin }) => {
                 <form onSubmit={handleSubmit} className="space-y-10">
                     <div className="flex flex-col items-center space-y-4 px-6">
                         <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest text-center pl-0">
-                            {role === 'student' ? 'Enter Registered Email' : 'Enter Mentor Email'}
+                            {role === 'student' ? 'Enter Registered Email' : role === 'mentor' ? 'Enter Mentor Email' : 'Enter Registered Email'}
                         </label>
                         <input
-                            type="text"
+                            type="email"
                             value={username}
                             onChange={(e) => setUsername(e.target.value)}
                             className="w-full max-w-[420px] bg-transparent border border-white/20 p-5 py-12 text-sm focus:border-red-500 rounded-3xl outline-none transition-all text-white font-medium placeholder:text-slate-800 text-center"
@@ -202,4 +202,3 @@ const Login = ({ onLogin }) => {
 };
 
 export default Login;
-<span>LOGIN</span>

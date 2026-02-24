@@ -96,6 +96,18 @@ supabase/add_auth_columns.sql
 
 Or follow the detailed guide: [SUPABASE_AUTH_SETUP.md](SUPABASE_AUTH_SETUP.md)
 
+### 3.1 Update Database via Supabase CLI
+
+From project root, run:
+
+```bash
+npx supabase login
+npx supabase link --project-ref arniiywzkkizgocnkuqy
+npx supabase db push
+```
+
+This applies local files in `supabase/migrations/` to your linked remote database.
+
 ### 4. Run Locally
 
 ```bash
@@ -116,6 +128,8 @@ The site is already deployed and configured on Netlify.
 ```bash
 npm run deploy:netlify
 ```
+
+This command builds the client and deploys to Netlify production.
 
 #### Enable Auto-Deploy from GitHub
 
@@ -238,6 +252,9 @@ npm run dev
 
 # Build production client
 npm run build
+
+# Push Supabase migrations to remote database
+npx supabase db push
 
 # Deploy to Netlify (manual)
 npm run deploy:netlify

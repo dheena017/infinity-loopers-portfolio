@@ -3,7 +3,7 @@ import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion'
 import { Users, X, Github, Linkedin, ExternalLink, Activity, LayoutGrid, Cpu, UserCheck, Edit3, Save, XCircle, ShieldCheck } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 
-// ─── Edit Modal (Admin/Teacher only) ───────────────────────────────────────────────
+// ─── Edit Modal (Admin/Mentor only) ───────────────────────────────────────────────
 const EditModal = ({ student, onClose, onSave }) => {
     const [form, setForm] = useState({
         name: student.name || '',
@@ -213,7 +213,7 @@ const ProfileModal = ({ student, onClose, user, onEdit }) => (
                         </a>
                     )}
 
-                    {user?.role === 'teacher' && (
+                    {user?.role === 'mentor' && (
                         <button
                             onClick={onEdit}
                             className="flex items-center gap-3 px-8 py-4 bg-red-600/10 border border-red-500/30 text-red-400 font-bold uppercase tracking-widest text-xs hover:bg-red-600/20 rounded-xl transition-colors"
@@ -297,7 +297,7 @@ const Collective = ({ students, user, setStudents }) => {
                                 <div className="text-sm font-bold text-white heading-display truncate mt-1">{student.name}</div>
                             </div>
 
-                            {user?.role === 'teacher' && (
+                            {user?.role === 'mentor' && (
                                 <div className="absolute top-4 right-4 p-2 bg-red-600 rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity">
                                     <Edit3 size={14} className="text-white" />
                                 </div>

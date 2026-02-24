@@ -1,7 +1,5 @@
 // Supabase Query Helpers
 import { getSupabase } from './supabaseClient.js';
-// Local fallback data (used when Supabase isn't configured)
-import { mentorData as localMentors } from '../client/src/data/team.js';
 
 // ==================== OPERATIVES ====================
 
@@ -423,60 +421,37 @@ export async function createSecretary(secretary) {
 // ==================== MENTORS ====================
 
 export async function getAllMentors() {
-  try {
-    const supabase = getSupabase();
-    const { data, error } = await supabase
-      .from('mentors')
-      .select('*')
-      .order('id', { ascending: true });
+  const supabase = getSupabase();
+  const { data, error } = await supabase
+    .from('mentors')
+    .select('*')
+    .order('id', { ascending: true });
 
-    if (error) throw new Error(`Failed to fetch mentors: ${error.message}`);
-    return data || [];
-  } catch (err) {
-    // Supabase not available or query failed — return local fallback
-    console.warn('Using local mentors fallback:', err.message || err);
-    return Array.isArray(localMentors) ? localMentors : [];
-  }
+  if (error) throw new Error(`Failed to fetch mentors: ${error.message}`);
+  return data || [];
 }
 
 export async function createMentor(mentor) {
-  try {
-    const supabase = getSupabase();
-    const { data, error } = await supabase
-      .from('mentors')
-      .insert([mentor])
-      .select()
-      .single();
+  const supabase = getSupabase();
+  const { data, error } = await supabase
+    .from('mentors')
+    .insert([mentor])
+    .select()
+    .single();
 
-    if (error) throw new Error(error.message || 'Failed to create mentor');
-    return data;
-  } catch (err) {
-    console.warn('createMentor fallback to local:', err.message || err);
-    // Fallback: add to localMentors in-memory
-    const maxId = Array.isArray(localMentors) && localMentors.length ? Math.max(...localMentors.map(m => m.id || 0)) : 0;
-    const newMentor = { id: maxId + 1, ...mentor };
-    localMentors.push(newMentor);
-    return newMentor;
-  }
+  if (error) throw new Error(error.message || 'Failed to create mentor');
+  return data;
 }
 
 export async function updateMentor(id, updates) {
-  try {
-    const supabase = getSupabase();
-    const { data, error } = await supabase
-      .from('mentors')
-      .update(updates)
-      .eq('id', id)
-      .select()
-      .single();
+  const supabase = getSupabase();
+  const { data, error } = await supabase
+    .from('mentors')
+    .update(updates)
+    .eq('id', id)
+    .select()
+    .single();
 
-    if (error) throw new Error(error.message || 'Failed to update mentor');
-    return data;
-  } catch (err) {
-    console.warn('updateMentor fallback to local:', err.message || err);
-    const idx = localMentors.findIndex((m) => String(m.id) === String(id));
-    if (idx === -1) throw new Error('Mentor not found in local fallback');
-    localMentors[idx] = { ...localMentors[idx], ...updates };
-    return localMentors[idx];
-  }
+  if (error) throw new Error(error.message || 'Failed to update mentor');
+  return data;
 }

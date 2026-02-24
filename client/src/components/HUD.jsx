@@ -57,7 +57,7 @@ const HUD = ({ user, onLogout }) => {
     }, []);
 
     if (user) {
-        if (user.role === 'teacher') navLinks.push({ path: '/admin', label: 'DASHBOARD', icon: ShieldCheck });
+        if (user.role === 'mentor') navLinks.push({ path: '/mentor', label: 'MENTOR DASHBOARD', icon: ShieldCheck });
         if (user.role === 'student') navLinks.push({ path: '/student', label: 'DASHBOARD', icon: ShieldCheck });
         if (user.role === 'secretary') navLinks.push({ path: '/secretary', label: 'DASHBOARD', icon: ShieldCheck });
     }

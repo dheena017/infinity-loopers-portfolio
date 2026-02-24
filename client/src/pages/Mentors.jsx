@@ -1,14 +1,14 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion as Motion } from 'framer-motion';
-import { useEffect, useState } from 'react';
-import { mentorData as localMentors } from '../data/team';
 import ProfileCard from '../components/ProfileCard';
 import { Briefcase, Star } from 'lucide-react';
 import { useSearchParams } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
+
 // Admin form component
-const AdminForm = ({ onCreate }) => {
+const AdminForm = ({ onCreate, onUpdate, editingMentor, onCancelEdit }) => {
     const [type, setType] = useState('mentor');
     const [name, setName] = useState('');
     const [role, setRole] = useState('Advisor');
@@ -18,42 +18,80 @@ const AdminForm = ({ onCreate }) => {
     const [term, setTerm] = useState('');
     const [busy, setBusy] = useState(false);
 
+    const isEditingMentor = Boolean(editingMentor?.id);
+
+    useEffect(() => {
+        if (!isEditingMentor) return;
+        setType('mentor');
+        setName(editingMentor.name || '');
+        setRole(editingMentor.role || 'Advisor');
+        setEmail(editingMentor.email || '');
+        setPhoto(editingMentor.photo || '');
+        setDesc(editingMentor.desc || editingMentor.bio || '');
+        setTerm('');
+    }, [editingMentor, isEditingMentor]);
+
+    const resetForm = () => {
+        setName('');
+        setRole('Advisor');
+        setEmail('');
+        setPhoto('');
+        setDesc('');
+        setTerm('');
+    };
+
     const submit = async (e) => {
         e.preventDefault();
         if (!name) return alert('Name required');
         setBusy(true);
         try {
-            if (!supabase) throw new Error('Database unavailable');
-            
-            let result;
             if (type === 'mentor') {
-                const { data, error } = await supabase.from('mentors').insert([{ name, role, desc, photo, email }]).select();
-                if (error) throw error;
-                onCreate(data[0]);
+                const endpoint = isEditingMentor
+                    ? `${API_BASE_URL}/api/mentors/${editingMentor.id}`
+                    : `${API_BASE_URL}/api/mentors`;
+                const method = isEditingMentor ? 'PUT' : 'POST';
+
+                const response = await fetch(endpoint, {
+                    method,
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, role, desc, photo, email })
+                });
+                const payload = await response.json();
+                if (!response.ok || !payload?.success) {
+                    throw new Error(payload?.message || `Failed to ${isEditingMentor ? 'update' : 'create'} mentor`);
+                }
+
+                if (isEditingMentor) {
+                    onUpdate(payload.data);
+                    onCancelEdit();
+                } else {
+                    onCreate(payload.data);
+                }
             } else if (type === 'student') {
+                if (!supabase) throw new Error('Database unavailable');
                 const { data, error } = await supabase.from('students').insert([{ name, role, email, photo, bio: desc, term }]).select();
                 if (error) throw error;
                 onCreate(data[0]);
-            } else if (type === 'teacher') {
+            } else if (type === 'secretary') {
+                if (!supabase) throw new Error('Database unavailable');
                 const { data, error } = await supabase.from('secretaries').insert([{ name, role, email, photo, bio: desc }]).select();
                 if (error) throw error;
                 onCreate(data[0]);
             }
-            // reset
-            setName(''); setRole('Advisor'); setEmail(''); setPhoto(''); setDesc(''); setTerm('');
+            resetForm();
         } catch (err) {
             console.error(err);
-            alert('Create failed: ' + err.message);
+            alert(`${isEditingMentor ? 'Update' : 'Create'} failed: ` + err.message);
         } finally { setBusy(false); }
     };
 
     return (
         <form onSubmit={submit} className="panel-card p-6 mb-8">
             <div className="flex gap-4 mb-4">
-                <select value={type} onChange={e => setType(e.target.value)} className="p-2 border rounded">
+                <select value={type} onChange={e => setType(e.target.value)} className="p-2 border rounded" disabled={isEditingMentor}>
                     <option value="mentor">Mentor</option>
                     <option value="student">Student</option>
-                    <option value="teacher">Teacher</option>
+                    <option value="secretary">Secretary</option>
                 </select>
                 <input value={name} onChange={e => setName(e.target.value)} placeholder="Name" className="flex-1 p-2 border rounded" />
                 <input value={role} onChange={e => setRole(e.target.value)} placeholder="Role" className="w-56 p-2 border rounded" />
@@ -65,19 +103,58 @@ const AdminForm = ({ onCreate }) => {
             </div>
             <textarea value={desc} onChange={e => setDesc(e.target.value)} placeholder="Bio / Desc" className="w-full p-2 border rounded mb-4"></textarea>
             <div className="flex justify-end">
-                <button type="submit" disabled={busy} className="px-4 py-2 bg-red-600 text-white rounded">{busy ? 'Creating...' : 'Create'}</button>
+                {isEditingMentor && (
+                    <button
+                        type="button"
+                        onClick={() => {
+                            onCancelEdit();
+                            resetForm();
+                        }}
+                        className="px-4 py-2 bg-slate-700 text-white rounded mr-2"
+                    >
+                        Cancel Edit
+                    </button>
+                )}
+                <button type="submit" disabled={busy} className="px-4 py-2 bg-red-600 text-white rounded">{busy ? (isEditingMentor ? 'Saving...' : 'Creating...') : (isEditingMentor ? 'Save Mentor' : 'Create')}</button>
             </div>
         </form>
     );
 };
 
 const Mentors = () => {
-    const [mentors, setMentors] = useState(localMentors);
+    const [mentors, setMentors] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState('');
+    const [editingMentor, setEditingMentor] = useState(null);
 
     const [searchParams] = useSearchParams();
     const isAdmin = searchParams.get('admin') === 'true';
 
-    // Intentionally using only local mentor data for display.
+    useEffect(() => {
+        const fetchMentors = async () => {
+            try {
+                setError('');
+                const response = await fetch(`${API_BASE_URL}/api/mentors`);
+                const payload = await response.json();
+
+                if (!response.ok || !payload?.success) {
+                    throw new Error(payload?.message || 'Failed to fetch mentors');
+                }
+
+                if (Array.isArray(payload.data)) {
+                    setMentors(payload.data);
+                }
+            } catch (error) {
+                console.warn('Failed to load mentors from API:', error?.message || error);
+                setMentors([]);
+                setError(error?.message || 'Failed to fetch mentors');
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchMentors();
+    }, []);
 
     return (
         <section className="section-shell">
@@ -121,26 +198,53 @@ const Mentors = () => {
                 </div>
 
                 {/* Admin Form (only visible when ?admin=true) */}
-                {isAdmin && <AdminForm onCreate={(newItem) => setMentors(prev => [newItem, ...prev])} />}
+                {isAdmin && (
+                    <AdminForm
+                        onCreate={(newItem) => setMentors(prev => [newItem, ...prev])}
+                        onUpdate={(updatedMentor) => setMentors(prev => prev.map(item => item.id === updatedMentor.id ? updatedMentor : item))}
+                        editingMentor={editingMentor}
+                        onCancelEdit={() => setEditingMentor(null)}
+                    />
+                )}
 
                 {/* Mentors List (ProfileCard style) */}
                 <div className="grid grid-cols-1 gap-12">
+                    {loading && (
+                        <div className="panel-card p-6 text-center text-slate-400">Loading mentors...</div>
+                    )}
+                    {!loading && error && (
+                        <div className="panel-card p-6 text-center text-red-400">{error}</div>
+                    )}
+                    {!loading && !error && mentors.length === 0 && (
+                        <div className="panel-card p-6 text-center text-slate-400">No mentors found in database.</div>
+                    )}
                     {mentors.map((mentor, idx) => (
-                        <ProfileCard
-                            key={mentor.id}
-                            member={{
-                                id: mentor.id,
-                                name: mentor.name,
-                                role: mentor.role || 'Mentor',
-                                bio: mentor.bio || mentor.desc || '',
-                                expertise: mentor.expertise || '',
-                                github: mentor.github || '',
-                                linkedin: mentor.linkedin || '',
-                                email: mentor.email || '',
-                                photo: mentor.photo || '/assets/mentor1.jpg'
-                            }}
-                            alternate={idx % 2 !== 0}
-                        />
+                        <div key={mentor.id}>
+                            {isAdmin && (
+                                <div className="flex justify-end mb-3">
+                                    <button
+                                        onClick={() => setEditingMentor(mentor)}
+                                        className="px-3 py-1.5 text-xs font-bold rounded bg-slate-800 hover:bg-slate-700 text-slate-100"
+                                    >
+                                        Edit Mentor
+                                    </button>
+                                </div>
+                            )}
+                            <ProfileCard
+                                member={{
+                                    id: mentor.id,
+                                    name: mentor.name,
+                                    role: mentor.role || 'Mentor',
+                                    bio: mentor.bio || mentor.desc || '',
+                                    expertise: mentor.expertise || '',
+                                    github: mentor.github || '',
+                                    linkedin: mentor.linkedin || '',
+                                    email: mentor.email || '',
+                                    photo: mentor.photo || '/assets/mentor1.jpg'
+                                }}
+                                alternate={idx % 2 !== 0}
+                            />
+                        </div>
                     ))}
                 </div>
             </div>

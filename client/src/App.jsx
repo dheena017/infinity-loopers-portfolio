@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import ThreeScene from './components/ThreeScene';
 import HUD from './components/HUD';
 import Loading from './components/Loading';
@@ -127,7 +127,8 @@ function AppContent() {
               <Route path="/team" element={<Collective students={students} user={user} setStudents={setStudents} />} />
               <Route path="/secretary" element={<SecretaryDashboard />} />
               <Route path="/student" element={<StudentDashboard user={user} onUpdate={handleUserUpdate} onLogout={handleLogout} />} />
-              <Route path="/admin" element={<TeacherDashboard students={students} setStudents={setStudents} user={user} onUpdate={handleUserUpdate} />} />
+              <Route path="/mentor" element={<TeacherDashboard students={students} setStudents={setStudents} user={user} onUpdate={handleUserUpdate} />} />
+              <Route path="/admin" element={<Navigate to="/mentor" replace />} />
               <Route path="/transmissions" element={<Transmissions />} />
             </Routes>
           </Motion.div>

@@ -40,6 +40,14 @@ npm run install:all
 
 # Run dev server
 npm run dev
+
+# Push Supabase migrations to remote database
+npx supabase login
+npx supabase link --project-ref arniiywzkkizgocnkuqy
+npx supabase db push
+
+# Deploy to Netlify production
+npm run deploy:netlify
 ```
 
 ### From Client Directory
@@ -189,6 +197,12 @@ From root directory:
 
 ```bash
 npm run deploy:netlify
+```
+
+To update database schema before deployment (from root):
+
+```bash
+npx supabase db push
 ```
 
 Or enable auto-deploy from GitHub (see [NETLIFY_AUTO_DEPLOY.md](../NETLIFY_AUTO_DEPLOY.md))

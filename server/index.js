@@ -48,8 +48,8 @@ app.use('/api/mentors', mentorRoutes);
 app.post('/api/login', async (req, res) => {
     const { username, password, role } = req.body;
 
-    if (role === 'teacher' && username === 'admin' && password === 'password123') {
-        return res.json({ success: true, user: { username: 'admin', role: 'teacher' } });
+    if (role === 'mentor' && username === 'admin' && password === 'password123') {
+        return res.json({ success: true, user: { username: 'admin', role: 'mentor' } });
     } else if (role === 'student') {
         // Lookup student by email and verify their stored password
         try {

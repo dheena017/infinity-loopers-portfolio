@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { motion as Motion, AnimatePresence } from 'framer-motion';
 import { ShieldAlert, Save } from 'lucide-react';
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
+
 const TeacherDashboard = ({ user, onUpdate }) => {
     // -- Profile Edit State --
     const [showProfileEdit, setShowProfileEdit] = useState(true);
@@ -17,12 +19,35 @@ const TeacherDashboard = ({ user, onUpdate }) => {
     const handleProfileSave = async () => {
         setProfileSaving(true);
         try {
-            // Update local user state via App.jsx callback
+            if (!user?.id) {
+                throw new Error('Mentor session not found. Please login again.');
+            }
+
+            const response = await fetch(`${API_BASE_URL}/api/mentors/${user.id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    name: profileForm.name,
+                    photo: profileForm.photo,
+                    email: profileForm.email,
+                    bio: profileForm.bio,
+                    desc: profileForm.bio
+                })
+            });
+
+            const payload = await response.json();
+            if (!response.ok || !payload?.success) {
+                throw new Error(payload?.message || 'Failed to update mentor profile');
+            }
+
+            const updatedMentor = payload.data || {};
+
             if (onUpdate) {
                 onUpdate({
-                    username: profileForm.name,
-                    photo: profileForm.photo,
-                    bio: profileForm.bio
+                    username: updatedMentor.name || profileForm.name,
+                    photo: updatedMentor.photo || profileForm.photo,
+                    email: updatedMentor.email || profileForm.email,
+                    bio: updatedMentor.bio || updatedMentor.desc || profileForm.bio
                 });
                 setSaveMessage('PROFILE UPDATE: SUCCESS');
                 setTimeout(() => {
@@ -30,7 +55,7 @@ const TeacherDashboard = ({ user, onUpdate }) => {
                 }, 1500);
             }
         } catch (error) {
-            setSaveMessage('ERROR: UPDATE FAILED');
+            setSaveMessage(error?.message || 'ERROR: UPDATE FAILED');
         } finally {
             setProfileSaving(false);
         }
@@ -57,7 +82,7 @@ const TeacherDashboard = ({ user, onUpdate }) => {
                         <ShieldAlert className="text-red-500 w-12 h-12" />
                     </div>
                     <div>
-                        <h1 className="text-5xl font-black heading-display text-white italic">Teacher Console</h1>
+                        <h1 className="text-5xl font-black heading-display text-white italic">Mentor Console</h1>
                         <p className="text-xs text-slate-500 mt-6 uppercase tracking-[0.2em] font-bold">Secure Command Terminal</p>
                     </div>
                 </div>
@@ -89,6 +114,16 @@ const TeacherDashboard = ({ user, onUpdate }) => {
                             <input
                                 value={profileForm.name}
                                 onChange={(e) => setProfileForm({ ...profileForm, name: e.target.value })}
+                                className="w-full bg-slate-800/50 border border-white/5 rounded-2xl p-8 text-xs text-white focus:border-red-500 outline-none transition-all"
+                            />
+                        </div>
+
+                        <div className="space-y-6">
+                            <label className="text-xs font-black text-slate-500 uppercase tracking-widest pl-2">Email</label>
+                            <input
+                                type="email"
+                                value={profileForm.email}
+                                onChange={(e) => setProfileForm({ ...profileForm, email: e.target.value })}
                                 className="w-full bg-slate-800/50 border border-white/5 rounded-2xl p-8 text-xs text-white focus:border-red-500 outline-none transition-all"
                             />
                         </div>
