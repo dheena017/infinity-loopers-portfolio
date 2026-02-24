@@ -1,14 +1,21 @@
-import React from 'react';
-import { motion as Motion } from 'framer-motion';
-import { NavLink, useLocation } from 'react-router-dom';
+import React, { useState, useEffect, useRef } from 'react';
+import { motion as Motion, AnimatePresence } from 'framer-motion';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import {
     Mail, LogOut, ShieldCheck,
-    Search, Home, Crown, GraduationCap, GitFork, Briefcase
+    Search, Home, Crown, GraduationCap, GitFork, Briefcase, X, ArrowRight
 } from 'lucide-react';
 import SquadLogo from './SquadLogo';
+import { mentorData } from '../data/team';
 
 const HUD = ({ user, onLogout }) => {
     const location = useLocation();
+    const navigate = useNavigate();
+    const [isSearchOpen, setIsSearchOpen] = useState(false);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [suggestions, setSuggestions] = useState([]);
+    const searchRef = useRef(null);
+
     const navLinks = [
         { path: '/', label: 'OVERVIEW', icon: Home },
         { path: '/operatives', label: 'CORE LEADERSHIP', icon: Crown },
@@ -18,11 +25,48 @@ const HUD = ({ user, onLogout }) => {
         { path: '/transmissions', label: 'CONNECT', icon: Mail },
     ];
 
+    // Search Database
+    const searchDb = [
+        ...navLinks.map(link => ({ title: link.label, path: link.path, type: 'Page' })),
+        ...mentorData.map(m => ({ title: m.name, path: '/mentors', type: 'Mentor', sub: m.role })),
+        { title: 'Member Login', path: '/login', type: 'Access' }
+    ];
+
+    useEffect(() => {
+        if (searchQuery.trim().length > 0) {
+            const filtered = searchDb.filter(item =>
+                item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                (item.sub && item.sub.toLowerCase().includes(searchQuery.toLowerCase()))
+            ).slice(0, 5);
+            setSuggestions(filtered);
+        } else {
+            setSuggestions([]);
+        }
+    }, [searchQuery]);
+
+    // Handle Click Outside Search
+    useEffect(() => {
+        const handleClickOutside = (e) => {
+            if (searchRef.current && !searchRef.current.contains(e.target)) {
+                setIsSearchOpen(false);
+                setSearchQuery('');
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
+
     if (user) {
         if (user.role === 'teacher') navLinks.push({ path: '/admin', label: 'DASHBOARD', icon: ShieldCheck });
         if (user.role === 'student') navLinks.push({ path: '/student', label: 'DASHBOARD', icon: ShieldCheck });
         if (user.role === 'secretary') navLinks.push({ path: '/secretary', label: 'DASHBOARD', icon: ShieldCheck });
     }
+
+    const handleSelect = (path) => {
+        navigate(path);
+        setIsSearchOpen(false);
+        setSearchQuery('');
+    };
 
     // Helper for active link styles
     const getLinkClass = (isActive) => `
@@ -36,10 +80,10 @@ const HUD = ({ user, onLogout }) => {
                 initial={{ y: -100, opacity: 0, scale: 0.98 }}
                 animate={{ y: 0, opacity: 1, scale: 1 }}
                 transition={{ type: "spring", stiffness: 80, damping: 15 }}
-                className="max-w-[2000px] mx-auto bg-[#080a0f]/90 backdrop-blur-[40px] border border-white/10 rounded-[2.5rem] shadow-[0_40px_100px_-20px_rgba(0,0,0,0.8),inset_0_1px_1px_rgba(255,255,255,0.1)] overflow-hidden pointer-events-auto relative group"
+                className="max-w-[2000px] mx-auto bg-[#080a0f]/90 backdrop-blur-[40px] border border-white/10 rounded-[2.5rem] shadow-[0_40px_100px_-20px_rgba(0,0,0,0.8),inset_0_1px_1px_rgba(255,255,255,0.1)] pointer-events-auto relative group"
             >
                 {/* --- INDUSTRIAL FX LAYER --- */}
-                <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:30px_30px] opacity-20 [mask-image:radial-gradient(ellipse_at_center,black,transparent_80%)]"></div>
+                <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:30px_30px] opacity-20 [mask-image:radial-gradient(ellipse_at_center,black,transparent_80%)] rounded-[2.5rem]"></div>
 
                 {/* System Integrity Bar */}
                 <div className="absolute top-0 inset-x-0 h-[3px] flex">
@@ -123,9 +167,72 @@ const HUD = ({ user, onLogout }) => {
 
                     {/* --- SECTION 3: OPERATIONS --- */}
                     <div className="flex items-center gap-4 sm:gap-6 lg:gap-10 shrink-0">
-                        <button aria-label="Search" className="hidden sm:inline-flex text-slate-400 hover:text-red-500 transition-all duration-300 p-2.5">
-                            <Search size={22} className="drop-shadow-[0_0_8px_rgba(239,68,68,0)] group-hover:drop-shadow-[0_0_8px_rgba(239,68,68,0.5)]" />
-                        </button>
+                        {/* Functional Search System */}
+                        <div ref={searchRef} className="relative hidden sm:block">
+                            <AnimatePresence>
+                                {isSearchOpen ? (
+                                    <Motion.div
+                                        initial={{ width: 0, opacity: 0 }}
+                                        animate={{ width: 300, opacity: 1 }}
+                                        exit={{ width: 0, opacity: 0 }}
+                                        className="relative flex items-center"
+                                    >
+                                        <input
+                                            autoFocus
+                                            type="text"
+                                            value={searchQuery}
+                                            onChange={(e) => setSearchQuery(e.target.value)}
+                                            placeholder="Search system..."
+                                            className="w-full bg-slate-950 border border-red-500/30 pl-16 pr-10 py-6 rounded-2xl text-[12px] font-bold text-white placeholder-slate-600 outline-none transition-all focus:border-red-500 focus:shadow-[0_0_30px_rgba(239,68,68,0.1)] uppercase tracking-[0.2em]"
+                                        />
+                                        <Search size={20} className="absolute left-6 top-1/2 -translate-y-1/2 text-red-500 pointer-events-none" />
+                                        <button
+                                            onClick={() => { setIsSearchOpen(false); setSearchQuery(''); }}
+                                            className="absolute right-3 p-1 hover:bg-white/5 rounded-lg text-slate-500 hover:text-white transition-colors"
+                                        >
+                                            <X size={14} />
+                                        </button>
+
+                                        {/* Suggestions Overlay */}
+                                        <AnimatePresence>
+                                            {suggestions.length > 0 && (
+                                                <Motion.div
+                                                    initial={{ opacity: 0, y: 10 }}
+                                                    animate={{ opacity: 1, y: 0 }}
+                                                    exit={{ opacity: 0, y: 10 }}
+                                                    className="absolute top-full right-0 mt-4 w-full bg-[#080a0f] border border-white/10 rounded-2xl shadow-2xl overflow-hidden z-50 p-2"
+                                                >
+                                                    {suggestions.map((item, idx) => (
+                                                        <button
+                                                            key={`${item.title}-${idx}`}
+                                                            onMouseDown={(e) => {
+                                                                e.preventDefault(); // Prevent blur
+                                                                handleSelect(item.path);
+                                                            }}
+                                                            className="w-full text-left p-3 hover:bg-red-500/10 rounded-xl transition-all group flex items-center justify-between"
+                                                        >
+                                                            <div className="flex flex-col">
+                                                                <span className="text-[10px] font-black text-white uppercase tracking-widest">{item.title}</span>
+                                                                <span className="text-[9px] text-slate-500 font-bold uppercase tracking-[0.2em]">{item.type} {item.sub && `• ${item.sub}`}</span>
+                                                            </div>
+                                                            <ArrowRight size={14} className="text-red-500 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
+                                                        </button>
+                                                    ))}
+                                                </Motion.div>
+                                            )}
+                                        </AnimatePresence>
+                                    </Motion.div>
+                                ) : (
+                                    <button
+                                        onClick={() => setIsSearchOpen(true)}
+                                        aria-label="Search"
+                                        className="text-slate-400 hover:text-red-500 transition-all duration-300 p-2.5 rounded-xl hover:bg-white/5"
+                                    >
+                                        <Search size={22} />
+                                    </button>
+                                )}
+                            </AnimatePresence>
+                        </div>
 
                         <div className="hidden sm:block w-[1px] h-10 bg-white/10"></div>
 

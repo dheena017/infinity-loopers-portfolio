@@ -100,7 +100,7 @@ function AppContent() {
       <ThreeScene />
       <HUD user={user} onLogout={handleLogout} />
 
-      <main className="min-h-screen pt-24 md:pt-32">
+      <main className="min-h-screen pt-12 md:pt-16">
         <AnimatePresence mode="wait">
           <Motion.div
             key={location.pathname}

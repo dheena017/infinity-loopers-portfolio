@@ -144,7 +144,7 @@ body {
 }
 
 .section-shell {
-  @apply min-h-screen pt-40 pb-20 md:pt-52 md:pb-24 lg:pt-64;
+  @apply min-h-screen pt-20 pb-20 md:pt-24 md:pb-24 lg:pt-28;
 }
 
 .section-stack {

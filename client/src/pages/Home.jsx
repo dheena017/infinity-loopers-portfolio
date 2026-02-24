@@ -37,9 +37,8 @@ const Home = () => {
             <div className="section-stack md:space-y-28">
 
                 {/* ─── Elegant Hero (Centered) ─── */}
-                <div className="max-w-5xl mx-auto text-center space-y-9 md:space-y-12">
+                <div className="max-w-6xl mx-auto text-center space-y-9 md:space-y-12">
                     <Motion.div
-                        style={{ opacity: heroOpacity, scale: heroScale, y: heroY }}
                         initial={{ opacity: 0, y: 30 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
@@ -63,12 +62,15 @@ const Home = () => {
                         <div className="w-full h-px bg-gradient-to-r from-transparent via-white/5 to-transparent my-12"></div>
 
                         <div className="flex justify-center w-full pt-4">
-                            <NavLink to="/mentors" className="group relative">
+                            <button
+                                onClick={() => document.getElementById('pillars').scrollIntoView({ behavior: 'smooth' })}
+                                className="group relative"
+                            >
                                 {/* Deep Ambient Glow */}
                                 <div className="absolute -inset-8 bg-red-600 rounded-[4rem] blur-3xl opacity-5 group-hover:opacity-30 transition-opacity duration-1000"></div>
 
                                 {/* The Command Button */}
-                                <div className="relative flex items-center justify-center bg-red-600 text-white w-[270px] sm:w-[320px] h-16 sm:h-20 rounded-[2rem] sm:rounded-[2.5rem] font-black uppercase shadow-[0_30px_70px_-15px_rgba(239,68,68,0.5)] active:scale-[0.98] transition-all duration-700 overflow-hidden border border-white/20">
+                                <div className="relative flex items-center justify-center bg-red-600 text-white w-[270px] sm:w-[340px] h-18 sm:h-22 rounded-[2rem] sm:rounded-[2.5rem] font-black uppercase shadow-[0_30px_70px_-15px_rgba(239,68,68,0.5)] active:scale-[0.98] transition-all duration-700 overflow-hidden border border-white/20">
 
                                     {/* Glass Shine Effect */}
                                     <div className="absolute inset-0 bg-gradient-to-tr from-white/10 via-transparent to-transparent pointer-events-none"></div>
@@ -76,7 +78,7 @@ const Home = () => {
                                     {/* Centered Content */}
                                     <div className="flex items-center gap-4 relative z-10 translate-x-2">
                                         <span className="text-[9px] sm:text-[10px] tracking-[0.3em] sm:tracking-[0.4em] font-black">Explore the Network</span>
-                                        <ArrowRight size={18} className="group-hover:translate-x-2 transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]" />
+                                        <ArrowRight size={20} className="group-hover:translate-x-2 transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]" />
                                     </div>
 
                                     {/* Animated Scanner Scanline */}
@@ -86,13 +88,13 @@ const Home = () => {
                                         className="absolute inset-x-0 h-8 bg-white/5 blur-md pointer-events-none"
                                     ></Motion.div>
                                 </div>
-                            </NavLink>
+                            </button>
                         </div>
                     </Motion.div>
                 </div>
 
                 {/* ─── Minimalist Pillars ─── */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
+                <div id="pillars" className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
                     {pillars.map((card, i) => (
                         <Motion.div
                             key={card.title}
