@@ -81,7 +81,7 @@ const HUD = ({ user, onLogout }) => {
                             </div>
 
                             <div className="hidden xl:flex flex-col border-l border-white/10 pl-8">
-                                <span className="text-3xl font-black tracking-[-0.05em] uppercase text-white leading-none group-hover/logo:text-red-500 transition-colors">SQUAD_139</span>
+                                <span className="text-3xl font-black tracking-[-0.05em] uppercase text-white leading-none group-hover/logo:text-red-500 transition-colors">SQUAD  139</span>
                                 {user && (
                                     <span className="text-[10px] font-black tracking-[0.4em] text-red-500 uppercase mt-2">
                                         {user.role}
