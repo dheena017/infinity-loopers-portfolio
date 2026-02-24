@@ -8,7 +8,13 @@
     "dev:clean": "powershell -NoProfile -ExecutionPolicy Bypass -Command \"foreach ($p in 5000,5173,5174,5175) { $conns = Get-NetTCPConnection -LocalPort $p -State Listen -ErrorAction SilentlyContinue; if ($conns) { $conns | Select-Object -ExpandProperty OwningProcess -Unique | ForEach-Object { Stop-Process -Id $_ -Force -ErrorAction SilentlyContinue } } }; npm run dev\"",
     "install:all": "npm install && npm install --prefix client && npm install --prefix server",
     "client": "npm run dev --prefix client",
-    "server": "npm run dev --prefix server"
+    "server": "npm run dev --prefix server",
+    "build": "npm run build --prefix client",
+    "build:client": "cd client && npm run build",
+    "preview": "npm run preview --prefix client",
+    "vercel-build": "cd client && npm install && npm run build",
+    "deploy:netlify": "npm run build --prefix client && npx netlify-cli deploy --prod",
+    "deploy:test": "npm run build --prefix client && npx netlify-cli deploy"
   },
   "keywords": [],
   "author": "",
@@ -16,10 +22,12 @@
   "dependencies": {
     "gsap": "^3.14.2",
     "react-hot-toast": "^2.6.0",
+    "serverless-http": "^3.2.0",
     "three": "^0.182.0"
   },
   "devDependencies": {
     "concurrently": "^9.2.1",
+    "netlify-cli": "^23.15.1",
     "supabase": "^2.76.13"
   }
 }

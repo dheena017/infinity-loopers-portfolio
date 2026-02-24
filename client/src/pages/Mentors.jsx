@@ -5,6 +5,7 @@ import { mentorData as localMentors } from '../data/team';
 import ProfileCard from '../components/ProfileCard';
 import { Briefcase, Star } from 'lucide-react';
 import { useSearchParams } from 'react-router-dom';
+import { supabase } from '../lib/supabase';
 
 // Admin form component
 const AdminForm = ({ onCreate }) => {
@@ -22,25 +23,27 @@ const AdminForm = ({ onCreate }) => {
         if (!name) return alert('Name required');
         setBusy(true);
         try {
+            if (!supabase) throw new Error('Database unavailable');
+            
+            let result;
             if (type === 'mentor') {
-                const res = await fetch('/api/mentors', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name, role, desc, photo, email }) });
-                const payload = await res.json();
-                onCreate(payload.data);
+                const { data, error } = await supabase.from('mentors').insert([{ name, role, desc, photo, email }]).select();
+                if (error) throw error;
+                onCreate(data[0]);
             } else if (type === 'student') {
-                const res = await fetch('/api/students', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name, role, email, photo, bio: desc, term }) });
-                const payload = await res.json();
-                onCreate(payload.data);
+                const { data, error } = await supabase.from('students').insert([{ name, role, email, photo, bio: desc, term }]).select();
+                if (error) throw error;
+                onCreate(data[0]);
             } else if (type === 'teacher') {
-                // Reuse secretaries endpoint as teacher placeholder
-                const res = await fetch('/api/secretaries', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name, role, email, photo, bio: desc }) });
-                const payload = await res.json();
-                onCreate(payload.data);
+                const { data, error } = await supabase.from('secretaries').insert([{ name, role, email, photo, bio: desc }]).select();
+                if (error) throw error;
+                onCreate(data[0]);
             }
             // reset
             setName(''); setRole('Advisor'); setEmail(''); setPhoto(''); setDesc(''); setTerm('');
         } catch (err) {
             console.error(err);
-            alert('Create failed');
+            alert('Create failed: ' + err.message);
         } finally { setBusy(false); }
     };
 
@@ -78,19 +81,23 @@ const Mentors = () => {
     useEffect(() => {
         let cancelled = false;
         setLoading(true);
-        fetch('/api/mentors')
-            .then((r) => r.json())
-            .then((payload) => {
-                if (cancelled) return;
-                if (payload && payload.success && Array.isArray(payload.data)) {
-                    setMentors(payload.data);
+        
+        const fetchMentors = async () => {
+            try {
+                if (!supabase) throw new Error('Database unavailable');
+                const { data, error } = await supabase.from('mentors').select('*').order('created_at', { ascending: false });
+                if (error) throw error;
+                if (!cancelled && data) {
+                    setMentors(data);
                 }
-            })
-            .catch((err) => {
+            } catch (err) {
                 console.warn('Mentors fetch failed, using local data:', err);
-            })
-            .finally(() => { if (!cancelled) setLoading(false); });
-
+            } finally {
+                if (!cancelled) setLoading(false);
+            }
+        };
+        
+        fetchMentors();
         return () => { cancelled = true; };
     }, []);
 

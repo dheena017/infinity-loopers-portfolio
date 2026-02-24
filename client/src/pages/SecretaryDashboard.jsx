@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion as Motion } from 'framer-motion';
 import { Briefcase, Users, FileText, Settings, LogOut, Search, Plus, Filter } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { supabase } from '../lib/supabase';
 
 const SecretaryDashboard = () => {
     const [secretaries, setSecretaries] = useState([]);
@@ -11,9 +12,10 @@ const SecretaryDashboard = () => {
     useEffect(() => {
         const fetchSecretaries = async () => {
             try {
-                const response = await fetch('http://localhost:5000/api/secretaries');
-                const data = await response.json();
-                setSecretaries(data);
+                if (!supabase) throw new Error('Database unavailable');
+                const { data, error } = await supabase.from('secretaries').select('*').order('created_at', { ascending: false });
+                if (error) throw error;
+                setSecretaries(data || []);
             } catch (error) {
                 console.error('Error fetching secretaries:', error);
             } finally {

@@ -34,3 +34,6 @@ logs/
 
 # images
 screenshot/
+
+# Local Netlify folder
+.netlify
