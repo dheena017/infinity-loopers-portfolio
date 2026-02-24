@@ -292,9 +292,9 @@ const Collective = ({ students, user, setStudents }) => {
                                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-80 group-hover:opacity-100"
                                 onError={(e) => { e.target.src = `https://ui-avatars.com/api/?name=${student.name}&background=1e293b&color=fff&size=512`; }}
                             />
-                            <div className="absolute inset-x-0 bottom-0 p-5 bg-gradient-to-t from-slate-950 via-slate-950/60 to-transparent">
-                                <span className="text-[10px] font-bold text-red-500 uppercase tracking-widest mb-1 block opacity-0 group-hover:opacity-100 transition-opacity">ID_{student.id}</span>
-                                <div className="text-sm font-bold text-white heading-display truncate">{student.name}</div>
+                            <div className="absolute inset-x-0 bottom-0 p-5 bg-gradient-to-t from-slate-950 via-slate-950/60 to-transparent text-center">
+                                <span className="text-[10px] font-bold text-red-500 uppercase tracking-widest mb-1 block opacity-0 group-hover:opacity-100 transition-opacity mx-auto">ID_{student.id}</span>
+                                <div className="text-sm font-bold text-white heading-display truncate mt-1">{student.name}</div>
                             </div>
 
                             {user?.role === 'teacher' && (
