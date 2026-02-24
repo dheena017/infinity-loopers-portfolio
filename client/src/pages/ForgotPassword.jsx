@@ -39,92 +39,92 @@ const ForgotPassword = () => {
     };
 
     return (
-        <section className="section-shell flex items-center justify-center px-6 relative overflow-hidden min-h-screen py-20">
+        <section className="min-h-screen flex items-center justify-center p-6 bg-transparent">
             <Motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="w-full max-w-3xl panel-card p-24 shadow-2xl relative z-10"
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.8 }}
+                className="w-full max-w-2xl bg-[#080a0f]/80 backdrop-blur-2xl p-10 md:p-14 shadow-[0_0_80px_rgba(239,68,68,0.15)] border border-white/10 rounded-[2.5rem]"
             >
-                {/* Header */}
-                <div className="text-center mb-20">
-                    <div className="inline-flex items-center justify-center p-8 rounded-2xl bg-red-500/10 mb-10">
-                        <Shield className="text-red-500 w-12 h-12" />
-                    </div>
-                    <h2 className="text-5xl font-black heading-display text-white">Access Recovery</h2>
-                    <p className="text-xs text-slate-500 mt-6 uppercase tracking-[0.3em] font-bold">
-                        Secure Credential Reset
-                    </p>
+                {/* Header Decoration */}
+                <div className="flex flex-col items-center mb-16">
+                    <div className="w-12 h-1 bg-red-600 mb-6 rounded-full"></div>
+                    <h2 className="text-4xl md:text-5xl font-black text-white heading-display tracking-tighter uppercase text-center mb-2">
+                        Access <span className="text-red-600 italic">Recovery</span>
+                    </h2>
+                    <p className="text-[10px] text-slate-500 font-bold uppercase tracking-[0.4em]">Secure Credential Reset</p>
                 </div>
-
+                <br></br>
                 {success ? (
-                    <div className="text-center space-y-8 animate-in fade-in zoom-in duration-500">
+                    <div className="text-center space-y-8 py-10">
                         <div className="flex justify-center">
-                            <div className="bg-emerald-500/20 p-6 rounded-full text-emerald-500">
+                            <div className="bg-emerald-500/10 p-6 rounded-full text-emerald-500 border border-emerald-500/20">
                                 <CheckCircle size={48} />
                             </div>
                         </div>
-                        <h3 className="text-2xl font-bold text-white">Reset Link Sent</h3>
-                        <p className="text-slate-400 max-w-md mx-auto leading-relaxed">
-                            We've sent a secure recovery link to <span className="text-white font-medium">{email}</span>. 
-                            If an account exists, you will receive instructions shortly.
+                        <h3 className="text-2xl font-bold text-white uppercase tracking-tight">Identity verified</h3>
+                        <p className="text-[12px] text-slate-400 max-w-md mx-auto leading-relaxed uppercase tracking-wider font-medium">
+                            Recovery link transmitted to <span className="text-white font-bold">{email}</span>.
+                            Check your terminal.
                         </p>
                         <button
                             onClick={() => navigate('/login')}
-                            className="inline-flex items-center gap-2 text-red-500 font-bold uppercase text-xs tracking-widest hover:text-red-400 transition-colors mt-8"
+                            className="inline-flex items-center gap-2 text-red-500 font-black uppercase text-[10px] tracking-[0.2em] hover:text-red-400 transition-colors mt-8"
                         >
                             <ArrowRight className="rotate-180" size={16} /> Return to Login
                         </button>
                     </div>
                 ) : (
-                    <form onSubmit={handleSubmit} className="space-y-16">
-                        <div className="space-y-6">
-                            <label className="text-xs font-bold uppercase tracking-widest text-slate-500 ml-2">
-                                Registered Email
+                    <form onSubmit={handleSubmit} className="space-y-12">
+                        <div className="flex flex-col items-center space-y-4 px-6">
+                            <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest text-center">
+                                Registered Email Address
                             </label>
-                            <div className="relative">
-                                <Mail className="absolute left-8 top-1/2 -translate-y-1/2 text-slate-600" size={24} />
+                            <div className="relative w-full max-w-[420px]">
                                 <input
                                     type="email"
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
-                                    className="w-full bg-slate-950 border border-white/5 p-8 pl-24 text-base focus:border-red-500 rounded-2xl outline-none transition-all text-white font-medium placeholder:text-slate-600"
-                                    placeholder="Enter your registered email"
+                                    className="w-full bg-transparent border border-white/20 p-5 py-12 text-sm focus:border-red-500 rounded-3xl outline-none transition-all text-white font-medium placeholder:text-slate-800 text-center"
+                                    placeholder="email@example.com"
                                     required
                                 />
                             </div>
                         </div>
 
                         {error && (
-                            <div className="flex items-center gap-3 justify-center text-rose-500 text-sm font-medium">
-                                <AlertCircle size={18} />
+                            <div className="flex items-center gap-3 justify-center text-red-500 text-[10px] font-black uppercase tracking-widest bg-red-500/10 border border-red-500/20 p-4 rounded-xl">
+                                <AlertCircle size={14} />
                                 {error}
                             </div>
                         )}
-
-                        <div className="space-y-6">
+                        <br></br>
+                        <div className="flex flex-col items-center gap-6 pt-10">
                             <button
                                 type="submit"
                                 disabled={loading}
-                                className="w-full flex items-center justify-center gap-4 bg-red-500 hover:bg-red-600 text-white font-bold py-8 rounded-2xl transition-all uppercase tracking-widest text-xs"
+                                className="group relative flex items-center justify-center bg-gradient-to-r from-red-600 to-red-700 text-white w-40 h-10 rounded-lg font-black uppercase tracking-[0.2em] text-[9px] shadow-[0_10px_20px_-5px_rgba(220,38,38,0.4)] active:scale-[0.98] transition-all duration-300 overflow-hidden"
                             >
+                                <div className="absolute inset-0 bg-[linear-gradient(90deg,transparent,rgba(255,255,255,0.2),transparent)] -translate-x-full group-hover:animate-[shimmer_2s_infinite]"></div>
                                 {loading ? (
-                                    <>
-                                        <Loader2 className="animate-spin" size={20} />
-                                        Verifying Identity...
-                                    </>
+                                    <Loader2 className="animate-spin" size={16} />
                                 ) : (
-                                    'Send Recovery Link'
+                                    <span className="flex items-center gap-2">
+                                        TRANSMIT <ArrowRight size={12} />
+                                    </span>
                                 )}
                             </button>
-                            
+                          
                             <button
                                 type="button"
                                 onClick={() => navigate('/login')}
-                                className="w-full text-center text-slate-500 text-xs font-bold uppercase tracking-widest hover:text-white transition-colors"
+                                className="px-5 py-2.5 rounded-lg border border-red-500/20 bg-red-500/5 hover:bg-red-500/10 text-[9px] font-black text-red-500/80 hover:text-red-500 uppercase tracking-[0.3em] transition-all duration-300 shadow-[0_0_15px_rgba(239,68,68,0.05)]"
                             >
                                 Cancel Authentication
                             </button>
+                            
                         </div>
+                        <br></br>
                     </form>
                 )}
             </Motion.div>

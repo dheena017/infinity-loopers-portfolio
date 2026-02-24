@@ -55,94 +55,87 @@ const ResetPassword = () => {
     };
 
     return (
-        <section className="section-shell flex items-center justify-center px-6 relative overflow-hidden min-h-screen py-20">
+        <section className="min-h-screen flex items-center justify-center p-6 bg-transparent">
             <Motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="w-full max-w-3xl panel-card p-24 shadow-2xl relative z-10"
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.8 }}
+                className="w-full max-w-2xl bg-[#080a0f]/80 backdrop-blur-2xl p-10 md:p-14 shadow-[0_0_80px_rgba(239,68,68,0.15)] border border-white/10 rounded-[2.5rem]"
             >
-                {/* Header */}
-                <div className="text-center mb-20">
-                    <div className="inline-flex items-center justify-center p-8 rounded-2xl bg-red-500/10 mb-10">
-                        <Shield className="text-red-500 w-12 h-12" />
-                    </div>
-                    <h2 className="text-5xl font-black heading-display text-white">Reset Credentials</h2>
-                    <p className="text-xs text-slate-500 mt-6 uppercase tracking-[0.3em] font-bold">
-                        Secure Access Recovery
-                    </p>
+                {/* Header Decoration */}
+                <div className="flex flex-col items-center mb-16">
+                    <div className="w-12 h-1 bg-red-600 mb-6 rounded-full"></div>
+                    <h2 className="text-4xl md:text-5xl font-black text-white heading-display tracking-tighter uppercase text-center mb-2">
+                        Reset <span className="text-red-600 italic">Credentials</span>
+                    </h2>
+                    <p className="text-[10px] text-slate-500 font-bold uppercase tracking-[0.4em]">Secure Access Recovery</p>
                 </div>
 
                 {success ? (
-                    <div className="text-center space-y-6 animate-in fade-in zoom-in duration-300">
+                    <div className="text-center space-y-8 py-10">
                         <div className="flex justify-center">
-                            <div className="p-4 rounded-full bg-emerald-500/10 text-emerald-400">
+                            <div className="p-4 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
                                 <CheckCircle2 size={48} />
                             </div>
                         </div>
-                        <h3 className="text-2xl font-bold text-white">Password Updated</h3>
-                        <p className="text-slate-400">Your secure access credentials have been reset successfully.</p>
-                        <p className="text-xs text-slate-500 uppercase tracking-widest animate-pulse">Redirecting to login...</p>
+                        <h3 className="text-2xl font-bold text-white uppercase tracking-tight">Access Restored</h3>
+                        <p className="text-[12px] text-slate-400 max-w-md mx-auto leading-relaxed uppercase tracking-wider font-medium">Your credentials have been updated. Redirecting to terminal...</p>
                     </div>
                 ) : (
-                    <form onSubmit={handleSubmit} className="space-y-16">
-
-                        {/* New Password */}
-                        <div className="space-y-6">
-                            <label className="text-xs font-bold uppercase tracking-widest text-slate-500 ml-2">
-                                New Password
+                    <form onSubmit={handleSubmit} className="space-y-12">
+                        <div className="flex flex-col items-center space-y-4 px-6">
+                            <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest text-center">
+                                New Secure Protocol Password
                             </label>
-                            <div className="relative">
+                            <div className="relative w-full max-w-[420px]">
                                 <input
                                     type="password"
                                     value={newPassword}
                                     onChange={(e) => setNewPassword(e.target.value)}
-                                    className="w-full bg-slate-950 border border-white/5 p-8 text-base focus:border-red-500 rounded-2xl outline-none transition-all text-white font-medium placeholder:text-slate-600"
-                                    placeholder="Enter new secure password"
+                                    className="w-full bg-transparent border border-white/20 p-5 py-12 text-sm focus:border-red-500 rounded-3xl outline-none transition-all text-white font-medium placeholder:text-slate-800 text-center"
+                                    placeholder="••••••••"
                                     required
                                 />
                             </div>
                         </div>
 
-                        {/* Confirm Password */}
-                        <div className="space-y-6">
-                            <label className="text-xs font-bold uppercase tracking-widest text-slate-500 ml-2">
-                                Confirm Password
+                        <div className="flex flex-col items-center space-y-4 px-6">
+                            <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest text-center">
+                                Confirm New Protocol Password
                             </label>
-                            <div className="relative">
+                            <div className="relative w-full max-w-[420px]">
                                 <input
                                     type="password"
                                     value={confirmPassword}
                                     onChange={(e) => setConfirmPassword(e.target.value)}
-                                    className="w-full bg-slate-950 border border-white/5 p-8 text-base focus:border-red-500 rounded-2xl outline-none transition-all text-white font-medium placeholder:text-slate-600"
-                                    placeholder="Confirm new password"
+                                    className="w-full bg-transparent border border-white/20 p-5 py-12 text-sm focus:border-red-500 rounded-3xl outline-none transition-all text-white font-medium placeholder:text-slate-800 text-center"
+                                    placeholder="••••••••"
                                     required
                                 />
                             </div>
                         </div>
 
-                        {/* Error Message */}
                         {error && (
-                            <div className="flex items-center gap-3 justify-center text-rose-500 text-sm font-medium">
-                                <AlertCircle size={18} />
+                            <div className="flex items-center gap-3 justify-center text-red-500 text-[10px] font-black uppercase tracking-widest bg-red-500/10 border border-red-500/20 p-4 rounded-xl">
+                                <AlertCircle size={14} />
                                 {error}
                             </div>
                         )}
 
-                        {/* Submit Button */}
-                        <button
-                            type="submit"
-                            disabled={loading}
-                            className="w-full flex items-center justify-center gap-4 bg-red-500 hover:bg-red-600 text-white font-bold py-6 rounded-2xl transition-all"
-                        >
-                            {loading ? (
-                                <>
+                        <div className="flex flex-col items-center pt-6">
+                            <button
+                                type="submit"
+                                disabled={loading}
+                                className="group relative flex items-center justify-center bg-gradient-to-r from-red-600 to-red-700 text-white w-48 h-12 rounded-xl font-black uppercase tracking-[0.2em] text-[10px] shadow-[0_15px_30px_-5px_rgba(220,38,38,0.4)] active:scale-[0.98] transition-all duration-300 overflow-hidden"
+                            >
+                                <div className="absolute inset-0 bg-[linear-gradient(90deg,transparent,rgba(255,255,255,0.2),transparent)] -translate-x-full group-hover:animate-[shimmer_2s_infinite]"></div>
+                                {loading ? (
                                     <Loader2 className="animate-spin" size={20} />
-                                    Updating Credentials...
-                                </>
-                            ) : (
-                                'Reset Password'
-                            )}
-                        </button>
+                                ) : (
+                                    'Update Credentials'
+                                )}
+                            </button>
+                        </div>
                     </form>
                 )}
             </Motion.div>
