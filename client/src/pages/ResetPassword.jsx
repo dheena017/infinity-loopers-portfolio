@@ -6,7 +6,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 const ResetPassword = () => {
     const [searchParams] = useSearchParams();
     const token = searchParams.get('token');
-    
+
     const [newPassword, setNewPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [loading, setLoading] = useState(false);
@@ -38,10 +38,10 @@ const ResetPassword = () => {
             //     headers: { 'Content-Type': 'application/json' },
             //     body: JSON.stringify({ token, newPassword }),
             // });
-            
+
             // Simulating API call
             await new Promise(resolve => setTimeout(resolve, 1500));
-            
+
             setSuccess(true);
             setTimeout(() => {
                 navigate('/login');
@@ -85,7 +85,7 @@ const ResetPassword = () => {
                     </div>
                 ) : (
                     <form onSubmit={handleSubmit} className="space-y-16">
-                        
+
                         {/* New Password */}
                         <div className="space-y-6">
                             <label className="text-xs font-bold uppercase tracking-widest text-slate-500 ml-2">

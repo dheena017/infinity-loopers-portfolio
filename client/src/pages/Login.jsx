@@ -121,47 +121,47 @@ const Login = ({ onLogin }) => {
                 </div>
                 <br></br>
                 {/* Form */}
-                <form onSubmit={handleSubmit} className="space-y-6">
-                    <div className="space-y-3">
-                        <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest pl-2">
-                            {role === 'student' ? 'Enter Registered Email' : 'Enter Mentor Username'}
+                <form onSubmit={handleSubmit} className="space-y-10">
+                    <div className="flex flex-col items-center space-y-4 px-6">
+                        <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest text-center pl-0">
+                            {role === 'student' ? 'Enter Registered Email' : 'Enter Mentor Email'}
                         </label>
                         <input
                             type="text"
                             value={username}
                             onChange={(e) => setUsername(e.target.value)}
-                            className="w-full bg-slate-950/50 border border-white/10 p-5 py-7 text-sm focus:border-red-500 rounded-2xl outline-none transition-all text-white font-medium placeholder:text-slate-800"
-                            placeholder={role === 'student' ? 'email@example.com' : 'username'}
+                            className="w-full max-w-[420px] bg-transparent border border-white/20 p-5 py-12 text-sm focus:border-red-500 rounded-3xl outline-none transition-all text-white font-medium placeholder:text-slate-800 text-center"
+                            placeholder="email@example.com"
                             required
                         />
                     </div>
                     <br></br>
-                    <div className="space-y-3">
-                        <div className="flex justify-between items-center px-2">
-                            <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">
-                                Enter Protocol Password
+                    <div className="flex flex-col items-center space-y-4 px-6">
+                        <div className="w-full max-w-[420px] flex flex-col items-center gap-2">
+                            <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest text-center">
+                                Protocol Password
                             </label>
-                            <Link to="/forgot-password" size={10} className="text-[10px] font-black text-red-600/60 hover:text-red-500 uppercase tracking-widest transition-colors">
-                                Forgot?
-                            </Link>
                         </div>
-                        <div className="relative">
+                        <div className="relative w-full max-w-[420px]">
                             <input
                                 type={showPassword ? "text" : "password"}
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
-                                className="w-full bg-slate-950/50 border border-white/10 p-5 py-7 text-sm focus:border-red-500 rounded-2xl outline-none transition-all text-white font-medium placeholder:text-slate-800"
-                                placeholder="  ••••••••"
+                                className="w-full bg-transparent border border-white/20 p-5 py-12 text-sm focus:border-red-500 rounded-3xl outline-none transition-all text-white font-medium placeholder:text-slate-800 text-center"
+                                placeholder="••••••••"
                                 required
                             />
                             <button
                                 type="button"
                                 onClick={() => setShowPassword(!showPassword)}
-                                className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-600 hover:text-red-500 transition-colors"
+                                className="absolute right-8 top-1/2 -translate-y-1/2 text-slate-600 hover:text-red-500 transition-colors"
                             >
                                 {showPassword ? <Eye size={18} /> : <EyeOff size={18} />}
                             </button>
                         </div>
+                        <Link to="/forgot-password" size={10} className="text-[10px] font-black text-red-600/60 hover:text-red-500 uppercase tracking-widest transition-colors text-center mt-2">
+                            Forget Password?
+                        </Link>
                     </div>
 
                     {error && (
