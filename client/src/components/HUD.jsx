@@ -173,51 +173,88 @@ const HUD = ({ user, onLogout }) => {
                                 {isSearchOpen ? (
                                     <Motion.div
                                         initial={{ width: 0, opacity: 0 }}
-                                        animate={{ width: 300, opacity: 1 }}
+                                        animate={{ width: 450, opacity: 1 }}
                                         exit={{ width: 0, opacity: 0 }}
-                                        className="relative flex items-center"
+                                        className="relative flex items-center group"
                                     >
+                                        {/* --- Outer Glow Layer --- */}
+                                        <div className="absolute -inset-1 bg-red-600/20 blur-md opacity-0 group-focus-within:opacity-100 transition-opacity rounded-3xl" />
+
+                                        {/* --- Main Search Input --- */}
                                         <input
                                             autoFocus
                                             type="text"
                                             value={searchQuery}
                                             onChange={(e) => setSearchQuery(e.target.value)}
-                                            placeholder="Search system..."
-                                            className="w-full bg-slate-950 border border-red-500/30 pl-16 pr-10 py-6 rounded-2xl text-[12px] font-bold text-white placeholder-slate-600 outline-none transition-all focus:border-red-500 focus:shadow-[0_0_30px_rgba(239,68,68,0.1)] uppercase tracking-[0.2em]"
+                                            placeholder="INITIATE SYSTEM SEARCH..."
+                                            className="w-full bg-[#030305]/80 backdrop-blur-2xl border-2 border-white/5 pl-8 pr-32 py-7 rounded-3xl text-[13px] font-black text-white placeholder-white/20 outline-none transition-all focus:border-red-600 shadow-2xl uppercase tracking-[0.3em] font-mono"
                                         />
-                                        <Search size={20} className="absolute left-6 top-1/2 -translate-y-1/2 text-red-500 pointer-events-none" />
-                                        <button
-                                            onClick={() => { setIsSearchOpen(false); setSearchQuery(''); }}
-                                            className="absolute right-3 p-1 hover:bg-white/5 rounded-lg text-slate-500 hover:text-white transition-colors"
-                                        >
-                                            <X size={14} />
-                                        </button>
+
+                                        {/* --- Hardware Details (Top Edge) --- */}
+                                        <div className="absolute top-2 left-8 flex gap-2 pointer-events-none">
+                                            <div className="w-1 h-1 rounded-full bg-red-500 animate-pulse" />
+                                            <span className="text-[7px] font-black text-red-500/50 uppercase tracking-widest">System Active</span>
+                                        </div>
+
+                                        {/* --- Interactive Controls --- */}
+                                        <div className="absolute right-3 flex items-center gap-2">
+                                            {searchQuery && (
+                                                <button
+                                                    onClick={() => setSearchQuery('')}
+                                                    className="p-2 hover:bg-white/10 rounded-full text-slate-500 hover:text-white transition-all transform hover:rotate-90"
+                                                >
+                                                    <X size={16} />
+                                                </button>
+                                            )}
+
+                                            {/* Tactile Terminal button */}
+                                            <button className="relative group/btn flex items-center justify-center">
+                                                <div className="absolute -inset-2 bg-red-600/30 blur-lg opacity-0 group-hover/btn:opacity-100 transition-opacity" />
+                                                <div className="relative w-14 h-14 bg-red-600 rounded-2xl flex items-center justify-center shadow-[0_10px_20px_-5px_rgba(239,68,68,0.5),inset_0_2px_2px_rgba(255,255,255,0.3)] transition-all hover:scale-105 active:scale-95 border-b-4 border-red-800">
+                                                    <Search size={22} className="text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.3)]" />
+                                                </div>
+                                            </button>
+                                        </div>
 
                                         {/* Suggestions Overlay */}
                                         <AnimatePresence>
                                             {suggestions.length > 0 && (
                                                 <Motion.div
-                                                    initial={{ opacity: 0, y: 10 }}
-                                                    animate={{ opacity: 1, y: 0 }}
-                                                    exit={{ opacity: 0, y: 10 }}
-                                                    className="absolute top-full right-0 mt-4 w-full bg-[#080a0f] border border-white/10 rounded-2xl shadow-2xl overflow-hidden z-50 p-2"
+                                                    initial={{ opacity: 0, scale: 0.95, y: 10 }}
+                                                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                                                    exit={{ opacity: 0, scale: 0.95, y: 10 }}
+                                                    className="absolute top-full left-0 right-0 mt-6 bg-[#030305]/95 backdrop-blur-[50px] border border-white/10 rounded-[2.5rem] shadow-[0_50px_100px_-20px_rgba(0,0,0,1)] overflow-hidden z-[100] p-4"
                                                 >
-                                                    {suggestions.map((item, idx) => (
-                                                        <button
-                                                            key={`${item.title}-${idx}`}
-                                                            onMouseDown={(e) => {
-                                                                e.preventDefault(); // Prevent blur
-                                                                handleSelect(item.path);
-                                                            }}
-                                                            className="w-full text-left p-3 hover:bg-red-500/10 rounded-xl transition-all group flex items-center justify-between"
-                                                        >
-                                                            <div className="flex flex-col">
-                                                                <span className="text-[10px] font-black text-white uppercase tracking-widest">{item.title}</span>
-                                                                <span className="text-[9px] text-slate-500 font-bold uppercase tracking-[0.2em]">{item.type} {item.sub && `• ${item.sub}`}</span>
-                                                            </div>
-                                                            <ArrowRight size={14} className="text-red-500 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
-                                                        </button>
-                                                    ))}
+                                                    <div className="px-6 py-4 border-b border-white/5 mb-2 flex items-center justify-between">
+                                                        <span className="text-[10px] font-black text-red-500 uppercase tracking-[0.4em]">Search Results</span>
+                                                        <Activity size={12} className="text-red-500/50" />
+                                                    </div>
+                                                    <div className="max-h-[400px] overflow-y-auto custom-scrollbar space-y-2">
+                                                        {suggestions.map((item, idx) => (
+                                                            <button
+                                                                key={`${item.title}-${idx}`}
+                                                                onMouseDown={(e) => {
+                                                                    e.preventDefault();
+                                                                    handleSelect(item.path);
+                                                                }}
+                                                                className="w-full text-left p-6 hover:bg-red-600/5 rounded-3xl transition-all group flex items-center justify-between border border-transparent hover:border-red-600/20"
+                                                            >
+                                                                <div className="flex flex-col gap-1">
+                                                                    <span className="text-[12px] font-black text-white uppercase tracking-widest group-hover:text-red-500 transition-colors">{item.title}</span>
+                                                                    <div className="flex items-center gap-2">
+                                                                        <span className="text-[9px] text-slate-500 font-bold uppercase tracking-widest">{item.type}</span>
+                                                                        {item.sub && (
+                                                                            <>
+                                                                                <div className="w-1 h-1 rounded-full bg-slate-700" />
+                                                                                <span className="text-[9px] text-red-500/60 font-black uppercase tracking-widest">{item.sub}</span>
+                                                                            </>
+                                                                        )}
+                                                                    </div>
+                                                                </div>
+                                                                <ArrowRight size={18} className="text-red-600 opacity-0 group-hover:opacity-100 group-hover:translate-x-2 transition-all" />
+                                                            </button>
+                                                        ))}
+                                                    </div>
                                                 </Motion.div>
                                             )}
                                         </AnimatePresence>
