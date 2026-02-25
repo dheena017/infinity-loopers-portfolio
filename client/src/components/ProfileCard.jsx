@@ -9,13 +9,13 @@ const ProfileCard = ({ member, alternate, badge = "Member Profile" }) => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-            className={`group relative flex flex-col md:flex-row gap-16 items-center premium-card p-12 transition-all duration-700 ${alternate ? 'md:flex-row-reverse' : ''}`}
+            className={`group relative flex flex-col md:flex-row gap-8 md:gap-16 items-center premium-card p-6 md:p-12 transition-all duration-700 ${alternate ? 'md:flex-row-reverse' : ''}`}
         >
             {/* Visual Highlight */}
             <div className={`absolute top-0 bottom-0 w-1 bg-red-600 transition-all duration-700 opacity-0 group-hover:opacity-100 shadow-[0_0_30px_rgba(220,38,38,0.6)] ${alternate ? 'right-0 rounded-l-full' : 'left-0 rounded-r-full'}`}></div>
 
             {/* Photo Container */}
-            <div className="relative flex-shrink-0 w-64 h-80">
+            <div className="relative flex-shrink-0 w-full max-w-[320px] md:w-64 lg:w-72 aspect-[4/5] md:h-auto">
                 <div className="absolute -inset-4 bg-red-500/10 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-1000"></div>
 
                 <div className="relative w-full h-full overflow-hidden rounded-2xl border border-white/5 shadow-2xl">
