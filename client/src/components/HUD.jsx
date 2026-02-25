@@ -254,12 +254,12 @@ const HUD = ({ user, onLogout }) => {
                                 to="/login"
                                 className="group relative"
                             >
-                                <div className="absolute -inset-1 bg-red-600/30 rounded-xl sm:rounded-2.5xl blur-2xl opacity-0 group-hover:opacity-100 transition duration-700"></div>
-                                <div className="relative flex items-center gap-2 sm:gap-4 bg-gradient-to-br from-red-600 via-red-700 to-red-900 px-3 sm:px-8 py-2.5 sm:py-4 rounded-xl sm:rounded-[1.25rem] border border-white/30 shadow-2xl active:scale-95 transition-all duration-500">
-                                    <div className="relative w-7 h-7 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-white/10 border border-white/20 flex items-center justify-center backdrop-blur-md group-hover:rotate-[360deg] transition-transform duration-1000">
-                                        <ShieldCheck size={16} className="text-white sm:w-5 sm:h-5" />
+                                <div className="absolute -inset-1 bg-amber-500/30 rounded-xl sm:rounded-2.5xl blur-2xl opacity-0 group-hover:opacity-100 transition duration-700"></div>
+                                <div className="relative flex items-center gap-2 sm:gap-4 bg-gradient-to-br from-amber-500 via-amber-600 to-amber-700 px-2.5 sm:px-8 py-2 sm:py-4 rounded-xl sm:rounded-[1.25rem] border border-white/30 shadow-2xl active:scale-95 transition-all duration-500">
+                                    <div className="relative w-6 h-6 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-white/10 border border-white/20 flex items-center justify-center backdrop-blur-md group-hover:rotate-[360deg] transition-transform duration-1000">
+                                        <ShieldCheck size={14} className="text-white sm:w-5 sm:h-5" />
                                     </div>
-                                    <span className="text-[10px] sm:text-[12px] font-black uppercase text-white tracking-[0.1em] sm:tracking-[0.25em]">
+                                    <span className="text-[9px] sm:text-[12px] font-black uppercase text-white tracking-[0.1em] sm:tracking-[0.25em]">
                                         <span className="hidden xs:inline">MEMBER</span> LOGIN
                                     </span>
                                 </div>

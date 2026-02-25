@@ -28,6 +28,7 @@ input::-webkit-credentials-auto-fill-button {
   --font-sans: "Outfit", "Inter", sans-serif;
   --font-display: "Outfit", sans-serif;
   --font-tech: "Space Grotesk", sans-serif;
+  --breakpoint-xs: 480px;
 }
 
 :root {
