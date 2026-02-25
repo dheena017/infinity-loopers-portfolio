@@ -95,37 +95,21 @@ const HUD = ({ user, onLogout }) => {
                     ></Motion.div>
                 </div>
 
-                <div className="flex items-center justify-between px-3 sm:px-8 lg:px-16 py-3 sm:py-6 relative gap-3 sm:gap-4">
+                <div className="flex items-center justify-between px-4 sm:px-8 lg:px-16 py-2.5 sm:py-6 relative gap-3 sm:gap-4">
 
                     {/* --- SECTION 1: IDENTITY & LOGO --- */}
                     <div className="flex items-center gap-3 sm:gap-8 lg:gap-16 min-w-0">
-                        <NavLink to="/" className="flex items-center gap-4 sm:gap-6 lg:gap-10 group/logo relative">
+                        <NavLink to="/" className="flex items-center gap-3 sm:gap-6 lg:gap-10 group/logo relative">
                             {/* Orbital Spinner */}
                             <div className="relative shrink-0">
-                                <Motion.div
-                                    animate={{ rotate: 360 }}
-                                    transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
-                                    className="absolute -inset-4 border-[1.5px] border-red-500/20 rounded-2xl border-dashed"
-                                ></Motion.div>
-                                <Motion.div
-                                    animate={{ rotate: -360 }}
-                                    transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
-                                    className="absolute -inset-2 border-[1px] border-red-500/10 rounded-full"
-                                ></Motion.div>
-
-                                <div className="relative w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 bg-black border border-white/20 rounded-2xl flex items-center justify-center shadow-2xl group-hover/logo:border-red-500/50 transition-all duration-500 overflow-hidden">
+                                <div className="relative w-10 h-10 sm:w-14 sm:h-14 lg:w-16 lg:h-16 bg-black border border-white/20 rounded-xl sm:rounded-2xl flex items-center justify-center shadow-2xl group-hover/logo:border-red-500/50 transition-all duration-500 overflow-hidden">
                                     <div className="absolute inset-0 bg-gradient-to-b from-white/10 to-transparent pointer-events-none"></div>
-                                    <SquadLogo size={42} className="filter drop-shadow-[0_0_12px_rgba(239,68,68,0.6)]" />
-                                    <Motion.div
-                                        animate={{ top: ['-100%', '200%'] }}
-                                        transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
-                                        className="absolute inset-x-0 h-4 bg-red-500/10 blur-sm pointer-events-none"
-                                    ></Motion.div>
+                                    <SquadLogo size={28} className="filter drop-shadow-[0_0_12px_rgba(239,68,68,0.6)] sm:scale-125" />
                                 </div>
                             </div>
 
                             <div className="hidden xl:flex flex-col border-l border-white/10 pl-8">
-                                <span className="text-3xl font-black tracking-[-0.05em] uppercase text-white leading-none group-hover/logo:text-red-500 transition-colors">SQUAD  139</span>
+                                <span className="text-3xl font-black tracking-[-0.05em] uppercase text-white leading-none group-hover/logo:text-red-500 transition-colors">SQUAD 139</span>
                                 {user && (
                                     <span className="text-[10px] font-black tracking-[0.4em] text-red-500 uppercase mt-2">
                                         {user.role}
@@ -260,22 +244,24 @@ const HUD = ({ user, onLogout }) => {
                         {user ? (
                             <button
                                 onClick={onLogout}
-                                className="group flex items-center gap-3 sm:gap-4 bg-red-950/20 border border-red-500/30 px-4 sm:px-6 py-3 sm:py-4 rounded-2xl hover:bg-red-600/20 transition-all duration-500 active:scale-95"
+                                className="group flex items-center gap-2 sm:gap-4 bg-red-950/20 border border-red-500/30 px-3 sm:px-6 py-2.5 sm:py-4 rounded-xl sm:rounded-2xl hover:bg-red-600/20 transition-all duration-500 active:scale-95"
                             >
-                                <LogOut size={16} className="text-red-500" />
-                                <span className="text-[10px] sm:text-[11px] font-black text-white tracking-[0.2em] uppercase">SIGN OUT</span>
+                                <LogOut size={14} className="text-red-500 sm:w-4 sm:h-4" />
+                                <span className="text-[9px] sm:text-[11px] font-black text-white tracking-[0.2em] uppercase">SIGN OUT</span>
                             </button>
                         ) : (
                             <NavLink
                                 to="/login"
                                 className="group relative"
                             >
-                                <div className="absolute -inset-2 bg-red-600/30 rounded-2.5xl blur-2xl opacity-0 group-hover:opacity-100 transition duration-700"></div>
-                                <div className="relative flex items-center gap-3 sm:gap-4 bg-gradient-to-br from-red-600 via-red-700 to-red-900 px-4 sm:px-8 py-3 sm:py-4 rounded-[1.25rem] border border-white/30 shadow-[0_15px_40px_-5px_rgba(220,38,38,0.5)] active:scale-95 transition-all duration-500">
-                                    <div className="relative w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-white/10 border border-white/20 flex items-center justify-center backdrop-blur-md group-hover:rotate-[360deg] transition-transform duration-1000">
-                                        <ShieldCheck size={20} className="text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.5)]" />
+                                <div className="absolute -inset-1 bg-red-600/30 rounded-xl sm:rounded-2.5xl blur-2xl opacity-0 group-hover:opacity-100 transition duration-700"></div>
+                                <div className="relative flex items-center gap-2 sm:gap-4 bg-gradient-to-br from-red-600 via-red-700 to-red-900 px-3 sm:px-8 py-2.5 sm:py-4 rounded-xl sm:rounded-[1.25rem] border border-white/30 shadow-2xl active:scale-95 transition-all duration-500">
+                                    <div className="relative w-7 h-7 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-white/10 border border-white/20 flex items-center justify-center backdrop-blur-md group-hover:rotate-[360deg] transition-transform duration-1000">
+                                        <ShieldCheck size={16} className="text-white sm:w-5 sm:h-5" />
                                     </div>
-                                    <span className="text-[10px] sm:text-[12px] font-black uppercase text-white tracking-[0.2em] sm:tracking-[0.25em]">MEMBER LOGIN</span>
+                                    <span className="text-[10px] sm:text-[12px] font-black uppercase text-white tracking-[0.1em] sm:tracking-[0.25em]">
+                                        <span className="hidden xs:inline">MEMBER</span> LOGIN
+                                    </span>
                                 </div>
                             </NavLink>
                         )}
@@ -283,15 +269,15 @@ const HUD = ({ user, onLogout }) => {
 
                 </div>
 
-                <nav className="lg:hidden border-t border-white/10 px-2 py-2 overflow-x-auto no-scrollbar">
-                    <div className="flex items-center gap-1 min-w-max">
+                <nav className="lg:hidden border-t border-white/5 px-4 py-2.5 overflow-x-auto no-scrollbar">
+                    <div className="flex items-center gap-2 min-w-max pb-0.5">
                         {navLinks.map((link) => (
                             <NavLink
                                 key={`mobile-${link.path}`}
                                 to={link.path}
-                                className={({ isActive }) => `flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[9px] font-black tracking-[0.16em] uppercase whitespace-nowrap transition-colors ${isActive ? 'bg-red-600/20 text-red-400 border border-red-500/40' : 'text-slate-400 hover:text-white border border-transparent hover:border-white/10'}`}
+                                className={({ isActive }) => `flex items-center gap-2 px-3.5 py-2 rounded-xl text-[10px] font-black tracking-widest uppercase whitespace-nowrap transition-all duration-300 ${isActive ? 'bg-red-600/15 text-white border border-red-500/40' : 'text-slate-500 hover:text-white border border-transparent hover:bg-white/5'}`}
                             >
-                                <link.icon size={13} />
+                                <link.icon size={13} className={location.pathname === link.path ? 'text-red-500' : ''} />
                                 <span>{link.label}</span>
                             </NavLink>
                         ))}
