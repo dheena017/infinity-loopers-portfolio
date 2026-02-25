@@ -3,7 +3,7 @@ import { motion as Motion, AnimatePresence } from 'framer-motion';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import {
     Mail, LogOut, ShieldCheck,
-    Search, Home, Crown, GraduationCap, GitFork, Briefcase, X, ArrowRight
+    Search, Home, Crown, GraduationCap, GitFork, Briefcase, X, ArrowRight, Menu
 } from 'lucide-react';
 import SquadLogo from './SquadLogo';
 import { mentorData } from '../data/team';
@@ -12,6 +12,7 @@ const HUD = ({ user, onLogout }) => {
     const location = useLocation();
     const navigate = useNavigate();
     const [isSearchOpen, setIsSearchOpen] = useState(false);
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
     const [suggestions, setSuggestions] = useState([]);
     const searchRef = useRef(null);
@@ -150,140 +151,112 @@ const HUD = ({ user, onLogout }) => {
                     </nav>
 
                     {/* --- SECTION 3: OPERATIONS --- */}
-                    <div className="flex items-center gap-4 sm:gap-6 lg:gap-10 shrink-0">
-                        {/* Functional Search System */}
-                        <div ref={searchRef} className="relative hidden sm:block">
+                    <div className="flex items-center gap-2 sm:gap-6 lg:gap-10 shrink-0">
+                        {/* Search System */}
+                        <div ref={searchRef} className="relative">
                             <AnimatePresence>
                                 {isSearchOpen ? (
                                     <Motion.div
                                         initial={{ width: 0, opacity: 0 }}
-                                        animate={{ width: 340, opacity: 1 }}
+                                        animate={{ width: window.innerWidth < 640 ? 200 : 340, opacity: 1 }}
                                         exit={{ width: 0, opacity: 0 }}
                                         className="relative flex items-center group/search"
                                     >
-                                        {/* --- FUTURISTIC CONTAINER --- */}
-                                        <div className="absolute inset-0 bg-slate-950/60 backdrop-blur-xl border border-white/10 rounded-2xl group-focus-within/search:border-red-500/40 transition-all duration-500"></div>
-
+                                        <div className="absolute inset-0 bg-slate-950/80 backdrop-blur-xl border border-white/10 rounded-xl sm:rounded-2xl transition-all duration-500"></div>
                                         <input
                                             autoFocus
                                             type="text"
                                             value={searchQuery}
                                             onChange={(e) => setSearchQuery(e.target.value)}
-                                            placeholder="System Search..."
-                                            className="relative z-10 w-full bg-transparent pl-10 pr-16 py-3.5 rounded-2xl text-[11px] font-bold text-white placeholder-slate-600 outline-none transition-all uppercase tracking-[0.2em] h-13"
+                                            placeholder="Search..."
+                                            className="relative z-10 w-full bg-transparent pl-8 sm:pl-10 pr-10 py-2 sm:py-3.5 rounded-2xl text-[10px] sm:text-[11px] font-bold text-white placeholder-slate-600 outline-none uppercase tracking-widest h-10 sm:h-13"
                                         />
-
-                                        {/* Unique Scanner Icon (Status Indicator) */}
-                                        <div className="absolute left-4 top-1/2 -translate-y-1/2">
-                                            <div className="w-1.5 h-1.5 bg-red-500 rounded-full shadow-[0_0_8px_rgba(239,68,68,0.8)] animate-pulse"></div>
+                                        <div className="absolute right-2 flex items-center z-20">
+                                            <button onClick={() => { setIsSearchOpen(false); setSearchQuery(''); }} className="p-1.5 text-slate-500 hover:text-white"><X size={14} /></button>
                                         </div>
-
-                                        <div className="absolute right-2 flex items-center gap-1 z-20">
-                                            {searchQuery && (
-                                                <button
-                                                    onClick={() => setSearchQuery('')}
-                                                    className="p-1.5 hover:bg-white/5 rounded-lg text-slate-500 hover:text-white transition-all"
-                                                >
-                                                    <X size={12} />
-                                                </button>
-                                            )}
-
-                                            {/* UNIQUE CIRCULAR COMMAND BUTTON */}
-                                            <button className="relative group/btn w-10 h-10 flex items-center justify-center bg-slate-900 border border-white/10 rounded-full overflow-hidden transition-all hover:border-red-500/50 hover:shadow-[0_0_15px_rgba(239,68,68,0.2)] active:scale-90">
-                                                <div className="absolute inset-0 bg-gradient-to-tr from-red-600/20 to-transparent opacity-0 group-hover/btn:opacity-100 transition-opacity"></div>
-                                                <Search size={15} className="text-slate-400 group-hover/btn:text-red-500 group-hover/btn:scale-110 transition-all duration-500" />
-
-                                                {/* Orbital Ring Animation */}
-                                                <div className="absolute inset-0 border border-red-500/20 rounded-full scale-150 opacity-0 group-hover/btn:scale-100 group-hover/btn:opacity-100 transition-all duration-700"></div>
-                                            </button>
-                                        </div>
-
-                                        {/* Suggestions Overlay */}
-                                        <AnimatePresence>
-                                            {suggestions.length > 0 && (
-                                                <Motion.div
-                                                    initial={{ opacity: 0, y: 10 }}
-                                                    animate={{ opacity: 1, y: 0 }}
-                                                    exit={{ opacity: 0, y: 10 }}
-                                                    className="absolute top-full right-0 mt-4 w-full bg-[#080a0f] border border-white/10 rounded-2xl shadow-2xl overflow-hidden z-50 p-2"
-                                                >
-                                                    {suggestions.map((item, idx) => (
-                                                        <button
-                                                            key={`${item.title}-${idx}`}
-                                                            onMouseDown={(e) => {
-                                                                e.preventDefault(); // Prevent blur
-                                                                handleSelect(item.path);
-                                                            }}
-                                                            className="w-full text-left p-3 hover:bg-red-500/10 rounded-xl transition-all group flex items-center justify-between"
-                                                        >
-                                                            <div className="flex flex-col">
-                                                                <span className="text-[10px] font-black text-white uppercase tracking-widest">{item.title}</span>
-                                                                <span className="text-[9px] text-slate-500 font-bold uppercase tracking-[0.2em]">{item.type} {item.sub && `• ${item.sub}`}</span>
-                                                            </div>
-                                                            <ArrowRight size={14} className="text-red-500 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
-                                                        </button>
-                                                    ))}
-                                                </Motion.div>
-                                            )}
-                                        </AnimatePresence>
                                     </Motion.div>
                                 ) : (
-                                    <button
-                                        onClick={() => setIsSearchOpen(true)}
-                                        aria-label="Search"
-                                        className="text-slate-400 hover:text-red-500 transition-all duration-300 p-2.5 rounded-xl hover:bg-white/5"
-                                    >
-                                        <Search size={22} />
-                                    </button>
+                                    <button onClick={() => setIsSearchOpen(true)} className="text-slate-400 hover:text-red-500 p-2 sm:p-2.5 rounded-xl hover:bg-white/5 transition-all"><Search size={20} className="sm:w-[22px] sm:h-[22px]" /></button>
                                 )}
                             </AnimatePresence>
                         </div>
 
                         <div className="hidden sm:block w-[1px] h-10 bg-white/10"></div>
 
-                        {user ? (
-                            <button
-                                onClick={onLogout}
-                                className="group flex items-center gap-2 sm:gap-4 bg-red-950/20 border border-red-500/30 px-3 sm:px-6 py-2.5 sm:py-4 rounded-xl sm:rounded-2xl hover:bg-red-600/20 transition-all duration-500 active:scale-95"
-                            >
-                                <LogOut size={14} className="text-red-500 sm:w-4 sm:h-4" />
-                                <span className="text-[9px] sm:text-[11px] font-black text-white tracking-[0.2em] uppercase">SIGN OUT</span>
-                            </button>
-                        ) : (
-                            <NavLink
-                                to="/login"
-                                className="group relative"
-                            >
-                                <div className="absolute -inset-1 bg-red-600/30 rounded-xl sm:rounded-2.5xl blur-2xl opacity-0 group-hover:opacity-100 transition duration-700"></div>
-                                <div className="relative flex items-center gap-1.5 sm:gap-4 bg-gradient-to-br from-red-600 via-red-700 to-red-900 px-2 sm:px-8 py-1.5 sm:py-4 rounded-lg sm:rounded-[1.25rem] border border-white/30 shadow-2xl active:scale-95 transition-all duration-500">
-                                    <div className="relative w-5 h-5 sm:w-10 sm:h-10 rounded-md sm:rounded-xl bg-white/10 border border-white/20 flex items-center justify-center backdrop-blur-md group-hover:rotate-[360deg] transition-transform duration-1000">
-                                        <ShieldCheck size={12} className="text-white sm:w-5 sm:h-5" />
+                        {/* DESKTOP LOGIN/LOGOUT */}
+                        <div className="hidden lg:block">
+                            {user ? (
+                                <button onClick={onLogout} className="group flex items-center gap-4 bg-red-950/20 border border-red-500/30 px-6 py-4 rounded-2xl hover:bg-red-600/20 transition-all">
+                                    <LogOut size={16} className="text-red-500" />
+                                    <span className="text-[11px] font-black text-white tracking-[0.2em] uppercase">SIGN OUT</span>
+                                </button>
+                            ) : (
+                                <NavLink to="/login" className="group relative">
+                                    <div className="relative flex items-center gap-4 bg-gradient-to-br from-red-600 to-red-900 px-8 py-4 rounded-[1.25rem] border border-white/30 shadow-2xl active:scale-95 transition-all">
+                                        <ShieldCheck size={20} className="text-white" />
+                                        <span className="text-[12px] font-black uppercase text-white tracking-[0.25em]">MEMBER LOGIN</span>
                                     </div>
-                                    <span className="text-[8px] sm:text-[12px] font-black uppercase text-white tracking-[0.05em] sm:tracking-[0.25em]">
-                                        <span className="hidden xs:inline">MEMBER LOGIN</span>
-                                        <span className="xs:hidden">LOGIN</span>
-                                    </span>
-                                </div>
-                            </NavLink>
-                        )}
-                    </div>
+                                </NavLink>
+                            )}
+                        </div>
 
+                        {/* MOBILE MENU TOGGLE */}
+                        <button
+                            onClick={() => setIsMenuOpen(!isMenuOpen)}
+                            className="lg:hidden p-3 bg-white/5 border border-white/10 rounded-xl text-white hover:bg-red-600/20 transition-all"
+                        >
+                            {isMenuOpen ? <X size={20} /> : <Menu size={20} />}
+                        </button>
+                    </div>
                 </div>
 
-                <nav className="lg:hidden border-t border-white/5 px-2 py-1.5 overflow-x-auto no-scrollbar">
-                    <div className="flex items-center gap-1.5 min-w-max">
-                        {navLinks.map((link) => (
-                            <NavLink
-                                key={`mobile-${link.path}`}
-                                to={link.path}
-                                className={({ isActive }) => `flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[8px] font-black tracking-tight uppercase whitespace-nowrap transition-all duration-300 ${isActive ? 'bg-red-600/15 text-white border border-red-500/30' : 'text-slate-500 hover:text-white border border-transparent hover:bg-white/5'}`}
-                            >
-                                <link.icon size={11} className={location.pathname === link.path ? 'text-red-500' : ''} />
-                                <span>{link.label}</span>
-                            </NavLink>
-                        ))}
-                    </div>
-                </nav>
+                {/* --- MOBILE SIDEBAR --- */}
+                <AnimatePresence>
+                    {isMenuOpen && (
+                        <Motion.div
+                            initial={{ x: '100%', opacity: 0 }}
+                            animate={{ x: 0, opacity: 1 }}
+                            exit={{ x: '100%', opacity: 0 }}
+                            transition={{ type: "spring", damping: 25, stiffness: 200 }}
+                            className="fixed inset-y-0 right-0 w-[280px] bg-slate-950/95 backdrop-blur-[50px] border-l border-white/10 z-[100] p-10 flex flex-col justify-between shadow-[-20px_0_50px_rgba(0,0,0,0.8)]"
+                        >
+                            <div className="space-y-12">
+                                <div className="flex items-center gap-4 border-b border-white/10 pb-8">
+                                    <div className="w-10 h-10 bg-red-600/10 border border-red-500/30 rounded-xl flex items-center justify-center">
+                                        <SquadLogo size={24} />
+                                    </div>
+                                    <span className="text-lg font-black text-white tracking-widest uppercase italic">SQUAD HQ</span>
+                                </div>
+
+                                <nav className="flex flex-col gap-6">
+                                    {navLinks.map((link) => (
+                                        <NavLink
+                                            key={`side-${link.path}`}
+                                            to={link.path}
+                                            onClick={() => setIsMenuOpen(false)}
+                                            className={({ isActive }) => `flex items-center gap-4 p-4 rounded-xl transition-all ${isActive ? 'bg-red-600/20 text-white border border-red-500/40 shadow-lg' : 'text-slate-500 hover:text-white hover:bg-white/5'}`}
+                                        >
+                                            <link.icon size={18} className={location.pathname === link.path ? 'text-red-500' : ''} />
+                                            <span className="text-xs font-black tracking-[0.2em] uppercase">{link.label}</span>
+                                        </NavLink>
+                                    ))}
+                                </nav>
+                            </div>
+
+                            <div className="space-y-6">
+                                {user ? (
+                                    <button onClick={() => { onLogout(); setIsMenuOpen(false); }} className="w-full flex items-center justify-center gap-4 py-5 bg-red-950/40 border border-red-500/30 rounded-2xl text-red-500 font-bold uppercase tracking-widest text-[10px]">
+                                        <LogOut size={16} /> Sign Out
+                                    </button>
+                                ) : (
+                                    <NavLink to="/login" onClick={() => setIsMenuOpen(false)} className="w-full flex items-center justify-center gap-4 py-5 bg-gradient-to-r from-red-600 to-red-900 rounded-2xl text-white font-black uppercase tracking-widest text-[10px] shadow-2xl">
+                                        <ShieldCheck size={16} /> Member Login
+                                    </NavLink>
+                                )}
+                            </div>
+                        </Motion.div>
+                    )}
+                </AnimatePresence>
             </Motion.div>
         </header>
     );
