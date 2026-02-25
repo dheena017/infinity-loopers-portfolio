@@ -9,10 +9,10 @@ const ProfileCard = ({ member, alternate }) => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-            className={`group relative flex flex-col md:flex-row gap-12 items-center premium-card p-12 bg-slate-950/80 backdrop-blur-3xl hover:bg-black transition-all duration-500 shadow-2xl ${alternate ? 'md:flex-row-reverse' : ''}`}
+            className={`group relative flex flex-col md:flex-row gap-16 items-center premium-card p-12 transition-all duration-700 ${alternate ? 'md:flex-row-reverse' : ''}`}
         >
             {/* Visual Highlight */}
-            <div className={`absolute top-0 bottom-0 w-1 bg-red-600 transition-all duration-700 opacity-0 group-hover:opacity-100 shadow-[0_0_20px_rgba(220,38,38,0.5)] ${alternate ? 'right-0 rounded-l-full' : 'left-0 rounded-r-full'}`}></div>
+            <div className={`absolute top-0 bottom-0 w-1 bg-red-600 transition-all duration-700 opacity-0 group-hover:opacity-100 shadow-[0_0_30px_rgba(220,38,38,0.6)] ${alternate ? 'right-0 rounded-l-full' : 'left-0 rounded-r-full'}`}></div>
 
             {/* Photo Container */}
             <div className="relative flex-shrink-0 w-64 h-80">
@@ -37,44 +37,46 @@ const ProfileCard = ({ member, alternate }) => {
             </div>
 
             {/* Content Section */}
-            <div className="flex-grow space-y-6">
-                <div className="space-y-3">
-                    <div className="flex items-center gap-2 text-red-500 font-bold text-[10px] tracking-[0.2em] uppercase">
+            <div className="flex-grow space-y-8 md:pl-10">
+                <div className="space-y-4">
+                    <div className="flex items-center gap-3 text-red-600 font-bold text-[10px] tracking-[0.35em] uppercase opacity-80">
+                        <div className="w-8 h-[1px] bg-red-600/40"></div>
                         <Briefcase size={14} />
-                        <span>Mentor Profile</span>
+                        <span>Core Personnel</span>
                     </div>
-                    <h2 className="text-4xl sm:text-5xl font-black heading-display text-white transition-colors group-hover:text-red-50 break-words overflow-hidden">
+                    <h2 className="text-4xl sm:text-6xl font-black heading-display text-white/95 leading-[0.9] tracking-tighter drop-shadow-2xl">
                         {member.name}
                     </h2>
                     <div className="flex flex-wrap gap-4 items-center">
-                        <div className="inline-block px-4 py-1.5 bg-slate-900 border border-white/5 rounded-lg">
-                            <span className="text-slate-500 font-bold text-xs tracking-widest uppercase">{member.role}</span>
+                        <div className="inline-block px-5 py-2 bg-black border border-white/5 rounded-full backdrop-blur-3xl shadow-2xl">
+                            <span className="text-red-500 font-black text-[10px] tracking-widest uppercase">{member.role}</span>
                         </div>
                         {member.expertise && (
-                            <div className="flex items-center gap-3">
-                                <span className="text-[10px] font-black text-slate-600 uppercase tracking-widest">Areas of Expertise:</span>
-                                <span className="text-red-600 font-bold text-xs uppercase tracking-wider">{member.expertise}</span>
+                            <div className="flex items-center gap-4">
+                                <span className="text-[9px] font-bold text-slate-600 uppercase tracking-[0.25em]">{member.expertise}</span>
                             </div>
                         )}
                     </div>
                 </div>
 
-                <div className="h-px w-full bg-gradient-to-r from-white/10 to-transparent"></div>
+                <div className="h-px w-32 bg-gradient-to-r from-red-600/50 to-transparent"></div>
 
-                <p className="text-slate-500 leading-relaxed text-lg font-medium italic opacity-80 max-w-2xl">
-                    "{member.bio}"
+                <p className="text-slate-400 text-lg md:text-xl font-medium leading-relaxed italic opacity-80 group-hover:opacity-100 transition-all duration-700 max-w-2xl">
+                    "{member.bio || member.description}"
                 </p>
 
-                <div className="flex flex-wrap items-center gap-4 pt-6">
+                <div className="flex flex-wrap items-center gap-4 pt-4">
                     <div className="flex gap-3">
                         {member.github && (
-                            <a href={member.github} target="_blank" rel="noopener noreferrer" className="p-3 bg-slate-900 border border-white/5 hover:border-red-500/50 hover:bg-slate-800 rounded-xl transition-all group/link shadow-lg">
-                                <Github size={20} className="text-slate-500 group-hover/link:text-red-400 transition-colors" />
+                            <a href={member.github} target="_blank" rel="noopener noreferrer" className="p-3.5 bg-black border border-white/10 hover:border-red-600/50 hover:bg-slate-900 rounded-xl transition-all group/link shadow-2xl overflow-hidden relative">
+                                <div className="absolute inset-0 bg-red-600/5 opacity-0 group-hover/link:opacity-100 transition-opacity"></div>
+                                <Github size={20} className="text-slate-400 group-hover/link:text-white transition-colors relative z-10" />
                             </a>
                         )}
                         {member.linkedin && (
-                            <a href={member.linkedin} target="_blank" rel="noopener noreferrer" className="p-3 bg-slate-900 border border-white/5 hover:border-red-500/50 hover:bg-slate-800 rounded-xl transition-all group/link shadow-lg">
-                                <Linkedin size={20} className="text-slate-500 group-hover/link:text-red-400 transition-colors" />
+                            <a href={member.linkedin} target="_blank" rel="noopener noreferrer" className="p-3.5 bg-black border border-white/10 hover:border-red-600/50 hover:bg-slate-900 rounded-xl transition-all group/link shadow-2xl overflow-hidden relative">
+                                <div className="absolute inset-0 bg-red-600/5 opacity-0 group-hover/link:opacity-100 transition-opacity"></div>
+                                <Linkedin size={20} className="text-slate-400 group-hover/link:text-white transition-colors relative z-10" />
                             </a>
                         )}
                         {member.email && (
@@ -84,7 +86,7 @@ const ProfileCard = ({ member, alternate }) => {
                         )}
                     </div>
 
-                    <a href={member.linkedin || '#'} target="_blank" rel="noopener noreferrer" className="px-8 py-3 bg-red-600 text-white font-bold tracking-widest text-[10px] uppercase hover:bg-red-500 rounded-xl transition-all flex items-center gap-3 ml-auto shadow-xl shadow-red-900/20 active:scale-95">
+                    <a href={member.focusLink || member.linkedin || '#'} target="_blank" rel="noopener noreferrer" className="px-8 py-3 bg-red-600 text-white font-bold tracking-widest text-[10px] uppercase hover:bg-red-500 rounded-xl transition-all flex items-center gap-3 ml-auto shadow-xl shadow-red-900/20 active:scale-95">
                         Mentor Focus <ExternalLink size={16} />
                     </a>
                 </div>

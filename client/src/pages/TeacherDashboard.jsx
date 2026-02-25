@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { motion as Motion, AnimatePresence } from 'framer-motion';
 import { ShieldAlert, Save } from 'lucide-react';
-
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
+import { supabase } from '../lib/supabase';
 
 const TeacherDashboard = ({ user, onUpdate }) => {
     // -- Profile Edit State --
@@ -23,24 +22,26 @@ const TeacherDashboard = ({ user, onUpdate }) => {
                 throw new Error('Mentor session not found. Please login again.');
             }
 
-            const response = await fetch(`${API_BASE_URL}/api/mentors/${user.id}`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
+            if (!supabase) {
+                throw new Error('Database connection lost. Please try again.');
+            }
+
+            const { data: updatedData, error: updateError } = await supabase
+                .from('mentors')
+                .update({
                     name: profileForm.name,
                     photo: profileForm.photo,
                     email: profileForm.email,
                     bio: profileForm.bio,
-                    desc: profileForm.bio
+                    description: profileForm.bio // Ensure both bio and description are synced
                 })
-            });
+                .eq('id', user.id)
+                .select()
+                .single();
 
-            const payload = await response.json();
-            if (!response.ok || !payload?.success) {
-                throw new Error(payload?.message || 'Failed to update mentor profile');
-            }
+            if (updateError) throw updateError;
 
-            const updatedMentor = payload.data || {};
+            const updatedMentor = updatedData || {};
 
             if (onUpdate) {
                 onUpdate({
