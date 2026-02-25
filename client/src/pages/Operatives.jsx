@@ -55,7 +55,7 @@ const Operatives = () => {
                             whileInView={{ opacity: 1, y: 0 }}
                             transition={{ delay: idx * 0.1 }}
                         >
-                            <ProfileCard member={member} alternate={idx % 2 !== 0} />
+                            <ProfileCard member={member} alternate={idx % 2 !== 0} badge="Core Personnel" />
                         </Motion.div>
                     ))}
                 </div>

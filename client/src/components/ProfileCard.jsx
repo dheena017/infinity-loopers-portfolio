@@ -2,7 +2,7 @@ import React from 'react';
 import { Github, Linkedin, Mail, ExternalLink, Briefcase } from 'lucide-react';
 import { motion as Motion } from 'framer-motion';
 
-const ProfileCard = ({ member, alternate }) => {
+const ProfileCard = ({ member, alternate, badge = "Member Profile" }) => {
     return (
         <Motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -42,7 +42,7 @@ const ProfileCard = ({ member, alternate }) => {
                     <div className="flex items-center gap-3 text-red-600 font-bold text-[10px] tracking-[0.35em] uppercase opacity-80">
                         <div className="w-8 h-[1px] bg-red-600/40"></div>
                         <Briefcase size={14} />
-                        <span>Core Personnel</span>
+                        <span>{badge}</span>
                     </div>
                     <h2 className="text-4xl sm:text-6xl font-black heading-display text-white/95 leading-[0.9] tracking-tighter drop-shadow-2xl">
                         {member.name}

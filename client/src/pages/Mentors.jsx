@@ -304,6 +304,7 @@ const Mentors = () => {
                                     focusLink: mentor.focusLink || mentor.focus_link || ''
                                 }}
                                 alternate={idx % 2 !== 0}
+                                badge="Mentor Profile"
                             />
                         </div>
                     ))}
