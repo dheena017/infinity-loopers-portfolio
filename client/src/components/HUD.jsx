@@ -95,16 +95,16 @@ const HUD = ({ user, onLogout }) => {
                     ></Motion.div>
                 </div>
 
-                <div className="flex items-center justify-between px-4 sm:px-8 lg:px-16 py-2.5 sm:py-6 relative gap-3 sm:gap-4">
+                <div className="flex items-center justify-between px-2.5 sm:px-8 lg:px-16 py-1.5 sm:py-6 relative gap-2 sm:gap-4">
 
                     {/* --- SECTION 1: IDENTITY & LOGO --- */}
-                    <div className="flex items-center gap-3 sm:gap-8 lg:gap-16 min-w-0">
-                        <NavLink to="/" className="flex items-center gap-3 sm:gap-6 lg:gap-10 group/logo relative">
+                    <div className="flex items-center gap-2 sm:gap-8 lg:gap-16 min-w-0">
+                        <NavLink to="/" className="flex items-center gap-2 sm:gap-6 lg:gap-10 group/logo relative">
                             {/* Orbital Spinner */}
                             <div className="relative shrink-0">
-                                <div className="relative w-10 h-10 sm:w-14 sm:h-14 lg:w-16 lg:h-16 bg-black border border-white/20 rounded-xl sm:rounded-2xl flex items-center justify-center shadow-2xl group-hover/logo:border-red-500/50 transition-all duration-500 overflow-hidden">
+                                <div className="relative w-8 h-8 sm:w-14 sm:h-14 lg:w-16 lg:h-16 bg-black border border-white/20 rounded-lg sm:rounded-2xl flex items-center justify-center shadow-2xl group-hover/logo:border-red-500/50 transition-all duration-500 overflow-hidden">
                                     <div className="absolute inset-0 bg-gradient-to-b from-white/10 to-transparent pointer-events-none"></div>
-                                    <SquadLogo size={28} className="filter drop-shadow-[0_0_12px_rgba(239,68,68,0.6)] sm:scale-125" />
+                                    <SquadLogo size={20} className="filter drop-shadow-[0_0_12px_rgba(239,68,68,0.6)] sm:scale-150" />
                                 </div>
                             </div>
 
@@ -254,13 +254,14 @@ const HUD = ({ user, onLogout }) => {
                                 to="/login"
                                 className="group relative"
                             >
-                                <div className="absolute -inset-1 bg-amber-500/30 rounded-xl sm:rounded-2.5xl blur-2xl opacity-0 group-hover:opacity-100 transition duration-700"></div>
-                                <div className="relative flex items-center gap-2 sm:gap-4 bg-gradient-to-br from-amber-500 via-amber-600 to-amber-700 px-2.5 sm:px-8 py-2 sm:py-4 rounded-xl sm:rounded-[1.25rem] border border-white/30 shadow-2xl active:scale-95 transition-all duration-500">
-                                    <div className="relative w-6 h-6 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-white/10 border border-white/20 flex items-center justify-center backdrop-blur-md group-hover:rotate-[360deg] transition-transform duration-1000">
-                                        <ShieldCheck size={14} className="text-white sm:w-5 sm:h-5" />
+                                <div className="absolute -inset-1 bg-red-600/30 rounded-xl sm:rounded-2.5xl blur-2xl opacity-0 group-hover:opacity-100 transition duration-700"></div>
+                                <div className="relative flex items-center gap-1.5 sm:gap-4 bg-gradient-to-br from-red-600 via-red-700 to-red-900 px-2 sm:px-8 py-1.5 sm:py-4 rounded-lg sm:rounded-[1.25rem] border border-white/30 shadow-2xl active:scale-95 transition-all duration-500">
+                                    <div className="relative w-5 h-5 sm:w-10 sm:h-10 rounded-md sm:rounded-xl bg-white/10 border border-white/20 flex items-center justify-center backdrop-blur-md group-hover:rotate-[360deg] transition-transform duration-1000">
+                                        <ShieldCheck size={12} className="text-white sm:w-5 sm:h-5" />
                                     </div>
-                                    <span className="text-[9px] sm:text-[12px] font-black uppercase text-white tracking-[0.1em] sm:tracking-[0.25em]">
-                                        <span className="hidden xs:inline">MEMBER</span> LOGIN
+                                    <span className="text-[8px] sm:text-[12px] font-black uppercase text-white tracking-[0.05em] sm:tracking-[0.25em]">
+                                        <span className="hidden xs:inline">MEMBER LOGIN</span>
+                                        <span className="xs:hidden">LOGIN</span>
                                     </span>
                                 </div>
                             </NavLink>
@@ -269,15 +270,15 @@ const HUD = ({ user, onLogout }) => {
 
                 </div>
 
-                <nav className="lg:hidden border-t border-white/5 px-4 py-2.5 overflow-x-auto no-scrollbar">
-                    <div className="flex items-center gap-2 min-w-max pb-0.5">
+                <nav className="lg:hidden border-t border-white/5 px-2 py-1.5 overflow-x-auto no-scrollbar">
+                    <div className="flex items-center gap-1.5 min-w-max">
                         {navLinks.map((link) => (
                             <NavLink
                                 key={`mobile-${link.path}`}
                                 to={link.path}
-                                className={({ isActive }) => `flex items-center gap-2 px-3.5 py-2 rounded-xl text-[10px] font-black tracking-widest uppercase whitespace-nowrap transition-all duration-300 ${isActive ? 'bg-red-600/15 text-white border border-red-500/40' : 'text-slate-500 hover:text-white border border-transparent hover:bg-white/5'}`}
+                                className={({ isActive }) => `flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[8px] font-black tracking-tight uppercase whitespace-nowrap transition-all duration-300 ${isActive ? 'bg-red-600/15 text-white border border-red-500/30' : 'text-slate-500 hover:text-white border border-transparent hover:bg-white/5'}`}
                             >
-                                <link.icon size={13} className={location.pathname === link.path ? 'text-red-500' : ''} />
+                                <link.icon size={11} className={location.pathname === link.path ? 'text-red-500' : ''} />
                                 <span>{link.label}</span>
                             </NavLink>
                         ))}
