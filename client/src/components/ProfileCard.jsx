@@ -9,10 +9,10 @@ const ProfileCard = ({ member, alternate }) => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-            className={`group relative flex flex-col md:flex-row gap-12 items-center premium-card p-12 bg-slate-950/20 backdrop-blur-3xl hover:bg-slate-900/40 transition-all duration-500 shadow-2xl ${alternate ? 'md:flex-row-reverse' : ''}`}
+            className={`group relative flex flex-col md:flex-row gap-12 items-center premium-card p-12 bg-slate-950/80 backdrop-blur-3xl hover:bg-black transition-all duration-500 shadow-2xl ${alternate ? 'md:flex-row-reverse' : ''}`}
         >
             {/* Visual Highlight */}
-            <div className={`absolute top-0 bottom-0 w-1 bg-red-500 transition-all duration-700 opacity-0 group-hover:opacity-100 shadow-[0_0_20px_rgba(239,68,68,0.5)] ${alternate ? 'right-0 rounded-l-full' : 'left-0 rounded-r-full'}`}></div>
+            <div className={`absolute top-0 bottom-0 w-1 bg-red-600 transition-all duration-700 opacity-0 group-hover:opacity-100 shadow-[0_0_20px_rgba(220,38,38,0.5)] ${alternate ? 'right-0 rounded-l-full' : 'left-0 rounded-r-full'}`}></div>
 
             {/* Photo Container */}
             <div className="relative flex-shrink-0 w-64 h-80">
@@ -22,9 +22,12 @@ const ProfileCard = ({ member, alternate }) => {
                     <img
                         src={member.photo}
                         alt={member.name}
-                        className="w-full h-full object-cover transition-all duration-700 scale-105 group-hover:scale-100"
+                        className="w-full h-full object-cover transition-all duration-700 scale-105 group-hover:scale-110"
                         onError={(e) => { e.target.src = `https://ui-avatars.com/api/?name=${member.name}&background=1e293b&color=fff&size=512` }}
                     />
+
+                    {/* Shine Effect Overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/20 to-transparent -translate-x-[150%] skew-x-[-20deg] group-hover:animate-[shimmer_1s_ease-in-out] pointer-events-none"></div>
 
                     {/* Status Badge */}
                     <div className="absolute top-4 right-4 z-20 px-2 py-1 bg-slate-900/80 backdrop-blur-md border border-white/10 rounded-md text-[9px] font-bold text-white uppercase tracking-widest">
@@ -44,13 +47,13 @@ const ProfileCard = ({ member, alternate }) => {
                         {member.name}
                     </h2>
                     <div className="flex flex-wrap gap-4 items-center">
-                        <div className="inline-block px-4 py-1.5 bg-slate-800 border border-white/10 rounded-lg">
-                            <span className="text-slate-300 font-bold text-xs tracking-widest uppercase">{member.role}</span>
+                        <div className="inline-block px-4 py-1.5 bg-slate-900 border border-white/5 rounded-lg">
+                            <span className="text-slate-500 font-bold text-xs tracking-widest uppercase">{member.role}</span>
                         </div>
                         {member.expertise && (
                             <div className="flex items-center gap-3">
-                                <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Areas of Expertise:</span>
-                                <span className="text-red-400 font-bold text-xs uppercase tracking-wider">{member.expertise}</span>
+                                <span className="text-[10px] font-black text-slate-600 uppercase tracking-widest">Areas of Expertise:</span>
+                                <span className="text-red-600 font-bold text-xs uppercase tracking-wider">{member.expertise}</span>
                             </div>
                         )}
                     </div>
@@ -58,7 +61,7 @@ const ProfileCard = ({ member, alternate }) => {
 
                 <div className="h-px w-full bg-gradient-to-r from-white/10 to-transparent"></div>
 
-                <p className="text-slate-400 leading-relaxed text-lg font-medium italic opacity-90 max-w-2xl">
+                <p className="text-slate-500 leading-relaxed text-lg font-medium italic opacity-80 max-w-2xl">
                     "{member.bio}"
                 </p>
 
