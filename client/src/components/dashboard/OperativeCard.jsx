@@ -1,5 +1,5 @@
 import React from 'react';
-import { motion } from 'framer-motion';
+import { motion as Motion } from 'framer-motion';
 import { User, Github, Linkedin, ArrowRight } from 'lucide-react';
 
 const OperativeCard = ({ operative }) => {
@@ -15,7 +15,7 @@ const OperativeCard = ({ operative }) => {
     } = operative;
 
     return (
-        <motion.div 
+        <Motion.div 
             whileHover={{ y: -5 }}
             className="w-full h-full p-6 bg-[#0B1221] rounded-[32px] border border-white/5 flex flex-col items-center text-center shadow-xl relative overflow-hidden group transition-all duration-300 hover:shadow-2xl hover:border-white/10"
         >
@@ -80,7 +80,7 @@ const OperativeCard = ({ operative }) => {
                     <Linkedin size={20} />
                 </a>
             </div>
-        </motion.div>
+        </Motion.div>
     );
 };
 

@@ -1,6 +1,7 @@
 import express from 'express';
 import { getAllStudents, getStudentById, getStudentsByTerm, updateStudent, getStudentPasswordById, updateStudentPassword, createStudent } from '../queries.js';
 import { handleSupabaseError } from '../supabaseClient.js';
+import { requireCoreLeadership } from '../middleware/coreLeadershipAuth.js';
 
 const router = express.Router();
 
@@ -78,7 +79,7 @@ router.post('/:id/change-password', async (req, res) => {
 export default router;
 
 // POST /api/students - create new student
-router.post('/', async (req, res) => {
+router.post('/', requireCoreLeadership, async (req, res) => {
     try {
         const payload = req.body || {};
         const created = await createStudent(payload);

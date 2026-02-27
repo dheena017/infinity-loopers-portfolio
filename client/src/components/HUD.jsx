@@ -1,20 +1,17 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion as Motion, AnimatePresence } from 'framer-motion';
-import { NavLink, useLocation, useNavigate } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
 import {
     Mail, LogOut, ShieldCheck,
-    Search, Home, Crown, GraduationCap, GitFork, Briefcase, X, ArrowRight, Menu
+    Search, Home, Crown, GraduationCap, GitFork, Briefcase, X, Menu
 } from 'lucide-react';
 import SquadLogo from './SquadLogo';
-import { mentorData } from '../data/team';
 
 const HUD = ({ user, onLogout }) => {
     const location = useLocation();
-    const navigate = useNavigate();
     const [isSearchOpen, setIsSearchOpen] = useState(false);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
-    const [suggestions, setSuggestions] = useState([]);
     const searchRef = useRef(null);
 
     const navLinks = [
@@ -25,25 +22,6 @@ const HUD = ({ user, onLogout }) => {
         { path: '/expeditions', label: 'INITIATIVES', icon: Briefcase },
         { path: '/transmissions', label: 'CONNECT', icon: Mail },
     ];
-
-    // Search Database
-    const searchDb = [
-        ...navLinks.map(link => ({ title: link.label, path: link.path, type: 'Page' })),
-        ...mentorData.map(m => ({ title: m.name, path: '/mentors', type: 'Mentor', sub: m.role })),
-        { title: 'Member Login', path: '/login', type: 'Access' }
-    ];
-
-    useEffect(() => {
-        if (searchQuery.trim().length > 0) {
-            const filtered = searchDb.filter(item =>
-                item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                (item.sub && item.sub.toLowerCase().includes(searchQuery.toLowerCase()))
-            ).slice(0, 5);
-            setSuggestions(filtered);
-        } else {
-            setSuggestions([]);
-        }
-    }, [searchQuery]);
 
     // Handle Click Outside Search
     useEffect(() => {
@@ -60,14 +38,7 @@ const HUD = ({ user, onLogout }) => {
     if (user) {
         if (user.role === 'mentor') navLinks.push({ path: '/mentor', label: 'MENTOR DASHBOARD', icon: ShieldCheck });
         if (user.role === 'student') navLinks.push({ path: '/student', label: 'DASHBOARD', icon: ShieldCheck });
-        if (user.role === 'secretary') navLinks.push({ path: '/secretary', label: 'DASHBOARD', icon: ShieldCheck });
     }
-
-    const handleSelect = (path) => {
-        navigate(path);
-        setIsSearchOpen(false);
-        setSearchQuery('');
-    };
 
     // Helper for active link styles
     const getLinkClass = (isActive) => `
@@ -263,3 +234,4 @@ const HUD = ({ user, onLogout }) => {
 };
 
 export default HUD;
+

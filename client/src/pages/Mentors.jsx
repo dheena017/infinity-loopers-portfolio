@@ -2,9 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { motion as Motion } from 'framer-motion';
 import ProfileCard from '../components/ProfileCard';
 import { Briefcase, Star } from 'lucide-react';
-import { useSearchParams } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
-import { mentorData } from '../data/team';
+import { mentorData, teamData } from '../data/team';
 
 // Admin form component
 const AdminForm = ({ onCreate, onUpdate, editingMentor, onCancelEdit }) => {
@@ -45,11 +44,6 @@ const AdminForm = ({ onCreate, onUpdate, editingMentor, onCancelEdit }) => {
         setBusy(true);
         try {
             if (type === 'mentor') {
-                const endpoint = isEditingMentor
-                    ? `${API_BASE_URL}/api/mentors/${editingMentor.id}`
-                    : `${API_BASE_URL}/api/mentors`;
-                const method = isEditingMentor ? 'PUT' : 'POST';
-
                 let savedMentor = null;
 
                 if (!supabase) {
@@ -108,11 +102,6 @@ const AdminForm = ({ onCreate, onUpdate, editingMentor, onCancelEdit }) => {
                 const { data, error } = await supabase.from('students').insert([{ name, role, email, photo, bio: desc, term }]).select();
                 if (error) throw error;
                 onCreate(data[0]);
-            } else if (type === 'secretary') {
-                if (!supabase) throw new Error('Database unavailable');
-                const { data, error } = await supabase.from('secretaries').insert([{ name, role, email, photo, bio: desc }]).select();
-                if (error) throw error;
-                onCreate(data[0]);
             }
             resetForm();
         } catch (err) {
@@ -127,7 +116,6 @@ const AdminForm = ({ onCreate, onUpdate, editingMentor, onCancelEdit }) => {
                 <select value={type} onChange={e => setType(e.target.value)} className="p-2 border rounded" disabled={isEditingMentor}>
                     <option value="mentor">Mentor</option>
                     <option value="student">Student</option>
-                    <option value="secretary">Secretary</option>
                 </select>
                 <input value={name} onChange={e => setName(e.target.value)} placeholder="Name" className="flex-1 p-2 border rounded" />
                 <input value={role} onChange={e => setRole(e.target.value)} placeholder="Role" className="w-56 p-2 border rounded" />
@@ -157,14 +145,36 @@ const AdminForm = ({ onCreate, onUpdate, editingMentor, onCancelEdit }) => {
     );
 };
 
-const Mentors = () => {
+const Mentors = ({ user }) => {
     const [mentors, setMentors] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const [editingMentor, setEditingMentor] = useState(null);
 
-    const [searchParams] = useSearchParams();
-    const isAdmin = searchParams.get('admin') === 'true';
+    const normalizedEmail = user?.email?.trim().toLowerCase();
+    const coreLeadershipEmails = new Set([
+        ...teamData.map(member => member?.email?.trim().toLowerCase()).filter(Boolean),
+        'mohamed.sharaf.s.139@kalvium.community',
+        'imran.s.s.139@kalvium.community',
+        'nayeem.sajjath.s.139@kalvium.community'
+    ]);
+    const canManageMembers = coreLeadershipEmails.has(normalizedEmail);
+    const defaultMentorBios = {
+        'santusha iyer': 'Guides learners through strong front-end foundations and practical engineering concepts with real-world clarity.'
+    };
+
+    const resolveMentorBio = (mentor) => {
+        const rawBio = mentor?.bio || mentor?.desc || mentor?.description || '';
+        const normalizedName = (mentor?.name || '').trim().toLowerCase();
+        const defaultBio = defaultMentorBios[normalizedName] || '';
+        const looksCorrupted = /\[[^\]]*$|\[.*\[|[^\w\s.,'"&()\-:/]/.test(rawBio);
+
+        if (!rawBio || looksCorrupted) {
+            return defaultBio || rawBio;
+        }
+
+        return rawBio;
+    };
 
     const mergeWithLocalMentors = (remoteMentors = []) => {
         const safeRemote = Array.isArray(remoteMentors) ? remoteMentors : [];
@@ -258,7 +268,7 @@ const Mentors = () => {
                 </div>
 
                 {/* Admin Form (only visible when ?admin=true) */}
-                {isAdmin && (
+                {canManageMembers && (
                     <AdminForm
                         onCreate={(newItem) => setMentors(prev => [newItem, ...prev])}
                         onUpdate={(updatedMentor) => setMentors(prev => prev.map(item => item.id === updatedMentor.id ? updatedMentor : item))}
@@ -280,7 +290,7 @@ const Mentors = () => {
                     )}
                     {mentors.map((mentor, idx) => (
                         <div key={`${mentor.id ?? 'mentor'}-${mentor.name ?? idx}`}>
-                            {isAdmin && (
+                            {canManageMembers && (
                                 <div className="flex justify-end mb-3">
                                     <button
                                         onClick={() => setEditingMentor(mentor)}
@@ -295,7 +305,7 @@ const Mentors = () => {
                                     id: mentor.id,
                                     name: mentor.name,
                                     role: mentor.role || 'Mentor',
-                                    bio: mentor.bio || mentor.desc || mentor.description || '',
+                                    bio: resolveMentorBio(mentor),
                                     expertise: mentor.expertise || '',
                                     github: mentor.github || '',
                                     linkedin: mentor.linkedin || mentor.LinkedIn || mentor.LINKEDIN || '',

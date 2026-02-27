@@ -1,11 +1,9 @@
 import React, { useState } from 'react';
-import { motion as Motion, AnimatePresence } from 'framer-motion';
+import { motion as Motion } from 'framer-motion';
 import { ShieldAlert, Save } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 
 const TeacherDashboard = ({ user, onUpdate }) => {
-    // -- Profile Edit State --
-    const [showProfileEdit, setShowProfileEdit] = useState(true);
     const [profileForm, setProfileForm] = useState({
         name: user?.username || '',
         photo: user?.photo || '',

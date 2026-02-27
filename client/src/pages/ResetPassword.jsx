@@ -1,12 +1,10 @@
 import React, { useState } from 'react';
 import { motion as Motion } from 'framer-motion';
-import { Shield, KeyRound, Loader2, CheckCircle2, AlertCircle } from 'lucide-react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { Loader2, CheckCircle2, AlertCircle } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { supabase } from '../lib/supabase';
 
 const ResetPassword = () => {
-    const [searchParams] = useSearchParams();
-    const token = searchParams.get('token');
-
     const [newPassword, setNewPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [loading, setLoading] = useState(false);
@@ -32,23 +30,25 @@ const ResetPassword = () => {
         }
 
         try {
-            // In a real app, you would send the token and new password to your backend
-            // const response = await fetch('http://localhost:5000/api/reset-password', {
-            //     method: 'POST',
-            //     headers: { 'Content-Type': 'application/json' },
-            //     body: JSON.stringify({ token, newPassword }),
-            // });
+            if (!supabase) {
+                throw new Error('Database connection unavailable');
+            }
 
-            // Simulating API call
-            await new Promise(resolve => setTimeout(resolve, 1500));
+            const { error: updateError } = await supabase.auth.updateUser({
+                password: newPassword,
+            });
+
+            if (updateError) {
+                throw updateError;
+            }
 
             setSuccess(true);
             setTimeout(() => {
                 navigate('/login');
             }, 2000);
 
-        } catch (err) {
-            setError('Failed to reset password. Link may be expired.');
+        } catch (error) {
+            setError(error.message || 'Failed to reset password. Link may be expired.');
         } finally {
             setLoading(false);
         }

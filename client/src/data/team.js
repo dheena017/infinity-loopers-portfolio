@@ -6,7 +6,7 @@ export const teamData = [
         bio: "I’m a curious builder who loves turning ideas into systems that actually work. I enjoy working at the intersection of design, logic, and experience.",
         github: "https://github.com/sharaf2215",
         linkedin: "https://www.linkedin.com/in/sharaf22/",
-        email: "mohamed.sharaf.s.@kalvium.community",
+        email: "mohamed.sharaf.s.139@kalvium.community",
         photo: "/assets/Author1.jpg"
     },
     {

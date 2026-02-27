@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
+import { motion as Motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
 import { Users, X, Github, Linkedin, ExternalLink, Activity, LayoutGrid, Cpu, UserCheck, Edit3, Save, XCircle, ShieldCheck } from 'lucide-react';
 import { supabase } from '../lib/supabase';
+import { teamData } from '../data/team';
 
 // ─── Edit Modal (Admin/Mentor only) ───────────────────────────────────────────────
 const EditModal = ({ student, onClose, onSave }) => {
@@ -19,7 +20,7 @@ const EditModal = ({ student, onClose, onSave }) => {
         setSaveMsg('');
         try {
             if (!supabase) throw new Error('Database unavailable');
-            const { data, error } = await supabase
+            const { error } = await supabase
                 .from('students')
                 .update(form)
                 .eq('id', student.id)
@@ -39,14 +40,14 @@ const EditModal = ({ student, onClose, onSave }) => {
 
     return (
         <div className="fixed inset-0 z-[200] flex items-center justify-center p-8">
-            <motion.div
+            <Motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 onClick={onClose}
                 className="absolute inset-0 bg-slate-950/90 backdrop-blur-xl"
             />
-            <motion.div
+            <Motion.div
                 initial={{ opacity: 0, scale: 0.98, y: 10 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.98 }}
@@ -135,22 +136,22 @@ const EditModal = ({ student, onClose, onSave }) => {
                         {saveMsg}
                     </p>
                 )}
-            </motion.div>
+            </Motion.div>
         </div>
     );
 };
 
 // ─── Profile Modal (View) ────────────────────────────────────────────────────
-const ProfileModal = ({ student, onClose, user, onEdit }) => (
+const ProfileModal = ({ student, onClose, canEditProfiles, onEdit }) => (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-8">
-        <motion.div
+        <Motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
             className="absolute inset-0 bg-slate-950/90 backdrop-blur-2xl"
         />
-        <motion.div
+        <Motion.div
             initial={{ opacity: 0, scale: 0.98, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.98, y: 20 }}
@@ -213,7 +214,7 @@ const ProfileModal = ({ student, onClose, user, onEdit }) => (
                         </a>
                     )}
 
-                    {user?.role === 'mentor' && (
+                    {canEditProfiles && (
                         <button
                             onClick={onEdit}
                             className="flex items-center gap-3 px-8 py-4 bg-red-600/10 border border-red-500/30 text-red-400 font-bold uppercase tracking-widest text-xs hover:bg-red-600/20 rounded-xl transition-colors"
@@ -233,7 +234,7 @@ const ProfileModal = ({ student, onClose, user, onEdit }) => (
                     </a>
                 </div>
             </div>
-        </motion.div>
+        </Motion.div>
     </div>
 );
 
@@ -241,6 +242,14 @@ const ProfileModal = ({ student, onClose, user, onEdit }) => (
 const Collective = ({ students, user, setStudents }) => {
     const [selectedStudent, setSelectedStudent] = useState(null);
     const [editingStudent, setEditingStudent] = useState(null);
+    const normalizedEmail = user?.email?.trim().toLowerCase();
+    const coreLeadershipEmails = new Set([
+        ...teamData.map(member => member?.email?.trim().toLowerCase()).filter(Boolean),
+        'mohamed.sharaf.s.139@kalvium.community',
+        'imran.s.s.139@kalvium.community',
+        'nayeem.sajjath.s.139@kalvium.community'
+    ]);
+    const canEditProfiles = coreLeadershipEmails.has(normalizedEmail);
 
     const { scrollY } = useScroll();
     const headerOpacity = useTransform(scrollY, [0, 400], [1, 0]);
@@ -257,7 +266,7 @@ const Collective = ({ students, user, setStudents }) => {
         <section className="section-shell min-h-screen">
             <div className="container-premium space-y-24">
                 {/* Header */}
-                <motion.div
+                <Motion.div
                     style={{ opacity: headerOpacity, scale: headerScale, y: headerY }}
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -273,12 +282,12 @@ const Collective = ({ students, user, setStudents }) => {
                             The heart of our ecosystem. A diverse community of learners, builders, and alumni growing together.
                         </p>
                     </div>
-                </motion.div>
+                </Motion.div>
 
                 {/* Students Grid */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 gap-6">
                     {students.map((student, idx) => (
-                        <motion.div
+                        <Motion.div
                             key={student.id}
                             initial={{ opacity: 0, scale: 0.95 }}
                             animate={{ opacity: 1, scale: 1 }}
@@ -297,12 +306,12 @@ const Collective = ({ students, user, setStudents }) => {
                                 <div className="text-sm font-bold text-white heading-display truncate mt-1">{student.name}</div>
                             </div>
 
-                            {user?.role === 'mentor' && (
+                            {canEditProfiles && (
                                 <div className="absolute top-4 right-4 p-2 bg-red-600 rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity">
                                     <Edit3 size={14} className="text-white" />
                                 </div>
                             )}
-                        </motion.div>
+                        </Motion.div>
                     ))}
                 </div>
             </div>
@@ -312,7 +321,7 @@ const Collective = ({ students, user, setStudents }) => {
                 {selectedStudent && !editingStudent && (
                     <ProfileModal
                         student={selectedStudent}
-                        user={user}
+                        canEditProfiles={canEditProfiles}
                         onClose={() => setSelectedStudent(null)}
                         onEdit={() => setEditingStudent(selectedStudent)}
                     />
@@ -334,3 +343,4 @@ const Collective = ({ students, user, setStudents }) => {
 };
 
 export default Collective;
+

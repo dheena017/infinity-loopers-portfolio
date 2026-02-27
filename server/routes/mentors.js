@@ -1,5 +1,6 @@
 import express from 'express';
 import { getAllMentors, createMentor, updateMentor } from '../queries.js';
+import { requireCoreLeadership } from '../middleware/coreLeadershipAuth.js';
 
 const router = express.Router();
 
@@ -15,7 +16,7 @@ router.get('/', async (req, res) => {
 });
 
 // POST /api/mentors - create a new mentor
-router.post('/', async (req, res) => {
+router.post('/', requireCoreLeadership, async (req, res) => {
   try {
     const payload = req.body || {};
     const newMentor = await createMentor(payload);

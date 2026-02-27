@@ -8,7 +8,7 @@ React + Vite frontend for the Squad 139 Infinity Loopers portfolio platform.
 - **Animated UI** - Framer Motion transitions and interactions
 - **3D Backgrounds** - Three.js space effects
 - **Dark Cosmic Theme** - Tailwind CSS with custom space aesthetic
-- **Role-Based Dashboards** - Student, Teacher, and Secretary views
+- **Role-Based Dashboards** - Student and Teacher views
 - **Real-time Data** - Direct Supabase integration
 - **Responsive Design** - Mobile-first approach
 - **Profile Management** - Edit profiles, change passwords, manage portfolios
@@ -23,7 +23,6 @@ React + Vite frontend for the Squad 139 Infinity Loopers portfolio platform.
 | `/reset-password` | ResetPassword | Password reset with token |
 | `/student` | StudentDashboard | Student profile and portfolio management |
 | `/admin` | TeacherDashboard | Teacher/admin control panel |
-| `/secretary` | SecretaryDashboard | Secretary administrative view |
 | `/operatives` | Operatives | Team operatives showcase |
 | `/mentors` | Mentors | Mentors and advisors display |
 | `/expeditions` | Expeditions | Missions and projects |
@@ -155,7 +154,6 @@ src/
 │   ├── Login.jsx            # Authentication
 │   ├── StudentDashboard.jsx # Student portal
 │   ├── TeacherDashboard.jsx # Teacher portal
-│   ├── SecretaryDashboard.jsx # Admin portal
 │   ├── Mentors.jsx          # Mentors showcase
 │   ├── Collective.jsx       # Team overview
 │   ├── Operatives.jsx       # Team operatives

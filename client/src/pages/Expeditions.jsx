@@ -140,3 +140,4 @@ const Expeditions = () => {
 };
 
 export default Expeditions;
+

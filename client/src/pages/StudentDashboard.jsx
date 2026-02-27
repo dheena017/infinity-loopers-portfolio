@@ -9,7 +9,7 @@ import {
 import { NavLink } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 
-const StudentDashboard = ({ user, onUpdate, onLogout }) => {
+const StudentDashboard = ({ user, onUpdate }) => {
     const [studentData, setStudentData] = useState(null);
     const [isEditing, setIsEditing] = useState(false);
     const [loading, setLoading] = useState(true);
@@ -363,10 +363,10 @@ const StudentDashboard = ({ user, onUpdate, onLogout }) => {
                                                                         MISSION LOG #{log.id}
                                                                     </h4>
                                                                     <span className="text-xs text-slate-500 font-mono">
-                                                                        {new Date(log.created_at).toLocaleDateString()}
+                                                                        {new Date(log.date_recorded || log.created_at).toLocaleDateString()}
                                                                     </span>
                                                                 </div>
-                                                                <p className="text-sm text-slate-400 mt-1 leading-relaxed">{log.content}</p>
+                                                                <p className="text-sm text-slate-400 mt-1 leading-relaxed">{log.summary || log.content}</p>
                                                             </div>
                                                         </div>
                                                     ))

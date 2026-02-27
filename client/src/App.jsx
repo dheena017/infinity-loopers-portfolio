@@ -12,11 +12,22 @@ import Transmissions from './pages/Transmissions';
 import Login from './pages/Login';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
-import SecretaryDashboard from './pages/SecretaryDashboard';
 import StudentDashboard from './pages/StudentDashboard';
 import TeacherDashboard from './pages/TeacherDashboard';
 import { motion as Motion, AnimatePresence } from 'framer-motion';
 import { supabase } from './lib/supabase';
+
+function ProtectedRoute({ user, allowedRoles, children }) {
+  if (!user) {
+    return <Navigate to="/login" replace />;
+  }
+
+  if (!allowedRoles.includes(user.role)) {
+    return <Navigate to="/login" replace />;
+  }
+
+  return children;
+}
 
 function AppContent() {
   const [loading, setLoading] = useState(true);
@@ -122,12 +133,33 @@ function AppContent() {
               <Route path="/forgot-password" element={<ForgotPassword />} />
               <Route path="/reset-password" element={<ResetPassword />} />
               <Route path="/operatives" element={<Operatives />} />
-              <Route path="/mentors" element={<Mentors />} />
+              <Route path="/mentors" element={<Mentors user={user} />} />
               <Route path="/expeditions" element={<Expeditions />} />
               <Route path="/team" element={<Collective students={students} user={user} setStudents={setStudents} />} />
-              <Route path="/secretary" element={<SecretaryDashboard />} />
-              <Route path="/student" element={<StudentDashboard user={user} onUpdate={handleUserUpdate} onLogout={handleLogout} />} />
-              <Route path="/mentor" element={<TeacherDashboard students={students} setStudents={setStudents} user={user} onUpdate={handleUserUpdate} />} />
+              <Route
+                path="/student"
+                element={
+                  <ProtectedRoute user={user} allowedRoles={['student', 'operative']}>
+                    <StudentDashboard user={user} onUpdate={handleUserUpdate} />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/operative"
+                element={
+                  <ProtectedRoute user={user} allowedRoles={['operative']}>
+                    <StudentDashboard user={user} onUpdate={handleUserUpdate} />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/mentor"
+                element={
+                  <ProtectedRoute user={user} allowedRoles={['mentor']}>
+                    <TeacherDashboard students={students} setStudents={setStudents} user={user} onUpdate={handleUserUpdate} />
+                  </ProtectedRoute>
+                }
+              />
               <Route path="/admin" element={<Navigate to="/mentor" replace />} />
               <Route path="/transmissions" element={<Transmissions />} />
             </Routes>
@@ -154,3 +186,4 @@ function App() {
 }
 
 export default App;
+

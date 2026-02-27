@@ -96,3 +96,4 @@ const ProfileCard = ({ member, alternate, badge = "Member Profile" }) => {
 };
 
 export default ProfileCard;
+

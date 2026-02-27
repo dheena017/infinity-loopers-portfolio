@@ -377,7 +377,7 @@ const ThreeScene = () => {
                 if (o.material) (Array.isArray(o.material) ? o.material : [o.material]).forEach(m => m.dispose());
             });
             // Remove and dispose the eerie dust we added to the scene.
-            try { scene.remove(eerieDust); } catch (e) { /* ignore */ }
+            try { scene.remove(eerieDust); } catch { /* ignore */ }
             glowTex.dispose();
         };
     }, []);

@@ -1,4 +1,4 @@
-// Simple test script to POST sample mentor, student, and teacher to local API
+// Simple test script to POST sample mentor and student to local API
 // Uses Node's global `fetch` (Node 18+). No external dependency required.
 
 const API = 'http://localhost:5000';
@@ -23,9 +23,6 @@ async function post(path, body) {
 
   console.log('Posting test student...');
   await post('/api/students', { name: 'Auto Student', role: 'Student', email: 'student@test', photo: '/assets/student1.jpg', bio: 'Automated student', term: 'Spring 2026', password: 'pass123' });
-
-  console.log('Posting test teacher...');
-  await post('/api/secretaries', { name: 'Auto Teacher', role: 'Teacher', email: 'teacher@test', photo: '/assets/Author1.jpg', bio: 'Automated teacher' });
 
   console.log('Done');
 })();

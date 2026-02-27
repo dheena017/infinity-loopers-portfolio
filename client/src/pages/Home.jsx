@@ -1,13 +1,9 @@
 import React from 'react';
-import { motion as Motion, useScroll, useTransform } from 'framer-motion';
+import { motion as Motion } from 'framer-motion';
 import { ArrowRight, Users, Globe2, Briefcase } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
 
 const Home = () => {
-    const { scrollY } = useScroll();
-    const heroOpacity = useTransform(scrollY, [0, 500], [1, 0]);
-    const heroScale = useTransform(scrollY, [0, 500], [1, 0.9]);
-    const heroY = useTransform(scrollY, [0, 500], [0, -50]);
     const pillars = [
         {
             title: 'Folks',
@@ -163,3 +159,4 @@ const Home = () => {
 };
 
 export default Home;
+

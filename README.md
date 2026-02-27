@@ -8,7 +8,7 @@ A professional space-themed portfolio platform built with React + Vite and power
 
 - 🎨 **Professional Loading Screen** - Meteor shower animation with twinkling stars and progress tracking
 - 🌌 **Space Theme** - Dark cosmic aesthetic with Three.js 3D backgrounds
-- 🔐 **Authentication System** - Role-based login (Student, Teacher, Secretary)
+- 🔐 **Authentication System** - Role-based login (Student, Teacher)
 - 📊 **Dynamic Dashboards** - Personalized dashboards for different user roles
 - 📝 **Profile Management** - Students can edit profiles, change passwords, and manage portfolios
 - 👥 **Team Showcase** - Display mentors, students, and team members
@@ -172,11 +172,6 @@ Password: kalvium@123
 - Password: `kalvium@123`
 - Role: Select "Teacher"
 
-**Secretary Login:**
-- Email: Any secretary email from your database
-- Password: `kalvium@123`
-- Role: Select "Secretary"
-
 ### Security Notes
 
 ⚠️ **Current Setup:** Demo authentication using plain text passwords stored in Supabase.
@@ -194,7 +189,6 @@ Password: kalvium@123
 
 - **students** - Student profiles, portfolios, and authentication
 - **mentors** - Teachers and mentors information
-- **secretaries** - Administrative staff
 - **operatives** - Team members and roles
 - **missions** - Projects and expeditions
 - **archives** - Mission records and documentation
@@ -306,7 +300,7 @@ npm test
 
 ### 2. Authentication System
 - **Files:** [client/src/pages/Login.jsx](client/src/pages/Login.jsx)
-- Role-based login (Student/Teacher/Secretary)
+- Role-based login (Student/Teacher)
 - Direct Supabase authentication
 - Email + password validation
 - Remember me functionality
