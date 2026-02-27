@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
+import { formatUTCDate } from '../lib/date';
 
 const StudentDashboard = ({ user, onUpdate }) => {
     const [studentData, setStudentData] = useState(null);
@@ -363,7 +364,7 @@ const StudentDashboard = ({ user, onUpdate }) => {
                                                                         MISSION LOG #{log.id}
                                                                     </h4>
                                                                     <span className="text-xs text-slate-500 font-mono">
-                                                                        {new Date(log.date_recorded || log.created_at).toLocaleDateString()}
+                                                                        {formatUTCDate(log.date_recorded || log.created_at)}
                                                                     </span>
                                                                 </div>
                                                                 <p className="text-sm text-slate-400 mt-1 leading-relaxed">{log.summary || log.content}</p>

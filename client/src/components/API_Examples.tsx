@@ -1,5 +1,6 @@
 // Example React Component - Display Operatives List
 import React, { useEffect, useState } from 'react';
+import { formatUTCDate } from '../lib/date';
 
 interface Operative {
   id: string;
@@ -84,7 +85,7 @@ export function MissionsWithOperatives() {
           <h3>{mission.title}</h3>
           <p>{mission.description}</p>
           <p><strong>Status:</strong> {mission.status}</p>
-          <p><strong>Start:</strong> {mission.start_date} | <strong>End:</strong> {mission.end_date}</p>
+          <p><strong>Start:</strong> {formatUTCDate(mission.start_date)} | <strong>End:</strong> {formatUTCDate(mission.end_date)}</p>
         </div>
       ))}
     </div>
